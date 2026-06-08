@@ -3,7 +3,7 @@ name: lyric-writer
 label_en: Lyric Writer
 label_ar: كاتب الكلمات
 description: Writes professional song lyrics with controlled meter and rhyme.
-model: claude-opus-4-8
+model: claude-sonnet-4-6
 tools: [count_syllables, check_rhyme]
 temperature: 1.0
 max_tokens: 2048
