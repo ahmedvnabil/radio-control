@@ -1,0 +1,8 @@
+.venv
+__pycache__
+*.pyc
+.env
+.git
+.gitignore
+agents/.broadcast_state
+test_*.py

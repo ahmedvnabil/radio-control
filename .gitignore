@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+# runtime state for Telegram show_start de-dup (not source)
+agents/.broadcast_state/

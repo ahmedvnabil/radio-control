@@ -1,0 +1,1812 @@
+<!doctype html>
+<html :lang="lang" :dir="dir" x-data="rc()" x-init="boot()">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Radio Control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap">
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='zzfx.js') }}"></script>
+<script src="{{ url_for('static', filename='ident-studio.js') }}"></script>
+<style>
+:root{
+  color-scheme: dark;
+  --bg:#101312;--bg-2:#151918;--panel:#171d1b;--panel-2:#1d2824;
+  --line:#27312e;--line-2:#2f3b36;--ink:#eef4f0;--ink-2:#aebdb8;--muted:#8fa19a;
+  --mint:#71edbd;--mint-2:#76e8bd;--amber:#f1bd64;--blue:#7cc7f2;--violet:#bba3ff;--rose:#f3a8b3;
+  font-family:'IBM Plex Sans Arabic','IBM Plex Sans',Tajawal,Cairo,ui-sans-serif,system-ui,sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;background:var(--bg);color:var(--ink);min-height:100vh;}
+button,input,select,textarea{font:inherit;color:inherit;}
+button{cursor:pointer;background:transparent;border:0;}
+a{color:inherit;text-decoration:none;}
+input,select,textarea{border:1px solid var(--line-2);border-radius:7px;background:#111615;color:var(--ink);padding:8px 10px;font-size:13px;outline:none;}
+input:focus,select:focus,textarea:focus{border-color:var(--mint);}
+
+.shell{display:grid;grid-template-columns:240px 1fr;min-height:100vh;background:linear-gradient(180deg,rgba(113,237,189,0.04),transparent 32%),var(--bg);}
+[dir="rtl"] .shell{grid-template-columns:1fr 240px;}
+[dir="rtl"] .sidebar{order:2;border-right:0;border-left:1px solid var(--line);}
+[dir="rtl"] .workspace{order:1;}
+
+/* SIDEBAR */
+.sidebar{display:flex;flex-direction:column;gap:20px;border-right:1px solid var(--line);background:var(--bg-2);padding:18px 14px;overflow-y:auto;}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand-mark{display:grid;width:38px;height:38px;place-items:center;border:1px solid #3d4f48;border-radius:10px;background:var(--panel-2);color:var(--mint);}
+.brand strong{font-size:13px;font-weight:700;}
+.brand small{display:block;color:var(--muted);font-size:10px;}
+.section-title{color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;padding:0 4px;}
+.nav{display:grid;gap:2px;}
+.nav button{display:flex;align-items:center;gap:10px;min-height:34px;border-radius:7px;color:var(--ink-2);padding:0 10px;font-size:12.5px;text-align:start;font-weight:500;}
+.nav button.active{background:var(--panel-2);color:var(--ink);}
+.nav button:hover{background:#202925;color:var(--ink);}
+[dir="rtl"] .nav button{text-align:right;}
+
+.station-list{display:grid;gap:5px;}
+.station{display:flex;align-items:center;gap:10px;border-radius:7px;padding:8px;color:var(--ink-2);text-align:start;}
+[dir="rtl"] .station{text-align:right;}
+.station:hover{background:#202925;color:var(--ink);}
+.station.active{background:var(--panel-2);color:var(--ink);}
+.station strong{font-size:12.5px;font-weight:600;display:block;}
+.station small{color:var(--muted);font-size:10.5px;display:block;}
+.dot{width:8px;height:8px;border-radius:50%;background:#71827a;flex-shrink:0;}
+.dot.live{background:var(--mint-2);box-shadow:0 0 0 3px rgba(113,237,189,0.15);}
+
+/* WORKSPACE */
+.workspace{display:grid;grid-template-rows:auto 1fr auto;gap:14px;min-width:0;padding:14px;overflow:hidden;}
+.topbar{display:flex;align-items:center;gap:8px;}
+.search{display:flex;align-items:center;gap:8px;flex:1;height:40px;border:1px solid var(--line-2);border-radius:8px;background:var(--panel);padding:0 10px;color:var(--muted);}
+.search input{flex:1;border:0;background:transparent;padding:0;font-size:13px;}
+.kbd{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line-2);border-radius:5px;background:#0e1413;color:var(--muted);padding:2px 6px;font-size:10px;font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace;}
+.pill{display:inline-flex;align-items:center;gap:6px;height:40px;border:1px solid var(--line-2);border-radius:8px;background:#1b2320;padding:0 10px;font-size:11.5px;color:var(--amber);font-weight:600;}
+.pill.ok{color:var(--mint);}
+.pill.warn{color:var(--amber);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:38px;border:1px solid var(--line-2);border-radius:8px;background:#1b2320;color:#dce7e2;padding:0 12px;font-size:12.5px;font-weight:600;white-space:nowrap;}
+.btn:hover{background:#26312d;}
+.btn.primary{border-color:var(--mint);background:var(--mint);color:#11231d;}
+.btn.danger{border-color:var(--rose);background:transparent;color:var(--rose);}
+.btn.sm{min-height:30px;padding:0 9px;font-size:11px;}
+.icon-btn{display:grid;width:38px;height:38px;place-items:center;border:1px solid var(--line-2);border-radius:8px;background:#1b2320;color:#dce7e2;}
+.icon-btn:hover{background:#26312d;}
+.lang-toggle{display:flex;border:1px solid var(--line-2);border-radius:8px;overflow:hidden;height:40px;}
+.lang-toggle button{padding:0 10px;background:#1b2320;color:var(--muted);font-size:11.5px;font-weight:700;border-inline-end:1px solid var(--line-2);}
+.lang-toggle button:last-child{border-inline-end:0;}
+.lang-toggle button.active{background:var(--panel-2);color:var(--ink);}
+
+.content{overflow-y:auto;padding-right:4px;}
+[dir="rtl"] .content{padding-right:0;padding-left:4px;}
+
+.pane{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:16px;}
+.pane h2{margin:0 0 4px;font-size:15px;font-weight:700;letter-spacing:-0.01em;}
+.pane p.sub{margin:0 0 12px;color:var(--muted);font-size:12px;}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;}
+
+.chip{display:inline-flex;align-items:center;border:1px solid var(--line-2);border-radius:999px;background:#202925;color:#d7e3df;padding:3px 9px;font-size:10.5px;font-weight:600;letter-spacing:0.02em;cursor:pointer;}
+.chip.mint{border-color:var(--mint);color:var(--mint);background:rgba(113,237,189,0.08);}
+.chip.amber{border-color:var(--amber);color:var(--amber);background:rgba(241,189,100,0.08);}
+.chip.rose{border-color:var(--rose);color:var(--rose);background:rgba(243,168,179,0.08);}
+.chip.selected{background:var(--mint);color:#11231d;border-color:var(--mint);}
+
+.filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+
+.list{display:grid;gap:6px;}
+.item{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:10px;min-height:48px;border:1px solid #26302c;border-radius:8px;background:#111615;padding:8px 10px;}
+.item.row-track{grid-template-columns:24px 32px 1fr auto auto auto;}
+.item .meta{min-width:0;}
+.item .meta strong{display:block;font-size:13px;font-weight:600;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.item .meta small{display:block;font-size:11px;color:var(--muted);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cover{display:grid;width:32px;height:32px;place-items:center;border-radius:6px;background:var(--panel-2);color:var(--mint);}
+
+/* LIVE STRIP */
+.live-strip{display:flex;align-items:center;gap:18px;min-height:68px;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:12px 16px;flex-wrap:wrap;}
+.live-strip .now{display:flex;align-items:center;gap:12px;flex:1;min-width:200px;}
+.now-img{display:grid;width:42px;height:42px;place-items:center;border-radius:7px;background:var(--panel-2);color:var(--mint);}
+.now strong{display:block;font-size:13.5px;font-weight:600;}
+.now small{display:block;font-size:11.5px;color:var(--muted);margin-top:2px;}
+.metric{display:flex;align-items:center;gap:10px;min-width:110px;}
+.metric svg{color:var(--amber);}
+.metric strong{display:block;font-size:13.5px;font-weight:700;}
+.metric small{display:block;font-size:10.5px;color:var(--muted);}
+
+/* MODAL */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:50;}
+.modal{width:520px;max-width:92vw;max-height:88vh;overflow:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:20px;}
+.modal h3{margin:0 0 12px;font-size:16px;font-weight:700;}
+.modal .actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;}
+.fields{display:grid;gap:10px;}
+.fields label{display:grid;gap:5px;color:var(--muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;}
+.fields input,.fields select,.fields textarea{text-transform:none;letter-spacing:0;font-weight:400;font-size:13px;}
+
+/* TIMELINE */
+.timeline{overflow-x:auto;direction:ltr;}
+[dir="rtl"] .lane-label{text-align:start;direction:rtl;}
+.time-row,.lane{display:grid;grid-template-columns:repeat(24,minmax(28px,1fr));min-width:720px;}
+.time-row span{border-bottom:1px solid #2a3430;color:#7f9189;padding-bottom:5px;font-size:10px;text-align:start;padding-inline-start:3px;}
+.lane{position:relative;min-height:80px;border-bottom:1px solid var(--line);background-image:linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:calc(100% / 24) 100%;padding:8px 0;}
+.lane-wrap{position:relative;padding-inline-start:64px;}
+.lane-label{position:absolute;inset-inline-start:0;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;width:56px;text-align:end;}
+.block{border-radius:6px;margin:0 2px;padding:6px 8px;text-align:start;color:#101312;font-size:11px;font-weight:600;line-height:1.2;cursor:pointer;}
+.block strong{display:block;font-size:11px;font-weight:700;}
+.block small{display:block;margin-top:2px;opacity:0.72;font-size:10px;}
+.color-mint{background:var(--mint-2);}.color-amber{background:var(--amber);}.color-blue{background:var(--blue);}.color-violet{background:var(--violet);}.color-rose{background:var(--rose);}
+
+.console{background:#0b0f0e;color:#71edbd;font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace;font-size:11px;padding:10px;border-radius:8px;border:1px solid var(--line);max-height:280px;overflow-y:auto;}
+.console .err{color:#f3a8b3;}
+
+/* === GLASSMORPHIC THEME OVERRIDES (data-theme="glow") === */
+body[data-theme="glow"]{
+  background:#070a13;
+  background-image:radial-gradient(at 10% 10%, rgba(139,92,246,0.15) 0px, transparent 50%), radial-gradient(at 90% 90%, rgba(6,182,212,0.15) 0px, transparent 50%);
+}
+body[data-theme="glow"] .pane,
+body[data-theme="glow"] .modal,
+body[data-theme="glow"] .ai-panel{
+  background:rgba(17,24,39,0.65);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-color:rgba(255,255,255,0.08);
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+body[data-theme="glow"] .live-strip{background:rgba(17,24,39,0.6);backdrop-filter:blur(10px);border-color:rgba(255,255,255,0.08);}
+body[data-theme="glow"] .sidebar{background:rgba(7,10,19,0.85);backdrop-filter:blur(10px);border-color:rgba(255,255,255,0.06);}
+body[data-theme="glow"] .btn.primary{background:linear-gradient(135deg,#06b6d4,#8b5cf6);border:none;color:#fff;box-shadow:0 4px 10px rgba(6,182,212,0.4);}
+body[data-theme="glow"] .ai-fab{background:linear-gradient(135deg,#06b6d4,#8b5cf6);color:#fff;box-shadow:0 6px 20px rgba(139,92,246,0.4);}
+body[data-theme="glow"] .pill.ok,
+body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.08);}
+
+/* === VINYL DISC VISUALIZER === */
+.vinyl-wrap{display:flex;align-items:center;gap:18px;}
+.vinyl{position:relative;width:96px;height:96px;border-radius:50%;background:#0a0a0a;border:5px solid #1a1a1a;box-shadow:0 0 16px rgba(0,0,0,0.6),inset 0 0 8px rgba(255,255,255,0.08);overflow:hidden;flex-shrink:0;}
+.vinyl::before{content:"";position:absolute;inset:0;background:repeating-radial-gradient(circle at center, rgba(255,255,255,0.04) 0 2px, transparent 2px 4px);border-radius:50%;z-index:1;pointer-events:none;}
+.vinyl::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:var(--bg);border:3px solid #0a0a0a;box-shadow:inset 0 0 4px rgba(0,0,0,0.6);z-index:3;}
+.vinyl-disc{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 30% 30%, var(--mint-2), var(--violet) 60%, #0a0a0a 90%);animation:spin 12s linear infinite;animation-play-state:paused;background-size:cover;background-position:center;}
+.vinyl.playing .vinyl-disc{animation-play-state:running;}
+
+/* === EMBEDDED PLAYER === */
+.player-row{display:flex;align-items:center;gap:10px;margin-top:14px;padding:10px;border:1px solid var(--line);border-radius:9px;background:rgba(255,255,255,0.02);}
+.player-row audio{flex:1;height:30px;min-width:0;}
+.player-row .volume{width:80px;}
+.player-toggle{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--mint);color:#0a1a14;cursor:pointer;border:0;}
+.player-toggle:hover{filter:brightness(1.06);}
+.player-toggle.playing{background:var(--rose);color:#fff;}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+.eq{display:inline-flex;align-items:flex-end;gap:3px;height:22px;}
+.eq .bar{width:3px;height:4px;background:var(--mint);border-radius:2px;}
+.eq.playing .bar{animation:eqBounce 1.2s infinite ease-in-out;}
+.eq.playing .bar:nth-child(2){animation-delay:0.15s;background:var(--blue);}
+.eq.playing .bar:nth-child(3){animation-delay:0.3s;}
+.eq.playing .bar:nth-child(4){animation-delay:0.45s;background:var(--violet);}
+.eq.playing .bar:nth-child(5){animation-delay:0.25s;}
+@keyframes eqBounce{0%,100%{height:4px}50%{height:20px}}
+
+/* === COPILOT === */
+.copilot{display:grid;grid-template-columns:240px 1fr;gap:14px;}
+@media(max-width:900px){.copilot{grid-template-columns:1fr;}}
+.copilot-score{background:rgba(255,255,255,0.02);border:1px solid var(--line);padding:14px;border-radius:10px;display:flex;flex-direction:column;justify-content:center;gap:8px;}
+.copilot-score .num{font-size:36px;font-weight:800;color:var(--mint);}
+.copilot-score.warn .num{color:var(--amber);}
+.copilot-score.danger .num{color:var(--rose);}
+.copilot-bar{background:rgba(255,255,255,0.06);height:5px;border-radius:3px;overflow:hidden;}
+.copilot-bar-fill{height:100%;background:linear-gradient(90deg,var(--mint),var(--blue));transition:width 0.4s;}
+.copilot-suggs{display:flex;flex-direction:column;gap:6px;max-height:240px;overflow-y:auto;}
+.copilot-sugg{display:flex;justify-content:space-between;align-items:center;gap:12px;background:rgba(255,255,255,0.03);border:1px solid var(--line);padding:8px 12px;border-radius:8px;}
+.copilot-sugg .badge{font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:5px;text-transform:uppercase;letter-spacing:0.04em;}
+.badge.danger{background:rgba(243,168,179,0.15);color:var(--rose);border:1px solid rgba(243,168,179,0.3);}
+.badge.warn{background:rgba(241,189,100,0.15);color:var(--amber);border:1px solid rgba(241,189,100,0.3);}
+.badge.info{background:rgba(124,199,242,0.15);color:var(--blue);border:1px solid rgba(124,199,242,0.3);}
+.badge.muted{background:rgba(143,161,154,0.12);color:var(--muted);border:1px solid var(--line-2);}
+.copilot-sugg .desc{font-size:12.5px;color:var(--ink);flex:1;min-width:0;}
+.copilot-empty{text-align:center;color:var(--mint);font-size:13px;padding:18px;background:rgba(113,237,189,0.05);border:1px solid rgba(113,237,189,0.2);border-radius:8px;}
+
+/* === STATION TEMPLATE PICKER === */
+.tpl-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.tpl-card{border:1px solid var(--line-2);border-radius:9px;background:#111615;padding:10px 12px;cursor:pointer;transition:border-color 0.15s;text-align:start;}
+.tpl-card:hover{border-color:var(--mint);}
+.tpl-card.selected{border-color:var(--mint);background:rgba(113,237,189,0.06);}
+.tpl-card strong{display:block;font-size:13px;font-weight:700;margin-bottom:4px;}
+.tpl-card small{display:block;font-size:11px;color:var(--muted);line-height:1.4;}
+
+/* === HORIZONTAL 24H DRAG-DROP TIMELINE === */
+.builder-toggle{display:inline-flex;border:1px solid var(--line-2);border-radius:8px;overflow:hidden;}
+.builder-toggle button{padding:6px 14px;background:transparent;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;border:0;}
+.builder-toggle button.active{background:var(--panel-2);color:var(--ink);}
+
+.tl24-wrap{width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:rgba(0,0,0,0.25);}
+.tl24{position:relative;height:160px;width:2400px;user-select:none;direction:ltr;}
+.tl24.dragover{background:rgba(113,237,189,0.04);}
+.tl24-hours{display:grid;grid-template-columns:repeat(24,1fr);height:30px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.tl24-hours span{font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);text-align:center;padding-top:8px;border-inline-start:1px solid rgba(255,255,255,0.04);}
+.tl24-blocks{position:relative;height:130px;padding:8px 0;background-image:linear-gradient(to right, rgba(255,255,255,0.025) 1px, transparent 1px);background-size:100px 100%;}
+.tl24-block{position:absolute;top:10px;height:calc(100% - 20px);border-radius:8px;padding:8px 12px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;gap:2px;font-size:11.5px;font-weight:600;overflow:hidden;transition:transform 0.15s, box-shadow 0.15s;border:1px solid rgba(255,255,255,0.08);min-width:48px;box-shadow:0 3px 10px rgba(0,0,0,0.3);}
+.tl24-block:hover{transform:translateY(-2px);}
+.tl24-block.type-ai-show{background:linear-gradient(135deg,rgba(124,199,242,0.18),rgba(187,163,255,0.12));border-color:rgba(124,199,242,0.3);color:var(--ink);}
+.tl24-block.type-music{background:linear-gradient(135deg,rgba(113,237,189,0.18),rgba(124,199,242,0.1));border-color:rgba(113,237,189,0.3);color:var(--ink);}
+.tl24-block.type-weather{background:linear-gradient(135deg,rgba(241,189,100,0.18),rgba(243,168,179,0.1));border-color:rgba(241,189,100,0.3);color:var(--ink);}
+.tl24-block.type-voice{background:linear-gradient(135deg,rgba(243,168,179,0.18),rgba(187,163,255,0.1));border-color:rgba(243,168,179,0.3);color:var(--ink);}
+.tl24-block .block-title{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tl24-block .block-time{font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace;font-size:10px;opacity:0.75;}
+.tl24-block .block-x{position:absolute;top:5px;inset-inline-end:5px;width:18px;height:18px;border-radius:50%;background:rgba(243,168,179,0.3);color:var(--rose);font-size:11px;display:none;align-items:center;justify-content:center;cursor:pointer;border:0;}
+.tl24-block:hover .block-x{display:flex;}
+.tl24-now{position:absolute;top:0;bottom:0;width:2px;background:var(--mint-2);box-shadow:0 0 8px var(--mint-2);z-index:5;pointer-events:none;}
+.tl24-now::before{content:"▼";position:absolute;top:-2px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--mint-2);}
+
+.src-drawers{display:grid;gap:8px;}
+.src-drawer{background:rgba(0,0,0,0.15);border:1px solid var(--line);border-radius:9px;overflow:hidden;}
+.src-drawer-head{padding:9px 12px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--line);cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+.src-drawer-head h4{font-size:12.5px;font-weight:700;margin:0;}
+.src-drawer-head .count{font-size:10px;padding:1px 7px;border-radius:99px;background:rgba(255,255,255,0.06);color:var(--muted);font-weight:600;}
+.src-drawer-body{max-height:200px;overflow-y:auto;padding:8px;display:grid;gap:5px;}
+.src-item{display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(255,255,255,0.03);border:1px solid var(--line-2);border-radius:6px;cursor:grab;font-size:11.5px;}
+.src-item:hover{background:rgba(255,255,255,0.06);}
+.src-item:active{cursor:grabbing;}
+
+/* AI ASSISTANT */
+.ai-fab{position:fixed;bottom:96px;inset-inline-end:18px;display:flex;align-items:center;gap:8px;padding:0 16px;height:46px;border-radius:23px;background:linear-gradient(135deg,#71edbd,#7cc7f2);color:#11231d;font-size:13px;font-weight:700;box-shadow:0 6px 20px rgba(113,237,189,0.35);cursor:pointer;border:0;z-index:55;}
+.ai-fab:hover{filter:brightness(1.06);}
+.ai-panel{position:fixed;top:0;inset-inline-end:0;bottom:0;width:380px;max-width:92vw;background:var(--panel);border-inline-start:1px solid var(--line);display:flex;flex-direction:column;z-index:55;box-shadow:-10px 0 30px rgba(0,0,0,0.4);}
+.ai-head{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line);}
+.ai-head .grow{flex:1;min-width:0;}
+.ai-head strong{font-size:13px;font-weight:700;display:block;}
+.ai-head small{font-size:11px;color:var(--muted);display:block;}
+.ai-quick{padding:8px 12px;border-bottom:1px solid var(--line);display:flex;gap:6px;flex-wrap:wrap;}
+.ai-quick button{padding:5px 9px;border:1px solid var(--line-2);border-radius:999px;background:#1b2320;color:var(--ink-2);font-size:11px;font-weight:600;cursor:pointer;}
+.ai-quick button:hover{background:var(--panel-2);color:var(--ink);border-color:var(--mint);}
+.ai-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
+.ai-msg{display:flex;flex-direction:column;max-width:88%;padding:9px 12px;border-radius:10px;font-size:13px;line-height:1.5;}
+.ai-msg.user{align-self:flex-end;background:var(--panel-2);color:var(--ink);border:1px solid var(--line-2);}
+.ai-msg.assistant{align-self:flex-start;background:rgba(113,237,189,0.08);color:var(--ink);border:1px solid rgba(113,237,189,0.3);}
+.ai-msg.tool{align-self:flex-start;background:#0e1413;color:var(--muted);border:1px solid var(--line);font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace;font-size:10.5px;white-space:pre-wrap;max-width:96%;}
+.ai-typing{align-self:flex-start;color:var(--muted);font-size:12px;font-style:italic;}
+.ai-input-row{display:flex;align-items:flex-end;gap:6px;padding:10px 12px;border-top:1px solid var(--line);}
+.ai-input-row textarea{flex:1;min-height:42px;max-height:140px;border:1px solid var(--line-2);border-radius:8px;background:#111615;padding:10px 12px;font-size:13px;resize:none;}
+.ai-input-row button{height:42px;}
+
+/* TOASTS */
+.toasts{position:fixed;bottom:18px;inset-inline-end:18px;display:flex;flex-direction:column;gap:8px;z-index:60;pointer-events:none;}
+.toast{pointer-events:auto;display:flex;align-items:center;gap:10px;min-width:240px;max-width:360px;border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:10px 14px;box-shadow:0 8px 24px rgba(0,0,0,0.4);}
+.toast.ok{border-color:var(--mint);}
+.toast.err{border-color:var(--rose);}
+.toast.warn{border-color:var(--amber);}
+.toast strong{font-size:12.5px;font-weight:700;display:block;}
+.toast small{font-size:11.5px;color:var(--muted);display:block;}
+
+[x-cloak]{display:none!important;}
+
+@media(max-width:1100px){
+  .shell{grid-template-columns:78px 1fr;}
+  [dir="rtl"] .shell{grid-template-columns:1fr 78px;}
+  .brand div,.station strong,.station small,.section-title,.nav button span{display:none;}
+  .sidebar{align-items:center;padding:16px 8px;}
+  .nav button{justify-content:center;width:42px;padding:0;}
+  .station{justify-content:center;padding:7px;}
+}
+@media(max-width:700px){
+  .shell{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"><i data-lucide="radio" style="width:18px;height:18px"></i></div>
+      <div>
+        <strong>Radio Control</strong>
+        <small x-text="baseUrl.replace(/^https?:\/\//,'')"></small>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-title" x-text="t('views')"></div>
+      <nav class="nav">
+        <template x-for="v in views" :key="v.id">
+          <button :class="tab===v.id && 'active'" @click="tab=v.id; tick()">
+            <i :data-lucide="v.icon" style="width:15px;height:15px;flex-shrink:0"></i>
+            <span x-text="t(v.id)"></span>
+          </button>
+        </template>
+      </nav>
+    </div>
+
+    <div>
+      <div class="section-title" x-text="t('stations')"></div>
+      <div class="station-list">
+        <template x-for="s in filteredStations" :key="s.id">
+          <button class="station" :class="active && active.id===s.id && 'active'" @click="setActive(s)">
+            <span class="dot" :class="isLive(s.id) && 'live'"></span>
+            <div style="min-width:0;flex:1">
+              <strong x-text="s.name"></strong>
+              <small x-text="s.short_name"></small>
+            </div>
+          </button>
+        </template>
+        <button class="station" @click="showCreateStation=true" style="border:1px dashed var(--line-2);justify-content:center;color:var(--mint);">
+          <i data-lucide="plus" style="width:14px;height:14px"></i>
+          <span x-text="t('add')"></span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- WORKSPACE -->
+  <main class="workspace">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="search">
+        <i data-lucide="search" style="width:14px;height:14px;color:var(--muted)"></i>
+        <input :placeholder="t('search_ph')" x-model="q"/>
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="pill" :class="configured && 'ok'">
+        <i :data-lucide="configured?'check-circle-2':'alert-circle'" style="width:14px;height:14px"></i>
+        <span x-text="configured ? t('connected') : t('offline')"></span>
+      </div>
+      <div class="pill warn" x-show="weatherData && weatherData.current && weatherData.current.temp_c" x-cloak>
+        <i data-lucide="cloud-sun" style="width:14px;height:14px"></i>
+        <span x-text="(weatherData?.current?.description_ar || '')+' · '+(weatherData?.current?.temp_c || '--')+'°'"></span>
+      </div>
+      <div class="lang-toggle">
+        <button :class="lang==='ar' && 'active'" @click="setLang('ar')">عربي</button>
+        <button :class="lang==='en' && 'active'" @click="setLang('en')">EN</button>
+      </div>
+      <button class="icon-btn" @click="toggleTheme()" :title="t('theme')"><i data-lucide="palette" style="width:14px;height:14px"></i></button>
+      <button class="icon-btn" @click="refresh()" :title="t('refresh')"><i data-lucide="refresh-cw" style="width:14px;height:14px"></i></button>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ╔═══ LIVE ═══╗ -->
+      <div x-show="tab==='live'" x-cloak>
+        <!-- AI COPILOT -->
+        <div class="pane" style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <h2 x-text="t('copilot_title')"></h2>
+            <button class="btn sm" @click="loadCopilot()"><i data-lucide="refresh-cw" style="width:12px;height:12px"></i></button>
+          </div>
+          <p class="sub" x-text="t('copilot_sub')"></p>
+          <div class="copilot">
+            <div class="copilot-score" :class="copilot.score>=70?'':copilot.score>=50?'warn':'danger'">
+              <div class="num" x-text="(copilot.score||0)+'%'"></div>
+              <div style="font-size:13px;font-weight:700" x-text="copilot.status_text || t('analyzing')"></div>
+              <div class="copilot-bar"><div class="copilot-bar-fill" :style="`width:${copilot.score||0}%`"></div></div>
+              <div style="font-size:11px;color:var(--muted)" x-text="copilot.totals ? `${copilot.totals.enabled} ${t('playlists')} · ${copilot.totals.files} ${t('files')} · ${copilot.totals.queue} ${t('queue')}` : ''"></div>
+            </div>
+            <div class="copilot-suggs">
+              <template x-for="s in (copilot.suggestions||[])" :key="s.id">
+                <div class="copilot-sugg">
+                  <div style="display:flex;align-items:center;gap:10px;min-width:0">
+                    <span class="badge" :class="s.badgeClass" x-text="s.badge"></span>
+                    <span class="desc" x-text="s.desc"></span>
+                  </div>
+                  <button class="btn sm primary" @click="applyCopilotSuggestion(s)"><i data-lucide="sparkles" style="width:11px;height:11px"></i> <span x-text="t('apply')"></span></button>
+                </div>
+              </template>
+              <div x-show="copilot.suggestions && copilot.suggestions.length===0" class="copilot-empty" x-text="t('copilot_empty')"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-bottom:14px">
+          <div class="pane" style="grid-column:span 2">
+            <h2 x-text="t('now_playing')"></h2>
+            <p class="sub" x-text="active && active.name"></p>
+            <div class="vinyl-wrap" style="margin-top:10px">
+              <div class="vinyl" :class="streamPlaying && 'playing'">
+                <div class="vinyl-disc" :style="currentArt ? `background-image:url('${currentArt}')` : ''"></div>
+              </div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:18px;font-weight:700" x-text="currentTrack || t('no_live')"></div>
+                <div style="color:var(--muted);font-size:13px;margin-top:3px" x-text="t('next')+': '+(nextTrack||'—')"></div>
+                <div class="eq" :class="streamPlaying && 'playing'" style="margin-top:8px">
+                  <template x-for="(lvl,i) in eqLevels" :key="i">
+                    <div class="bar" :style="`height:${Math.max(4,lvl)}px`"></div>
+                  </template>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <button class="btn" @click="skipSong()" :disabled="!currentTrack"><i data-lucide="skip-forward" style="width:14px;height:14px"></i><span x-text="t('skip')"></span></button>
+                <button class="btn primary" @click="buildQueue()"><i data-lucide="play" style="width:14px;height:14px"></i><span x-text="t('build_queue')"></span></button>
+                <button class="btn" @click="openIdent()"><i data-lucide="wand-2" style="width:14px;height:14px"></i><span x-text="t('ident_studio')"></span></button>
+              </div>
+            </div>
+            <div class="player-row">
+              <button class="player-toggle" :class="streamPlaying && 'playing'" @click="toggleStream()" :title="t('listen_live')">
+                <i :data-lucide="streamPlaying?'pause':'play'" style="width:16px;height:16px"></i>
+              </button>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:11px;color:var(--muted)" x-text="t('listen_live')+' · '+(activeListenUrl||'—')"></div>
+                <audio id="rc-audio" preload="none" crossorigin="anonymous" style="width:100%;margin-top:4px" controls></audio>
+              </div>
+              <input class="volume" type="range" min="0" max="100" x-model.number="streamVolume" @input="setStreamVolume()" :title="t('volume')"/>
+            </div>
+          </div>
+          <div class="pane">
+            <h2 x-text="t('listeners')"></h2>
+            <div style="font-size:36px;font-weight:800;color:var(--mint);margin-top:8px" x-text="totalListeners"></div>
+            <div style="color:var(--muted);font-size:12px" x-text="t('listeners_now')"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="pane">
+            <h2 x-text="t('queue')"></h2>
+            <p class="sub" x-text="t('queue_sub')"></p>
+            <div class="list">
+              <template x-for="(q,i) in queue.slice(0,8)" :key="(q.cued_at||'')+i">
+                <div class="item">
+                  <div class="cover"><i data-lucide="list-music" style="width:14px;height:14px"></i></div>
+                  <div class="meta"><strong x-text="(q.song && q.song.text) || '—'"></strong><small x-text="q.playlist || ''"></small></div>
+                  <span class="chip" x-text="i===0 ? t('next_up') : '#'+(i+1)"></span>
+                </div>
+              </template>
+              <div x-show="queue.length===0" style="color:var(--muted);font-size:12px;text-align:center;padding:16px" x-text="t('queue_empty')"></div>
+            </div>
+          </div>
+          <div class="pane">
+            <h2 x-text="t('history')"></h2>
+            <p class="sub" x-text="t('history_sub')"></p>
+            <div class="list">
+              <template x-for="(h,i) in filteredHistory.slice(0,8)" :key="(h.sh_id||i)">
+                <div class="item">
+                  <div class="cover"><i data-lucide="rotate-ccw" style="width:14px;height:14px"></i></div>
+                  <div class="meta"><strong x-text="(h.song && h.song.text) || '—'"></strong><small x-text="formatTime(h.played_at)"></small></div>
+                  <span class="chip" x-text="h.playlist || ''"></span>
+                </div>
+              </template>
+              <div x-show="history.length===0" style="color:var(--muted);font-size:12px;text-align:center;padding:16px" x-text="t('no_history')"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ╔═══ MEDIA ═══╗ -->
+      <div x-show="tab==='media'" x-cloak>
+        <div class="pane">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+            <div>
+              <h2 x-text="t('media_library')"></h2>
+              <p class="sub" x-text="t('media_sub')"></p>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="btn" @click="showBulkAssign=true" :disabled="!selected.length"><i data-lucide="layers" style="width:14px;height:14px"></i><span x-text="t('bulk_assign')+' ('+selected.length+')'"></span></button>
+              <label class="btn primary" style="cursor:pointer">
+                <input type="file" hidden multiple @change="uploadFiles($event)" accept="audio/*"/>
+                <i data-lucide="upload" style="width:14px;height:14px"></i>
+                <span x-text="t('upload')"></span>
+              </label>
+            </div>
+          </div>
+          <div class="filters">
+            <template x-for="r in regions" :key="r">
+              <button class="chip" :class="region===r && 'selected'" @click="region=(region===r?'':r)" x-text="t(r)"></button>
+            </template>
+          </div>
+          <div class="list">
+            <template x-for="(m,i) in filteredMedia" :key="m.id||i">
+              <div class="item row-track">
+                <input type="checkbox" :checked="selected.includes(m.id)" @change="toggleSelect(m.id)" style="width:14px;height:14px;border:1px solid var(--line-2);background:#111615;cursor:pointer"/>
+                <div class="cover"><i data-lucide="music-2" style="width:14px;height:14px"></i></div>
+                <div class="meta"><strong x-text="m.title"></strong><small x-text="(m.artist||'—')+' · '+(m.album||'—')"></small></div>
+                <span class="chip" x-text="(m.region||'global').toUpperCase()"></span>
+                <span x-show="m.playlists.length" class="chip mint" x-text="m.playlists.map(p=>p.name).join(', ')"></span>
+                <span style="color:var(--muted);font-size:11px" x-text="m.length_text || formatLen(m.length)"></span>
+              </div>
+            </template>
+            <div x-show="filteredMedia.length===0" style="color:var(--muted);font-size:12px;text-align:center;padding:24px" x-text="t('no_media')"></div>
+          </div>
+        </div>
+
+        <!-- EXTERNAL MUSIC LIBRARY (ACE-Step / Suno via Guide) -->
+        <div class="pane" style="margin-top:14px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">
+            <div><h2 x-text="t('music_library_ext')"></h2><p class="sub" x-text="t('music_library_ext_sub')"></p></div>
+            <button class="btn" @click="loadExternalSongs()"><i data-lucide="refresh-cw" style="width:12px;height:12px"></i><span x-text="t('refresh')"></span></button>
+          </div>
+          <div class="list" style="margin-top:8px">
+            <template x-for="(s,i) in externalSongs" :key="s.id || i">
+              <div class="item">
+                <div class="cover"><i data-lucide="music-2" style="width:14px;height:14px"></i></div>
+                <div class="meta">
+                  <strong x-text="s.title || s.name || '—'"></strong>
+                  <small x-text="(s.style || s.genre || '') + (s.created_at ? (' · ' + s.created_at) : '')"></small>
+                </div>
+                <span class="chip" x-text="(s.duration_sec ? Math.round(s.duration_sec)+'s' : '')"></span>
+                <button class="btn sm primary" @click="injectExternalSong(s)" :disabled="injectingId===s.id">
+                  <i data-lucide="upload" style="width:11px;height:11px"></i>
+                  <span x-text="injectingId===s.id ? t('saving') : t('inject_to_az')"></span>
+                </button>
+              </div>
+            </template>
+            <div x-show="externalSongs.length===0" style="color:var(--muted);font-size:12px;text-align:center;padding:18px" x-text="t('no_external_songs')"></div>
+          </div>
+        </div>
+
+        <!-- VOICEBOX QUICK TTS -->
+        <div class="pane" style="margin-top:14px">
+          <div><h2 x-text="t('voicebox_tts')"></h2><p class="sub" x-text="t('voicebox_tts_sub')"></p></div>
+          <div class="fields" style="margin-top:6px">
+            <label><span x-text="t('voice')"></span>
+              <select x-model="ttsVoice">
+                <option value="" x-text="t('default_voice')"></option>
+                <template x-for="v in voices" :key="v.id || v.name"><option :value="v.id || v.name" x-text="v.name || v.id"></option></template>
+              </select>
+            </label>
+            <label><span x-text="t('tts_text')"></span>
+              <textarea x-model="ttsText" rows="3" :placeholder="t('tts_placeholder')"></textarea>
+            </label>
+          </div>
+          <button class="btn primary" style="margin-top:8px" @click="speakAndInject()" :disabled="ttsBusy || !ttsText.trim()">
+            <i data-lucide="mic" style="width:14px;height:14px"></i>
+            <span x-text="ttsBusy ? t('saving') : t('generate_upload')"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ╔═══ PLAYLISTS ═══╗ -->
+      <div x-show="tab==='playlists'" x-cloak>
+        <div class="pane">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+            <div><h2 x-text="t('playlists')"></h2><p class="sub" x-text="t('playlists_sub')"></p></div>
+            <button class="btn primary" @click="showCreatePlaylist=true"><i data-lucide="plus" style="width:14px;height:14px"></i><span x-text="t('new_playlist')"></span></button>
+          </div>
+          <div class="list" style="margin-top:8px">
+            <template x-for="(p,i) in filteredPlaylists" :key="p.id||i">
+              <div class="item">
+                <div class="cover"><i data-lucide="list-music" style="width:14px;height:14px"></i></div>
+                <div class="meta">
+                  <strong x-text="p.name"></strong>
+                  <small><span x-text="t('type_'+(p.type||'default'))"></span> · <span x-text="t('weight')+': '+(p.weight||3)"></span> · <span x-text="(p.num_songs||0)+' '+t('songs')"></span></small>
+                </div>
+                <span class="chip" :class="p.is_enabled ? 'mint' : 'rose'" x-text="p.is_enabled ? t('enabled') : t('disabled')"></span>
+                <div style="display:flex;gap:4px">
+                  <button class="btn sm" @click="openFolderModal(p)" :title="t('folder_auto_assign')"><i data-lucide="folder" style="width:12px;height:12px"></i></button>
+                  <button class="btn sm" @click="togglePlaylist(p)"><i :data-lucide="p.is_enabled?'pause':'play'" style="width:12px;height:12px"></i></button>
+                  <button class="btn sm danger" @click="deletePlaylist(p)"><i data-lucide="trash-2" style="width:12px;height:12px"></i></button>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- ╔═══ SCHEDULE ═══╗ -->
+      <div x-show="tab==='schedule'" x-cloak>
+        <div class="pane">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+            <div><h2 x-text="t('weekly_schedule')"></h2><p class="sub" x-text="t('schedule_sub')"></p></div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <div class="builder-toggle">
+                <button :class="builderView==='week' && 'active'" @click="builderView='week'" x-text="t('view_week')"></button>
+                <button :class="builderView==='day' && 'active'" @click="builderView='day'; $nextTick(()=>scrollTimelineToNow())" x-text="t('view_day')"></button>
+              </div>
+              <button class="btn primary" @click="showAddSchedule=true"><i data-lucide="plus" style="width:14px;height:14px"></i><span x-text="t('add_schedule')"></span></button>
+            </div>
+          </div>
+
+          <!-- 24h DAY BUILDER -->
+          <div x-show="builderView==='day'" x-cloak style="margin-top:8px">
+            <div style="display:grid;grid-template-columns:240px 1fr;gap:12px">
+              <div class="src-drawers">
+                <div class="src-drawer">
+                  <div class="src-drawer-head"><h4>🎵 <span x-text="t('media')"></span></h4><span class="count" x-text="media.length"></span></div>
+                  <div class="src-drawer-body">
+                    <template x-for="m in media.slice(0,20)" :key="m.id">
+                      <div class="src-item" draggable="true" @dragstart="onDragStart($event,{type:'music',title:m.title,duration:Math.ceil((m.length||60)/60),data:m})">
+                        <i data-lucide="music-2" style="width:11px;height:11px;color:var(--mint)"></i>
+                        <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" x-text="m.title"></span>
+                        <span style="font-size:9px;color:var(--muted);background:rgba(255,255,255,0.04);padding:1px 4px;border-radius:3px">⋮⋮</span>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+                <div class="src-drawer">
+                  <div class="src-drawer-head"><h4>🎙️ <span x-text="t('playlists')"></span></h4><span class="count" x-text="playlists.filter(p=>p.is_enabled).length"></span></div>
+                  <div class="src-drawer-body">
+                    <template x-for="p in playlists.filter(p=>p.is_enabled)" :key="p.id">
+                      <div class="src-item" draggable="true" @dragstart="onDragStart($event,{type:'ai-show',key:'pl_'+p.id,title:p.name,duration:60,data:p})">
+                        <i data-lucide="list-music" style="width:11px;height:11px;color:var(--blue)"></i>
+                        <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" x-text="p.name"></span>
+                        <span style="font-size:9px;color:var(--muted);background:rgba(255,255,255,0.04);padding:1px 4px;border-radius:3px">⋮⋮</span>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+                <div class="src-drawer">
+                  <div class="src-drawer-head"><h4>🌤 <span x-text="t('weather')"></span> / 🗣️ <span x-text="t('voices')"></span></h4></div>
+                  <div class="src-drawer-body">
+                    <div class="src-item" draggable="true" @dragstart="onDragStart($event,{type:'weather',title:'🌤 '+t('weather_block'),duration:5})">
+                      <i data-lucide="cloud-sun" style="width:11px;height:11px;color:var(--amber)"></i>
+                      <span style="flex:1" x-text="'🌤 '+t('weather_block')"></span>
+                    </div>
+                    <template x-for="v in voices" :key="v.id">
+                      <div class="src-item" draggable="true" @dragstart="onDragStart($event,{type:'voice',title:v.name,duration:30,data:v})">
+                        <i data-lucide="mic" style="width:11px;height:11px;color:var(--rose)"></i>
+                        <span x-text="v.name"></span>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tl24-wrap" id="tl24-wrap">
+                <div class="tl24" :class="isDragging && 'dragover'"
+                     @dragover.prevent
+                     @dragenter.prevent="isDragging=true"
+                     @dragleave="isDragging=false"
+                     @drop.prevent="handleDayDrop($event)">
+                  <div class="tl24-hours">
+                    <template x-for="h in 24"><span x-text="pad(h-1)+':00'"></span></template>
+                  </div>
+                  <div class="tl24-blocks" id="tl24-blocks">
+                    <div class="tl24-now" :style="`left:${nowOffsetPercent()}%`"></div>
+                    <template x-for="b in dayBlocks" :key="b.id">
+                      <div class="tl24-block" :class="'type-'+b.type" :style="blockStyle(b)" @click.stop="selectDayBlock(b)">
+                        <div class="block-title" x-text="getBlockIcon(b.type)+' '+b.title"></div>
+                        <div class="block-time" x-text="formatBlockTime(b)"></div>
+                        <button class="block-x" @click.stop="removeDayBlock(b.id)">×</button>
+                      </div>
+                    </template>
+                    <div x-show="dayBlocks.length===0" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--muted);font-size:12px;text-align:center;pointer-events:none;opacity:0.7">
+                      <i data-lucide="move" style="width:20px;height:20px;margin-bottom:4px"></i>
+                      <div x-text="t('drag_drop_hint')"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p class="sub" style="margin-top:8px;font-size:10.5px" x-text="t('day_builder_note')"></p>
+          </div>
+
+          <!-- WEEK GRID (existing) -->
+          <div x-show="builderView==='week'" x-cloak>
+          <div class="timeline" style="margin-top:8px">
+            <div class="lane-wrap">
+              <div class="time-row">
+                <template x-for="h in 24"><span x-text="pad(h-1)"></span></template>
+              </div>
+            </div>
+            <template x-for="(d,di) in days" :key="d">
+              <div class="lane-wrap">
+                <span class="lane-label" x-text="t(d)"></span>
+                <div class="lane">
+                  <template x-for="b in blocksFor(di+1)" :key="b.id">
+                    <div class="block" :class="'color-'+b.color" :style="`grid-column:${(b.start/100|0)+1}/${Math.ceil(b.end/100)+1}`" @click="removeScheduleItem(b)">
+                      <strong x-text="b.name"></strong>
+                      <small x-text="formatHHMM(b.start)+' — '+formatHHMM(b.end)"></small>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </template>
+          </div>
+          <p class="sub" style="margin-top:10px;font-size:11px" x-text="t('schedule_click_hint')"></p>
+          </div><!-- /builderView=week -->
+        </div>
+      </div>
+
+      <!-- ╔═══ AUDIENCE ═══╗ -->
+      <div x-show="tab==='audience'" x-cloak>
+        <div class="row" style="margin-bottom:14px">
+          <div class="pane" style="grid-column:span 2">
+            <h2 x-text="t('listeners_chart')"></h2>
+            <p class="sub" x-text="t('listeners_chart_sub')"></p>
+            <canvas id="chart-listeners" style="margin-top:6px;max-height:240px"></canvas>
+          </div>
+          <div class="pane">
+            <h2 x-text="t('current_listeners')"></h2>
+            <div style="font-size:36px;font-weight:800;color:var(--mint);margin-top:8px" x-text="totalListeners"></div>
+            <div style="color:var(--muted);font-size:12px" x-text="t('total_listeners_now')"></div>
+            <div class="list" style="margin-top:10px">
+              <template x-for="(l,i) in currentListeners.slice(0,5)" :key="i">
+                <div class="item">
+                  <div class="cover"><i data-lucide="user" style="width:12px;height:12px"></i></div>
+                  <div class="meta"><strong x-text="(l.location && l.location.description) || l.ip || '—'"></strong><small x-text="(l.user_agent||'').substring(0,40)"></small></div>
+                </div>
+              </template>
+              <div x-show="currentListeners.length===0" style="color:var(--muted);font-size:12px;text-align:center;padding:12px" x-text="t('no_listeners')"></div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="pane">
+            <h2 x-text="t('top_songs')"></h2>
+            <div class="list">
+              <template x-for="(t,i) in topSongs.slice(0,10)" :key="i">
+                <div class="item">
+                  <div class="cover" x-text="i+1" style="font-size:11px;font-weight:700"></div>
+                  <div class="meta"><strong x-text="(t.song && t.song.text) || '—'"></strong><small x-text="t.playlist || ''"></small></div>
+                  <span class="chip mint" x-text="(t.plays||0)+'×'"></span>
+                </div>
+              </template>
+              <div x-show="topSongs.length===0" style="color:var(--muted);font-size:12px;text-align:center;padding:12px" x-text="t('no_data')"></div>
+            </div>
+          </div>
+          <div class="pane">
+            <h2 x-text="t('requests_inbox')"></h2>
+            <p class="sub" x-text="t('requests_sub')"></p>
+            <div class="list">
+              <template x-for="(r,i) in requestLog.slice(0,10)" :key="i">
+                <div class="item">
+                  <div class="cover"><i data-lucide="mail" style="width:12px;height:12px"></i></div>
+                  <div class="meta"><strong x-text="(r.track && r.track.text) || '—'"></strong><small x-text="formatTime(r.timestamp)"></small></div>
+                  <span class="chip" :class="r.played_at ? 'mint' : 'amber'" x-text="r.played_at ? t('played') : t('pending')"></span>
+                </div>
+              </template>
+              <div x-show="requestLog.length===0" style="color:var(--muted);font-size:12px;text-align:center;padding:12px" x-text="t('no_requests')"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ╔═══ BROADCAST ═══╗ -->
+      <div x-show="tab==='broadcast'" x-cloak>
+        <div class="row" style="margin-bottom:14px">
+          <div class="pane">
+            <div style="display:flex;justify-content:space-between;align-items:center"><h2 x-text="t('streamers')"></h2>
+            <button class="btn sm primary" @click="showCreateStreamer=true"><i data-lucide="plus" style="width:12px;height:12px"></i></button></div>
+            <p class="sub" x-text="t('streamers_sub')"></p>
+            <div class="list">
+              <template x-for="(s,i) in streamers" :key="s.id||i">
+                <div class="item">
+                  <div class="cover"><i data-lucide="mic" style="width:12px;height:12px"></i></div>
+                  <div class="meta"><strong x-text="s.display_name||s.streamer_username"></strong><small x-text="s.streamer_username"></small></div>
+                  <span class="chip" :class="s.is_active ? 'mint' : 'rose'" x-text="s.is_active ? t('active') : t('inactive')"></span>
+                  <button class="btn sm danger" @click="deleteStreamer(s.id)"><i data-lucide="trash-2" style="width:12px;height:12px"></i></button>
+                </div>
+              </template>
+              <div x-show="streamers.length===0" style="color:var(--muted);font-size:12px;text-align:center;padding:14px" x-text="t('no_streamers')"></div>
+            </div>
+          </div>
+          <div class="pane">
+            <div style="display:flex;justify-content:space-between;align-items:center"><h2 x-text="t('webhooks')"></h2>
+            <button class="btn sm primary" @click="showCreateWebhook=true"><i data-lucide="plus" style="width:12px;height:12px"></i></button></div>
+            <p class="sub" x-text="t('webhooks_sub')"></p>
+            <div class="list">
+              <template x-for="(w,i) in webhooks" :key="w.id||i">
+                <div class="item">
+                  <div class="cover"><i data-lucide="webhook" style="width:12px;height:12px"></i></div>
+                  <div class="meta"><strong x-text="w.name"></strong><small x-text="w.type"></small></div>
+                  <span class="chip" :class="w.is_enabled ? 'mint' : 'rose'" x-text="w.is_enabled ? t('enabled') : t('disabled')"></span>
+                  <button class="btn sm danger" @click="deleteWebhook(w.id)"><i data-lucide="trash-2" style="width:12px;height:12px"></i></button>
+                </div>
+              </template>
+              <div x-show="webhooks.length===0" style="color:var(--muted);font-size:12px;text-align:center;padding:14px" x-text="t('no_webhooks')"></div>
+            </div>
+          </div>
+        </div>
+        <div class="pane">
+          <div style="display:flex;justify-content:space-between;align-items:center"><h2 x-text="t('mounts')"></h2>
+          <button class="btn sm primary" @click="showCreateMount=true"><i data-lucide="plus" style="width:12px;height:12px"></i></button></div>
+          <p class="sub" x-text="t('mounts_sub')"></p>
+          <div class="list">
+            <template x-for="(m,i) in mounts" :key="m.id||i">
+              <div class="item">
+                <div class="cover"><i data-lucide="signal" style="width:12px;height:12px"></i></div>
+                <div class="meta"><strong x-text="m.display_name||m.name"></strong><small x-text="(m.autodj_format||'mp3').toUpperCase()+' · '+(m.autodj_bitrate||128)+'kbps'"></small></div>
+                <a class="chip" :href="m.links && m.links.listen" target="_blank" x-text="t('listen')"></a>
+                <button class="btn sm danger" @click="deleteMount(m.id)" x-show="!m.is_default"><i data-lucide="trash-2" style="width:12px;height:12px"></i></button>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- ╔═══ TELEGRAM ═══╗ -->
+      <div x-show="tab==='telegram'" x-cloak>
+        <div class="pane" style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h2><i data-lucide="send" style="width:15px;height:15px"></i> <span x-text="t('telegram')"></span></h2>
+            <span class="chip" :class="tg.status.configured ? 'mint' : 'rose'" x-text="tg.status.configured ? t('tg_on') : t('tg_off')"></span>
+          </div>
+          <p class="sub" x-text="t('tg_sub')"></p>
+          <div x-show="!tg.status.configured" style="color:var(--muted);font-size:12px" x-text="t('tg_not_configured')"></div>
+          <div x-show="tg.status.configured" style="font-size:12px;color:var(--muted)">
+            <span x-text="t('tg_enabled_rules')"></span>: <strong x-text="tg.status.enabled_rules"></strong> / <span x-text="tg.status.rules"></span>
+          </div>
+        </div>
+
+        <div class="row" style="margin-bottom:14px">
+          <div class="pane">
+            <h2 x-text="t('tg_send')"></h2>
+            <p class="sub" x-text="t('tg_send_sub')"></p>
+            <textarea x-model="tg.sendText" rows="4" :placeholder="t('tg_text_ph')" style="width:100%"></textarea>
+            <div style="margin-top:10px">
+              <button class="btn primary" @click="tgSend()" :disabled="tg.sending||!tg.sendText.trim()">
+                <i data-lucide="send" style="width:14px;height:14px"></i>
+                <span x-text="tg.sending ? t('saving') : t('tg_send_btn')"></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="pane">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <h2 x-text="t('tg_rules')"></h2>
+              <button class="btn sm" @click="loadTelegram()"><i data-lucide="refresh-cw" style="width:12px;height:12px"></i></button>
+            </div>
+            <p class="sub" x-text="t('tg_rules_sub')"></p>
+            <div class="list">
+              <template x-for="(r,i) in tg.rules" :key="r.id||i">
+                <div class="item">
+                  <div class="cover"><i :data-lucide="r.trigger==='show_start' ? 'clock' : 'hand'" style="width:12px;height:12px"></i></div>
+                  <div class="meta"><strong x-text="r.id"></strong><small x-text="(r.station||'')+' / '+(r.show||'')+' · '+(r.trigger||'')"></small></div>
+                  <span class="chip" :class="r.enabled ? 'mint' : 'rose'" x-text="r.enabled ? t('enabled') : t('disabled')"></span>
+                  <button class="btn sm primary" @click="tgFire(r.id)"><i data-lucide="play" style="width:12px;height:12px"></i> <span x-text="t('tg_fire')"></span></button>
+                </div>
+              </template>
+              <div x-show="tg.rules.length===0" style="color:var(--muted);font-size:12px;text-align:center;padding:14px" x-text="t('tg_no_rules')"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pane">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h2 x-text="t('tg_editor')"></h2>
+            <button class="btn sm primary" @click="tgSaveRules()" :disabled="tg.saving">
+              <i data-lucide="save" style="width:12px;height:12px"></i> <span x-text="tg.saving ? t('saving') : t('tg_save')"></span>
+            </button>
+          </div>
+          <p class="sub" x-text="t('tg_editor_sub')"></p>
+          <textarea x-model="tg.raw" rows="14" spellcheck="false" dir="ltr" style="width:100%;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12px;line-height:1.5"></textarea>
+        </div>
+      </div>
+
+      <!-- ╔═══ SETUP ═══╗ -->
+      <div x-show="tab==='setup'" x-cloak>
+        <div class="row" style="margin-bottom:14px">
+          <div class="pane">
+            <h2 x-text="t('branding')"></h2>
+            <p class="sub" x-text="t('branding_sub')"></p>
+            <div class="fields">
+              <label><span x-text="t('offline_text')"></span><input x-model="branding.offline_text" :placeholder="t('offline_default')"/></label>
+              <label><span x-text="t('public_css')"></span><textarea x-model="branding.public_custom_css" rows="4" placeholder="body { background: #000; }"></textarea></label>
+            </div>
+            <button class="btn primary" style="margin-top:10px;width:100%" @click="saveBranding()"><i data-lucide="save" style="width:14px;height:14px"></i><span x-text="t('save')"></span></button>
+          </div>
+          <div class="pane">
+            <div style="display:flex;justify-content:space-between;align-items:center"><h2 x-text="t('station_settings')"></h2>
+            <button class="btn sm" @click="openSettings()"><i data-lucide="settings" style="width:12px;height:12px"></i><span x-text="t('edit')"></span></button></div>
+            <p class="sub" x-text="t('station_settings_sub')"></p>
+            <div class="list" x-show="active">
+              <div class="item"><div class="meta"><small x-text="t('name')"></small></div><strong x-text="active && active.name"></strong></div>
+              <div class="item"><div class="meta"><small x-text="t('listeners_cap')"></small></div><strong x-text="(active && active.max_listeners) || t('unlimited')"></strong></div>
+              <div class="item"><div class="meta"><small x-text="t('timezone')"></small></div><strong x-text="active && active.timezone || 'UTC'"></strong></div>
+              <div class="item"><div class="meta"><small x-text="t('enable_streamers')"></small></div><span class="chip" :class="active && active.enable_streamers ? 'mint':'rose'" x-text="active && active.enable_streamers ? t('on'):t('off')"></span></div>
+              <div class="item"><div class="meta"><small x-text="t('enable_requests')"></small></div><span class="chip" :class="active && active.enable_requests ? 'mint':'rose'" x-text="active && active.enable_requests ? t('on'):t('off')"></span></div>
+            </div>
+            <button class="btn danger" style="margin-top:10px;width:100%" @click="deleteStation()"><i data-lucide="trash-2" style="width:14px;height:14px"></i><span x-text="t('delete_station')"></span></button>
+          </div>
+        </div>
+        <div class="row" style="margin-top:14px">
+          <div class="pane">
+            <h2 x-text="t('public_player')"></h2>
+            <p class="sub" x-text="t('public_player_sub')"></p>
+            <div class="list">
+              <template x-for="s in stations" :key="s.id">
+                <div class="item">
+                  <div class="cover"><i data-lucide="link" style="width:12px;height:12px"></i></div>
+                  <div class="meta"><strong x-text="s.name"></strong><small x-text="`/p/${s.short_name}`"></small></div>
+                  <a class="chip" :href="`/p/${s.short_name}`" target="_blank" x-text="t('open')"></a>
+                  <a class="chip mint" :href="`${baseUrl}/public/${s.short_name}`" target="_blank">AzuraCast</a>
+                </div>
+              </template>
+            </div>
+          </div>
+          <div class="pane">
+            <h2 x-text="t('recordings')"></h2>
+            <p class="sub" x-text="t('recordings_sub')"></p>
+            <div class="list">
+              <template x-for="(r,i) in recordings.slice(0,6)" :key="i">
+                <div class="item">
+                  <div class="cover"><i data-lucide="circle-dot" style="width:12px;height:12px"></i></div>
+                  <div class="meta"><strong x-text="r.basename || r.path || '—'"></strong><small x-text="r.timestamp ? formatTime(r.timestamp) : ''"></small></div>
+                  <a x-show="r.links && r.links.download" class="chip mint" :href="r.links.download" target="_blank" x-text="t('download')"></a>
+                </div>
+              </template>
+              <div x-show="recordings.length===0" style="color:var(--muted);font-size:12px;text-align:center;padding:14px" x-text="t('no_recordings')"></div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="pane">
+            <div style="display:flex;justify-content:space-between;align-items:center"><h2 x-text="t('podcasts')"></h2>
+            <button class="btn sm primary" @click="showCreatePodcast=true"><i data-lucide="plus" style="width:12px;height:12px"></i></button></div>
+            <p class="sub" x-text="t('podcasts_sub')"></p>
+            <div class="list">
+              <template x-for="(p,i) in podcasts" :key="p.id||i">
+                <div class="item">
+                  <div class="cover"><i data-lucide="podcast" style="width:12px;height:12px"></i></div>
+                  <div class="meta"><strong x-text="p.title"></strong><small x-text="(p.language||'ar').toUpperCase()+' · '+(p.author||'')"></small></div>
+                  <span class="chip" x-text="(p.episodes||[]).length+' '+t('episodes')"></span>
+                </div>
+              </template>
+              <div x-show="podcasts.length===0" style="color:var(--muted);font-size:12px;text-align:center;padding:14px" x-text="t('no_podcasts')"></div>
+            </div>
+          </div>
+          <div class="pane">
+            <div style="display:flex;justify-content:space-between;align-items:center"><h2 x-text="t('backups')"></h2>
+            <button class="btn sm primary" @click="runBackup()"><i data-lucide="download" style="width:12px;height:12px"></i></button></div>
+            <p class="sub" x-text="t('backups_sub')"></p>
+            <div class="list">
+              <template x-for="(b,i) in backups.slice(0,5)" :key="i">
+                <div class="item">
+                  <div class="cover"><i data-lucide="archive" style="width:12px;height:12px"></i></div>
+                  <div class="meta"><strong x-text="b.basename||b.path||'—'"></strong><small x-text="b.size||''"></small></div>
+                  <span class="chip" x-text="b.timestamp ? formatTime(b.timestamp) : ''"></span>
+                </div>
+              </template>
+              <div x-show="backups.length===0" style="color:var(--muted);font-size:12px;text-align:center;padding:14px" x-text="t('no_backups')"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ╔═══ DEV ═══╗ -->
+      <div x-show="tab==='dev'" x-cloak>
+        <div class="pane">
+          <h2>Developer Console</h2>
+          <div class="console">
+            <template x-for="(l,i) in logs.slice(-200)" :key="i">
+              <div :class="l.includes('✗') && 'err'" x-text="l"></div>
+            </template>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:10px">
+            <button class="btn" @click="logs=[]">Clear</button>
+            <button class="btn primary" @click="refresh()">Force refresh</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- LIVE STRIP -->
+    <div class="live-strip">
+      <div class="now">
+        <div class="now-img"><i data-lucide="radio" style="width:18px;height:18px"></i></div>
+        <div style="flex:1;min-width:0">
+          <strong x-text="currentTrack || t('no_live')"></strong>
+          <small x-text="currentStation || ''"></small>
+        </div>
+      </div>
+      <div class="metric"><i data-lucide="users" style="width:14px;height:14px"></i><div><strong x-text="totalListeners"></strong><small x-text="t('listeners')"></small></div></div>
+      <div class="metric"><i data-lucide="activity" style="width:14px;height:14px"></i><div><strong x-text="`${stations.filter(s=>s.is_enabled).length}/${stations.length}`"></strong><small x-text="t('on_air')"></small></div></div>
+      <button class="btn" @click="buildQueue()" :title="t('build_queue')"><i data-lucide="play" style="width:14px;height:14px"></i><span x-text="t('build_queue')"></span></button>
+      <button class="btn" @click="tab='dev'"><i data-lucide="terminal" style="width:14px;height:14px"></i> DEV</button>
+    </div>
+  </main>
+</div>
+
+<!-- ═══ MODALS ═══ -->
+<div x-show="showCreateStation" x-cloak class="scrim" @click.self="showCreateStation=false">
+  <div class="modal" style="width:600px">
+    <h3 x-text="t('new_station')"></h3>
+    <div class="fields">
+      <label><span x-text="t('start_from_template')"></span></label>
+      <div class="tpl-grid">
+        <button class="tpl-card" :class="newStation.template==='' && 'selected'" @click="newStation.template=''" type="button">
+          <strong x-text="t('tpl_blank')"></strong>
+          <small x-text="t('tpl_blank_desc')"></small>
+        </button>
+        <template x-for="tpl in templates" :key="tpl.key">
+          <button class="tpl-card" :class="newStation.template===tpl.key && 'selected'" @click="newStation.template=tpl.key; if(!newStation.name) newStation.name=tpl.name" type="button">
+            <strong x-text="tpl.name"></strong>
+            <small x-text="tpl.description"></small>
+          </button>
+        </template>
+      </div>
+      <label><span x-text="t('name')"></span><input x-model="newStation.name" placeholder="Studio Two"/></label>
+      <label><span x-text="t('short_name')"></span><input x-model="newStation.short_name" placeholder="studio_two"/></label>
+      <label><span x-text="t('description')"></span><textarea x-model="newStation.description" rows="2"></textarea></label>
+    </div>
+    <div class="actions"><button class="btn" @click="showCreateStation=false" x-text="t('cancel')"></button><button class="btn primary" @click="createStation()" x-text="t('create')"></button></div>
+  </div>
+</div>
+
+<div x-show="showCreatePlaylist" x-cloak class="scrim" @click.self="showCreatePlaylist=false">
+  <div class="modal">
+    <h3 x-text="t('new_playlist')"></h3>
+    <div class="fields">
+      <label><span x-text="t('name')"></span><input x-model="newPlaylist.name"/></label>
+      <label><span x-text="t('type')"></span>
+        <select x-model="newPlaylist.type">
+          <option value="default" x-text="t('type_default')"></option>
+          <option value="once_per_hour" x-text="t('type_once_per_hour')"></option>
+          <option value="once_per_x_songs" x-text="t('type_once_per_songs')"></option>
+          <option value="once_per_x_minutes" x-text="t('type_once_per_minutes')"></option>
+        </select>
+      </label>
+      <label><span x-text="t('weight')"></span><input type="number" x-model.number="newPlaylist.weight" min="1" max="25"/></label>
+    </div>
+    <div class="actions"><button class="btn" @click="showCreatePlaylist=false" x-text="t('cancel')"></button><button class="btn primary" @click="createPlaylist()" x-text="t('create')"></button></div>
+  </div>
+</div>
+
+<div x-show="showBulkAssign" x-cloak class="scrim" @click.self="showBulkAssign=false">
+  <div class="modal">
+    <h3 x-text="t('bulk_assign')+' ('+selected.length+')'"></h3>
+    <p class="sub" x-text="t('bulk_assign_sub')"></p>
+    <div class="fields">
+      <template x-for="p in playlists" :key="p.id">
+        <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:13px;font-weight:500;cursor:pointer">
+          <input type="checkbox" :value="p.id" @change="toggleBulkPl(p.id)" :checked="bulkPlIds.includes(p.id)" style="width:14px;height:14px"/>
+          <span x-text="p.name"></span>
+        </label>
+      </template>
+    </div>
+    <div class="actions"><button class="btn" @click="showBulkAssign=false" x-text="t('cancel')"></button><button class="btn primary" @click="bulkAssign()" x-text="t('assign')"></button></div>
+  </div>
+</div>
+
+<div x-show="showAddSchedule" x-cloak class="scrim" @click.self="showAddSchedule=false">
+  <div class="modal">
+    <h3 x-text="t('add_schedule')"></h3>
+    <div class="fields">
+      <label><span x-text="t('playlist')"></span>
+        <select x-model.number="newSchedule.playlist_id">
+          <template x-for="p in playlists.filter(p=>p.is_enabled)" :key="p.id"><option :value="p.id" x-text="p.name"></option></template>
+        </select>
+      </label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <label><span x-text="t('start_time')"></span><input type="time" x-model="newSchedule.start_str"/></label>
+        <label><span x-text="t('end_time')"></span><input type="time" x-model="newSchedule.end_str"/></label>
+      </div>
+      <label><span x-text="t('days')"></span>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">
+          <template x-for="(d,i) in days" :key="d">
+            <button class="chip" :class="newSchedule.days.includes(i+1) && 'selected'" @click="toggleScheduleDay(i+1)" type="button" x-text="t(d)"></button>
+          </template>
+        </div>
+      </label>
+    </div>
+    <div class="actions"><button class="btn" @click="showAddSchedule=false" x-text="t('cancel')"></button><button class="btn primary" @click="addSchedule()" x-text="t('save')"></button></div>
+  </div>
+</div>
+
+<div x-show="showCreateStreamer" x-cloak class="scrim" @click.self="showCreateStreamer=false">
+  <div class="modal">
+    <h3 x-text="t('new_streamer')"></h3>
+    <div class="fields">
+      <label><span x-text="t('display_name')"></span><input x-model="newStreamer.display_name" placeholder="DJ Cairo"/></label>
+      <label><span x-text="t('username')"></span><input x-model="newStreamer.streamer_username" placeholder="dj_cairo"/></label>
+      <label><span x-text="t('password')"></span><input type="password" x-model="newStreamer.streamer_password"/></label>
+      <label><span x-text="t('comments')"></span><textarea x-model="newStreamer.comments" rows="2"></textarea></label>
+    </div>
+    <div class="actions"><button class="btn" @click="showCreateStreamer=false" x-text="t('cancel')"></button><button class="btn primary" @click="createStreamer()" x-text="t('create')"></button></div>
+  </div>
+</div>
+
+<div x-show="showCreateWebhook" x-cloak class="scrim" @click.self="showCreateWebhook=false">
+  <div class="modal">
+    <h3 x-text="t('new_webhook')"></h3>
+    <div class="fields">
+      <label><span x-text="t('name')"></span><input x-model="newWebhook.name" placeholder="Discord channel"/></label>
+      <label><span x-text="t('type')"></span>
+        <select x-model="newWebhook.type">
+          <option value="discord">Discord</option>
+          <option value="slack">Slack</option>
+          <option value="generic">Generic POST</option>
+          <option value="tweet">Twitter / X</option>
+          <option value="mastodon">Mastodon</option>
+          <option value="telegram">Telegram</option>
+        </select>
+      </label>
+      <label><span x-text="t('webhook_url')"></span><input x-model="newWebhook.url" placeholder="https://discord.com/api/webhooks/..."/></label>
+    </div>
+    <div class="actions"><button class="btn" @click="showCreateWebhook=false" x-text="t('cancel')"></button><button class="btn primary" @click="createWebhook()" x-text="t('create')"></button></div>
+  </div>
+</div>
+
+<div x-show="showCreateMount" x-cloak class="scrim" @click.self="showCreateMount=false">
+  <div class="modal">
+    <h3 x-text="t('new_mount')"></h3>
+    <div class="fields">
+      <label><span x-text="t('mount_path')"></span><input x-model="newMount.name" placeholder="/hifi.mp3"/></label>
+      <label><span x-text="t('format')"></span>
+        <select x-model="newMount.autodj_format"><option>mp3</option><option>aac</option><option>ogg</option></select>
+      </label>
+      <label><span x-text="t('bitrate')"></span>
+        <select x-model.number="newMount.autodj_bitrate"><option>64</option><option>128</option><option>192</option><option>256</option><option>320</option></select>
+      </label>
+    </div>
+    <div class="actions"><button class="btn" @click="showCreateMount=false" x-text="t('cancel')"></button><button class="btn primary" @click="createMount()" x-text="t('create')"></button></div>
+  </div>
+</div>
+
+<!-- AI ASSISTANT FAB + PANEL -->
+<button class="ai-fab" x-show="!showAI" x-cloak @click="openAI()">
+  <i data-lucide="sparkles" style="width:16px;height:16px"></i>
+  <span x-text="t('ai_assistant')"></span>
+</button>
+
+<aside class="ai-panel" x-show="showAI" x-cloak>
+  <div class="ai-head">
+    <div style="display:grid;width:34px;height:34px;place-items:center;border-radius:9px;background:linear-gradient(135deg,#71edbd,#7cc7f2);color:#11231d"><i data-lucide="sparkles" style="width:16px;height:16px"></i></div>
+    <div class="grow">
+      <strong x-text="t('ai_assistant')"></strong>
+      <small x-text="t('ai_sub')"></small>
+    </div>
+    <button class="icon-btn" @click="showAI=false" :title="t('close')"><i data-lucide="x" style="width:14px;height:14px"></i></button>
+  </div>
+
+  <div class="ai-quick">
+    <template x-for="q in aiQuickActions" :key="q.id">
+      <button @click="sendAI(t(q.id))" x-text="t(q.id)"></button>
+    </template>
+  </div>
+
+  <div class="ai-msgs" id="ai-msgs">
+    <template x-for="(m,i) in aiMessages" :key="i">
+      <div class="ai-msg" :class="m.role" x-text="m.content || (m.tool_calls ? '⚡ '+t('using_tools'):'')"></div>
+    </template>
+    <div x-show="aiBusy" x-cloak class="ai-typing" x-text="t('ai_thinking')"></div>
+    <div x-show="!aiMessages.length && !aiBusy" x-cloak style="color:var(--muted);font-size:12px;text-align:center;padding:20px 0" x-text="t('ai_empty')"></div>
+  </div>
+
+  <div class="ai-input-row">
+    <textarea x-model="aiInput" @keydown.enter.prevent="$event.shiftKey ? (aiInput+='\n') : sendAI()" :placeholder="t('ai_placeholder')"></textarea>
+    <button class="btn primary" @click="sendAI()" :disabled="aiBusy || !aiInput.trim()"><i data-lucide="send" style="width:14px;height:14px"></i></button>
+  </div>
+</aside>
+
+<!-- IDENT STUDIO MODAL -->
+<div x-show="showIdent" x-cloak class="scrim" @click.self="closeIdent()">
+  <div class="modal" style="width:560px">
+    <h3 x-text="t('ident_studio')"></h3>
+    <p class="sub" x-text="t('ident_sub')"></p>
+    <div class="fields">
+      <label><span x-text="t('ident_name')"></span><input x-model="identName" :placeholder="(active && active.name) + ' ident'"/></label>
+      <label><span x-text="t('ident_preset')"></span></label>
+      <div class="tpl-grid">
+        <template x-for="k in identPresetKeys" :key="k">
+          <button type="button" class="tpl-card" :class="identPreset===k && 'selected'" @click="identPreset=k">
+            <strong x-text="identLabel(k)"></strong>
+            <small style="font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace" x-text="k"></small>
+          </button>
+        </template>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn" @click="closeIdent()" x-text="t('cancel')"></button>
+      <button class="btn" @click="previewIdent()"><i data-lucide="play" style="width:14px;height:14px"></i><span x-text="t('preview')"></span></button>
+      <button class="btn primary" @click="saveIdent()" :disabled="identSaving"><i data-lucide="upload" style="width:14px;height:14px"></i><span x-text="identSaving ? t('saving') : t('save_to_media')"></span></button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toasts">
+  <template x-for="t in toasts" :key="t.id">
+    <div class="toast" :class="t.kind">
+      <i :data-lucide="t.kind==='ok'?'check-circle-2':(t.kind==='err'?'alert-circle':'info')" style="width:16px;height:16px;color:var(--mint);flex-shrink:0"></i>
+      <div style="flex:1;min-width:0"><strong x-text="t.title"></strong><small x-show="t.body" x-text="t.body"></small></div>
+    </div>
+  </template>
+</div>
+
+<!-- STATION SETTINGS MODAL -->
+<div x-show="showSettings" x-cloak class="scrim" @click.self="showSettings=false">
+  <div class="modal" style="width:560px">
+    <h3 x-text="t('station_settings')"></h3>
+    <div class="fields">
+      <label><span x-text="t('name')"></span><input x-model="settings.name"/></label>
+      <label><span x-text="t('description')"></span><textarea x-model="settings.description" rows="2"></textarea></label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <label><span x-text="t('listeners_cap')"></span><input type="number" x-model.number="settings.max_listeners" min="0"/></label>
+        <label><span x-text="t('timezone')"></span><input x-model="settings.timezone" placeholder="UTC"/></label>
+      </div>
+      <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:13px;font-weight:500"><input type="checkbox" x-model="settings.enable_streamers"/><span x-text="t('enable_streamers')"></span></label>
+      <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:13px;font-weight:500"><input type="checkbox" x-model="settings.enable_requests"/><span x-text="t('enable_requests')"></span></label>
+      <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:13px;font-weight:500"><input type="checkbox" x-model="settings.enable_public_page"/><span x-text="t('enable_public_page')"></span></label>
+      <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:13px;font-weight:500"><input type="checkbox" x-model="settings.enable_on_demand"/><span x-text="t('enable_on_demand')"></span></label>
+    </div>
+    <div class="actions"><button class="btn" @click="showSettings=false" x-text="t('cancel')"></button><button class="btn primary" @click="saveSettings()" x-text="t('save')"></button></div>
+  </div>
+</div>
+
+<!-- ASSIGN FOLDER → PLAYLIST MODAL -->
+<div x-show="showFolderModal" x-cloak class="scrim" @click.self="showFolderModal=false">
+  <div class="modal">
+    <h3 x-text="t('assign_folder')+' → '+(folderPlaylist && folderPlaylist.name || '')"></h3>
+    <p class="sub" x-text="t('assign_folder_sub')"></p>
+    <div class="fields">
+      <label><span x-text="t('choose_folder')"></span>
+        <select x-model="newFolderPath">
+          <option value="" x-text="t('choose_folder')"></option>
+          <template x-for="dir in folderRules" :key="dir"><option :value="dir" x-text="dir"></option></template>
+        </select>
+      </label>
+      <div x-show="folderRules.length===0" style="color:var(--muted);font-size:12px;text-align:center;padding:10px" x-text="t('no_folders')"></div>
+    </div>
+    <div class="actions">
+      <button class="btn" @click="showFolderModal=false" x-text="t('close')"></button>
+      <button class="btn primary" @click="assignFolder()" :disabled="!newFolderPath" x-text="t('assign')"></button>
+    </div>
+  </div>
+</div>
+
+<div x-show="showCreatePodcast" x-cloak class="scrim" @click.self="showCreatePodcast=false">
+  <div class="modal">
+    <h3 x-text="t('new_podcast')"></h3>
+    <div class="fields">
+      <label><span x-text="t('title')"></span><input x-model="newPodcast.title"/></label>
+      <label><span x-text="t('description')"></span><textarea x-model="newPodcast.description" rows="3"></textarea></label>
+      <label><span x-text="t('author')"></span><input x-model="newPodcast.author"/></label>
+      <label><span x-text="t('language')"></span>
+        <select x-model="newPodcast.language"><option value="ar">العربية</option><option value="en">English</option></select>
+      </label>
+    </div>
+    <div class="actions"><button class="btn" @click="showCreatePodcast=false" x-text="t('cancel')"></button><button class="btn primary" @click="createPodcast()" x-text="t('create')"></button></div>
+  </div>
+</div>
+
+<script>
+function rc(){
+const DEFAULT_LANG = {{ default_lang|tojson }};
+return {
+  baseUrl: {{ base_url|tojson }},
+  configured: {{ 'true' if configured else 'false' }},
+  lang: DEFAULT_LANG, dir: DEFAULT_LANG==='ar' ? 'rtl' : 'ltr',
+  q:'', tab:'live', region:'',
+  stations:[], active:null, playlists:[], media:[], nowPlayingList:[],
+  queue:[], history:[], streamers:[], webhooks:[], mounts:[], podcasts:[], backups:[],
+  topSongs:[], requestLog:[], currentListeners:[], scheduleData:[], listenerChart:null,
+  recordings:[], toasts:[], _toastId:0,
+  templates:[], voices:[],
+  copilot:{score:null, status_text:'', suggestions:[], totals:null},
+  builderView:'week', dayBlocks:[], isDragging:false, selectedDayBlockId:null,
+  theme: localStorage.getItem('rc_theme') || 'flat',
+  showAI:false, aiMessages:[], aiInput:'', aiBusy:false,
+  showIdent:false, identPreset:'studio', identName:'', identSaving:false, identPresetKeys:[],
+  streamPlaying:false, streamVolume:80, eqLevels:[6,6,6,6,6], _audioCtx:null, _analyser:null, _eqRAF:null,
+  externalSongs:[], injectingId:null,
+  ttsText:'', ttsVoice:'', ttsBusy:false,
+  weatherData:null,
+  tg:{status:{configured:false,default_chat:false,rules:0,enabled_rules:0},rules:[],raw:'',sendText:'',sending:false,saving:false},
+  aiQuickActions:[
+    {id:'ai_q_status'},
+    {id:'ai_q_top'},
+    {id:'ai_q_schedule'},
+    {id:'ai_q_build'},
+    {id:'ai_q_new_playlist'},
+    {id:'ai_q_skip'},
+  ],
+  selected:[], bulkPlIds:[],
+  branding:{offline_text:'', public_custom_css:'', public_custom_js:''},
+  settings:{},
+  folderPlaylist:null, folderRules:[], newFolderPath:'',
+  showCreateStation:false, showCreatePlaylist:false, showBulkAssign:false, showAddSchedule:false,
+  showCreateStreamer:false, showCreateWebhook:false, showCreateMount:false, showCreatePodcast:false,
+  showSettings:false, showFolderModal:false,
+  newStation:{name:'',short_name:'',description:'',template:''},
+  newPlaylist:{name:'',type:'default',weight:3},
+  newSchedule:{playlist_id:null,start_str:'08:00',end_str:'11:00',days:[1,2,3,4,5]},
+  newStreamer:{display_name:'',streamer_username:'',streamer_password:'',comments:'',is_active:true},
+  newWebhook:{name:'',type:'discord',url:''},
+  newMount:{name:'/hifi.mp3',autodj_format:'mp3',autodj_bitrate:192},
+  newPodcast:{title:'',description:'',author:'',language:'ar'},
+  logs:[],
+  views:[
+    {id:'live',icon:'radio'},
+    {id:'media',icon:'music-2'},
+    {id:'playlists',icon:'list-music'},
+    {id:'schedule',icon:'calendar-days'},
+    {id:'audience',icon:'bar-chart-3'},
+    {id:'broadcast',icon:'mic'},
+    {id:'telegram',icon:'send'},
+    {id:'setup',icon:'settings'},
+    {id:'dev',icon:'terminal'},
+  ],
+  regions:['egypt','gulf','levant','maghreb','global'],
+  days:['mon','tue','wed','thu','fri','sat','sun'],
+  i18n:{
+    ar:{
+      views:'العروض',stations:'المحطات',live:'البث',media:'الوسائط',playlists:'القوائم',schedule:'الجدول',audience:'الجمهور',broadcast:'البث',telegram:'تلجرام',setup:'الإعداد',dev:'المطوّر',add:'إضافة',
+      tg_on:'متصل',tg_off:'مش متظبّط',tg_sub:'بث للمتابعين على تلجرام — إيفنتات أوتوماتيك أو بعت يدوي',tg_not_configured:'محتاج TELEGRAM_BOT_TOKEN في إعدادات السيرفر عشان يشتغل',tg_enabled_rules:'قواعد مفعّلة',tg_send:'بعت للقناة',tg_send_sub:'ابعت رسالة مباشرة للمتابعين',tg_text_ph:'اكتب الرسالة بالعربي…',tg_send_btn:'بعت',tg_sent:'اتبعت للقناة',tg_rules:'القواعد (الإيفنتات)',tg_rules_sub:'show_start = أوتوماتيك لما البرنامج يبدأ · manual = يدوي',tg_fire:'جرّب',tg_fired:'اتنفّذ',tg_no_rules:'مفيش قواعد لسه',tg_editor:'محرر القواعد (broadcasts.yaml)',tg_editor_sub:'عدّل القواعد واحفظ — بيشتغل في الحال',tg_save:'حفظ',tg_saved:'اتحفظ',
+      search_ph:'ابحث عن أغنية، قائمة، محطة…',connected:'متصل',offline:'غير متصل',refresh:'تحديث',
+      now_playing:'الآن يُذاع',next:'التالي',skip:'تخطي',build_queue:'بناء الطابور',no_live:'لا يوجد بث',
+      listeners:'مستمعون',listeners_now:'مستمع الآن',on_air:'على الهواء',
+      queue:'الطابور',queue_sub:'الأغاني التالية في AutoDJ',queue_empty:'الطابور فارغ',next_up:'التالي',
+      history:'السجل',history_sub:'آخر الأغاني المُذاعة',no_history:'لا يوجد سجل',
+      media_library:'مكتبة الوسائط',media_sub:'فلترة بالمنطقة. الرفع للمحطة النشطة.',
+      bulk_assign:'تعيين جماعي',bulk_assign_sub:'اختر القوائم لإضافة الأغاني المحددة إليها',assign:'تعيين',
+      upload:'رفع',no_media:'لا توجد وسائط',
+      playlists_sub:'قوائم التشغيل والأوزان',new_playlist:'قائمة جديدة',new_playlist_ph:'اسم القائمة',
+      weight:'الوزن',songs:'أغنية',enabled:'مفعّل',disabled:'معطّل',
+      type:'النوع',type_default:'افتراضي (تدوير وزني)',type_once_per_hour:'مرة كل ساعة',type_once_per_songs:'مرة كل N أغنية',type_once_per_minutes:'مرة كل N دقيقة',
+      weekly_schedule:'الجدول الأسبوعي',schedule_sub:'كتل التشغيل المربوطة بقوائم مجدولة في AzuraCast',add_schedule:'إضافة وقت',schedule_click_hint:'اضغط على أي كتلة لحذفها',
+      playlist:'القائمة',start_time:'وقت البدء',end_time:'وقت النهاية',days:'الأيام',
+      listeners_chart:'منحنى المستمعين',listeners_chart_sub:'آخر ٢٤ ساعة',current_listeners:'المستمعون الآن',total_listeners_now:'المجموع',
+      top_songs:'الأكثر تشغيلاً',no_data:'لا توجد بيانات',no_listeners:'لا يوجد مستمعون',
+      requests_inbox:'صندوق الطلبات',requests_sub:'طلبات المستمعين',no_requests:'لا توجد طلبات',played:'شُغّلت',pending:'بالانتظار',
+      streamers:'البثاثون (DJs)',streamers_sub:'حسابات للبث المباشر',new_streamer:'بثّاث جديد',display_name:'الاسم الظاهر',username:'اسم المستخدم',password:'كلمة المرور',comments:'ملاحظات',active:'نشط',inactive:'معطّل',no_streamers:'لا يوجد بثاثون',
+      webhooks:'الـ Webhooks',webhooks_sub:'إشعارات على Discord/Slack/الخ',new_webhook:'webhook جديد',webhook_url:'الرابط',no_webhooks:'لا توجد webhooks',
+      mounts:'الـ Mounts',mounts_sub:'نقاط بث متعددة بترميزات مختلفة',new_mount:'mount جديد',mount_path:'المسار',format:'الصيغة',bitrate:'البتريت',listen:'استماع',
+      branding:'الهوية البصرية',branding_sub:'تخصيص الصفحة العامة',offline_text:'نص خارج البث',offline_default:'البث غير متاح حالياً',public_css:'CSS مخصص',save:'حفظ',
+      public_player:'المشغل العام',public_player_sub:'روابط المشغل لكل محطة',open:'افتح',
+      podcasts:'البودكاست',podcasts_sub:'استضافة بودكاست بإيبيزودات',new_podcast:'بودكاست جديد',title:'العنوان',description:'الوصف',author:'المؤلف',language:'اللغة',episodes:'حلقة',no_podcasts:'لا توجد بودكاست',
+      backups:'النسخ الاحتياطي',backups_sub:'حفظ الإعدادات والوسائط',no_backups:'لا توجد نسخ',
+      new_station:'محطة جديدة',name:'الاسم',short_name:'الاسم المختصر',description:'الوصف',cancel:'إلغاء',create:'إنشاء',
+      egypt:'مصر',gulf:'الخليج',levant:'الشام',maghreb:'المغرب',global:'عالمي',
+      mon:'إثن',tue:'ثلا',wed:'أرب',thu:'خمي',fri:'جمع',sat:'سبت',sun:'أحد',
+      listeners_cap:'الحد الأقصى للمستمعين',station_settings:'إعدادات المحطة',station_settings_sub:'تعديل إعدادات المحطة النشطة',edit:'تعديل',timezone:'المنطقة الزمنية',unlimited:'∞ غير محدود',
+      enable_streamers:'تفعيل البثاثين',enable_requests:'تفعيل الطلبات',enable_public_page:'الصفحة العامة',enable_on_demand:'التحميل عند الطلب',on:'مفعّل',off:'معطّل',
+      folder_auto_assign:'ربط بمجلد',assign_folder:'تعيين مجلد للقائمة',assign_folder_sub:'يضيف كل الملفات الموجودة حالياً في المجلد المختار إلى هذه القائمة',choose_folder:'اختر مجلداً',folder_assigned:'تم تعيين المجلد',folder_path_ph:'مثال: egypt',no_folders:'لا توجد مجلدات في المكتبة',close:'إغلاق',
+      recordings:'تسجيلات البث',recordings_sub:'أرشيف ساعات البث المحفوظة',download:'تحميل',no_recordings:'لا توجد تسجيلات',
+      branding_saved:'تم حفظ الهوية',settings_saved:'تم حفظ الإعدادات',error:'خطأ',select_station_first:'اختر محطة أولاً',upload_ok:'تم الرفع',upload_failed:'فشل الرفع',files:'ملف',
+      ai_assistant:'المساعد الذكي',ai_sub:'مدعوم بـ OpenAI — يقدر يشغّل الأدوات فعلاً',ai_placeholder:'اسأل أو اطلب أي حاجة…',ai_thinking:'يفكر…',ai_empty:'ابدأ بسؤال أو اضغط أحد الأزرار السريعة',ai_no_reply:'لا توجد إجابة',using_tools:'يستخدم الأدوات…',
+      ai_q_status:'حالة المحطة الآن',ai_q_top:'الأكثر تشغيلاً اليوم',ai_q_schedule:'اقترح جدولاً أسبوعياً',ai_q_build:'املأ الطابور',ai_q_new_playlist:'قائمة جديدة للموسيقى الهادئة',ai_q_skip:'تخطي الأغنية الحالية',
+      copilot_title:'مساعد الأستوديو الذكي',copilot_sub:'تقييم جودة البث وتوصيات قابلة للتطبيق فوراً',analyzing:'جارٍ التحليل…',copilot_empty:'🎉 ممتاز! اللوحة بأفضل حال ولا توجد توصيات إضافية',apply:'تطبيق',applied:'تم التطبيق',
+      view_week:'أسبوع',view_day:'يوم',weather:'الطقس',weather_block:'فقرة الطقس',voices:'الأصوات',drag_drop_hint:'اسحب عناصر من اليسار وأفلتها هنا',day_builder_note:'بلوكات اليوم تُحفظ محلياً للمعاينة، استخدم تبويب الأسبوع لجدولة AzuraCast الفعلية',
+      start_from_template:'ابدأ من قالب جاهز',tpl_blank:'فارغة',tpl_blank_desc:'محطة بدون برامج مسبقة',template_applied:'تم تطبيق القالب',theme:'تبديل المظهر',
+      ident_studio:'إستوديو الـ Idents',ident_sub:'ولّد فاصل موسيقي قصير في المتصفح وارفعه فوراً لـ AzuraCast',ident_name:'اسم الـ Ident',ident_preset:'النموذج',preview:'استماع',save_to_media:'حفظ كملف',saving:'يحفظ…',ident_saved:'تم الحفظ في idents/',
+      listen_live:'استمع للبث',volume:'الصوت',delete_station:'حذف المحطة',confirm_delete_station:'تأكيد حذف المحطة؟',
+      music_library_ext:'مكتبة الموسيقى الخارجية',music_library_ext_sub:'الأغاني المولّدة بـ ACE-Step / Suno — اضغط للضخ في AzuraCast',no_external_songs:'لا توجد أغانٍ خارجية — تأكد من تشغيل ACE-Step / Guide API',inject_to_az:'ضخ',injected:'تم الضخ',
+      voicebox_tts:'تحويل النص لصوت',voicebox_tts_sub:'استخدم VoiceBox لتوليد فقرة صوتية وارفعها مباشرة لـ AzuraCast',voice:'الصوت',default_voice:'الصوت الافتراضي',tts_text:'النص',tts_placeholder:'اكتب الفقرة بالعربية الفصحى — مثلاً: \"مساء النور، مع برنامج موجة\"',generate_upload:'توليد ورفع',voice_uploaded:'تم رفع الفقرة الصوتية',
+    },
+    en:{
+      views:'Views',stations:'Stations',live:'Live',media:'Media',playlists:'Playlists',schedule:'Schedule',audience:'Audience',broadcast:'Broadcast',telegram:'Telegram',setup:'Setup',dev:'Developer',add:'Add',
+      tg_on:'Connected',tg_off:'Not set up',tg_sub:'Broadcast to followers on Telegram — automatic events or manual send',tg_not_configured:'Needs TELEGRAM_BOT_TOKEN in the server env to work',tg_enabled_rules:'Enabled rules',tg_send:'Send to channel',tg_send_sub:'Post a message straight to followers',tg_text_ph:'Write the message…',tg_send_btn:'Send',tg_sent:'Sent to channel',tg_rules:'Rules (events)',tg_rules_sub:'show_start = auto when the show starts · manual = on demand',tg_fire:'Fire',tg_fired:'Fired',tg_no_rules:'No rules yet',tg_editor:'Rules editor (broadcasts.yaml)',tg_editor_sub:'Edit the rules and save — takes effect immediately',tg_save:'Save',tg_saved:'Saved',
+      search_ph:'Search tracks, playlists, stations…',connected:'Connected',offline:'Offline',refresh:'Refresh',
+      now_playing:'Now Playing',next:'Next',skip:'Skip',build_queue:'Build Queue',no_live:'No live broadcast',
+      listeners:'Listeners',listeners_now:'Listeners now',on_air:'On-air',
+      queue:'Queue',queue_sub:'Upcoming songs from AutoDJ',queue_empty:'Queue is empty',next_up:'Next up',
+      history:'History',history_sub:'Recently played',no_history:'No history yet',
+      media_library:'Media Library',media_sub:'Filter by region. Upload to active station.',
+      bulk_assign:'Bulk Assign',bulk_assign_sub:'Pick playlists to add the selected tracks to',assign:'Assign',
+      upload:'Upload',no_media:'No media yet',
+      playlists_sub:'Playlists and weights',new_playlist:'New Playlist',new_playlist_ph:'Playlist name',
+      weight:'Weight',songs:'songs',enabled:'Enabled',disabled:'Disabled',
+      type:'Type',type_default:'Default (weighted rotation)',type_once_per_hour:'Once per hour',type_once_per_songs:'Once every N songs',type_once_per_minutes:'Once every N minutes',
+      weekly_schedule:'Weekly Schedule',schedule_sub:'Playlist blocks tied to real scheduled playlists',add_schedule:'Add Block',schedule_click_hint:'Click a block to remove it',
+      playlist:'Playlist',start_time:'Start',end_time:'End',days:'Days',
+      listeners_chart:'Listeners Chart',listeners_chart_sub:'Last 24 hours',current_listeners:'Current Listeners',total_listeners_now:'Total now',
+      top_songs:'Top Songs',no_data:'No data yet',no_listeners:'No listeners',
+      requests_inbox:'Requests Inbox',requests_sub:'Listener song requests',no_requests:'No requests',played:'Played',pending:'Pending',
+      streamers:'Streamers (DJs)',streamers_sub:'Live broadcast accounts',new_streamer:'New Streamer',display_name:'Display name',username:'Username',password:'Password',comments:'Comments',active:'Active',inactive:'Inactive',no_streamers:'No streamers yet',
+      webhooks:'Webhooks',webhooks_sub:'Notifications to Discord/Slack/etc',new_webhook:'New Webhook',webhook_url:'URL',no_webhooks:'No webhooks',
+      mounts:'Mounts',mounts_sub:'Multiple stream endpoints with different encodings',new_mount:'New Mount',mount_path:'Path',format:'Format',bitrate:'Bitrate',listen:'Listen',
+      branding:'Branding',branding_sub:'Customize the public page',offline_text:'Offline text',offline_default:'Stream offline',public_css:'Custom CSS',save:'Save',
+      public_player:'Public Player',public_player_sub:'Per-station player URLs',open:'Open',
+      podcasts:'Podcasts',podcasts_sub:'Host a podcast with episodes',new_podcast:'New Podcast',title:'Title',description:'Description',author:'Author',language:'Language',episodes:'episodes',no_podcasts:'No podcasts yet',
+      backups:'Backups',backups_sub:'Save settings and media',no_backups:'No backups yet',
+      new_station:'New Station',name:'Name',short_name:'Short name',description:'Description',cancel:'Cancel',create:'Create',
+      egypt:'Egypt',gulf:'Gulf',levant:'Levant',maghreb:'Maghreb',global:'Global',
+      mon:'MON',tue:'TUE',wed:'WED',thu:'THU',fri:'FRI',sat:'SAT',sun:'SUN',
+      listeners_cap:'Listeners cap',station_settings:'Station Settings',station_settings_sub:'Edit active station options',edit:'Edit',timezone:'Timezone',unlimited:'∞ Unlimited',
+      enable_streamers:'Enable streamers',enable_requests:'Enable requests',enable_public_page:'Public page',enable_on_demand:'On-demand downloads',on:'ON',off:'OFF',
+      folder_auto_assign:'Assign folder',assign_folder:'Assign folder to playlist',assign_folder_sub:'Adds every file currently in the chosen folder to this playlist',choose_folder:'Choose a folder',folder_assigned:'Folder assigned',folder_path_ph:'e.g. egypt',no_folders:'No folders in the library',close:'Close',
+      recordings:'Recordings',recordings_sub:'Archived broadcast hours',download:'Download',no_recordings:'No recordings',
+      branding_saved:'Branding saved',settings_saved:'Settings saved',error:'Error',select_station_first:'Select a station first',upload_ok:'Uploaded',upload_failed:'Upload failed',files:'files',
+      ai_assistant:'AI Assistant',ai_sub:'OpenAI-powered, can actually execute panel actions',ai_placeholder:'Ask anything…',ai_thinking:'Thinking…',ai_empty:'Start with a question or tap a quick action',ai_no_reply:'No reply',using_tools:'Using tools…',
+      ai_q_status:'Station status now',ai_q_top:'Top played today',ai_q_schedule:'Suggest a weekly schedule',ai_q_build:'Fill the queue',ai_q_new_playlist:'New chill playlist',ai_q_skip:'Skip current song',
+      copilot_title:'AI Radio Copilot',copilot_sub:'Broadcast quality score with one-tap fixes',analyzing:'Analyzing…',copilot_empty:'🎉 Excellent! Everything looks great, no suggestions.',apply:'Apply',applied:'Applied',
+      view_week:'Week',view_day:'Day',weather:'Weather',weather_block:'Weather block',voices:'Voices',drag_drop_hint:'Drag items from the left and drop here',day_builder_note:'Day blocks are saved locally for preview; use the Week tab to schedule real AzuraCast playlists',
+      start_from_template:'Start from a template',tpl_blank:'Blank',tpl_blank_desc:'Empty station, no preset shows',template_applied:'Template applied',theme:'Toggle theme',
+      ident_studio:'Ident Studio',ident_sub:'Generate a short jingle in the browser and upload it to AzuraCast',ident_name:'Ident name',ident_preset:'Preset',preview:'Preview',save_to_media:'Save as media',saving:'Saving…',ident_saved:'Saved to idents/',
+      listen_live:'Listen live',volume:'Volume',delete_station:'Delete station',confirm_delete_station:'Confirm delete station?',
+      music_library_ext:'External Music Library',music_library_ext_sub:'Tracks generated via ACE-Step / Suno — inject into AzuraCast',no_external_songs:'No external songs — make sure ACE-Step / Guide API is reachable',inject_to_az:'Inject',injected:'Injected',
+      voicebox_tts:'Text to Speech',voicebox_tts_sub:'Use VoiceBox to generate a voice clip and upload it to AzuraCast',voice:'Voice',default_voice:'Default voice',tts_text:'Text',tts_placeholder:'Write the text in formal Arabic — e.g. \"Good evening, you\'re on Wave\"',generate_upload:'Generate & upload',voice_uploaded:'Voice clip uploaded',
+    },
+  },
+  t(k){return (this.i18n[this.lang]&&this.i18n[this.lang][k])||k;},
+  toast(title,body,kind){
+    const id=++this._toastId;
+    this.toasts.push({id,title,body:body||'',kind:kind||'ok'});
+    this.$nextTick(()=>this.tick());
+    setTimeout(()=>{this.toasts=this.toasts.filter(t=>t.id!==id);},4500);
+  },
+  setLang(l){this.lang=l;this.dir=l==='ar'?'rtl':'ltr';this.$nextTick(()=>this.tick());},
+  pad(n){return String(n).padStart(2,'0');},
+  formatLen(s){if(!s)return '—';const m=Math.floor(s/60),x=Math.floor(s%60);return `${m}:${this.pad(x)}`;},
+  formatTime(ts){if(!ts)return '—';const d=new Date(ts*1000);return d.toLocaleTimeString(this.lang==='ar'?'ar-EG':'en-US',{hour:'2-digit',minute:'2-digit'});},
+  formatHHMM(t){const h=Math.floor(t/100),m=t%100;return `${this.pad(h)}:${this.pad(m)}`;},
+  log(m){const ts=new Date().toISOString().substring(11,19);this.logs.push(`[${ts}] ${m}`);if(this.logs.length>500)this.logs=this.logs.slice(-300);},
+  async api(path,opts={}){
+    this.log(`→ ${opts.method||'GET'} ${path}`);
+    try{const r=await fetch(path,opts);const j=await r.json();if(!j.ok)this.log(`  ✗ ${j.error||r.status}`);else this.log(`  ✓ ${r.status}`);return j;}
+    catch(e){this.log(`  ✗ ${e.message}`);return {ok:false,error:e.message};}
+  },
+  async loadTelegram(){
+    const s=await this.api('/api/v1/telegram/status');if(s.ok)this.tg.status=s.data;
+    const r=await this.api('/api/v1/telegram/rules');if(r.ok){this.tg.raw=r.data.raw;this.tg.rules=(r.data.parsed&&r.data.parsed.rules)||[];}
+    this.$nextTick(()=>this.tick());
+  },
+  async tgSend(){
+    if(!this.tg.sendText.trim())return;
+    this.tg.sending=true;
+    const r=await this.api('/api/v1/telegram/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:this.tg.sendText})});
+    this.tg.sending=false;
+    if(r.ok){this.toast(this.t('tg_sent'),'','ok');this.tg.sendText='';}
+    else this.toast(this.t('error'),r.error,'err');
+  },
+  async tgFire(id){
+    const r=await this.api(`/api/v1/telegram/rules/${id}/fire`,{method:'POST'});
+    if(r.ok)this.toast(this.t('tg_fired'),id,'ok');
+    else this.toast(this.t('error'),r.error,'err');
+  },
+  async tgSaveRules(){
+    this.tg.saving=true;
+    const r=await this.api('/api/v1/telegram/rules',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:this.tg.raw})});
+    this.tg.saving=false;
+    if(r.ok){this.toast(this.t('tg_saved'),'','ok');this.loadTelegram();}
+    else this.toast(this.t('error'),r.error,'err');
+  },
+  async boot(){
+    document.body.setAttribute('data-theme', this.theme);
+    document.addEventListener('keydown',e=>{
+      if((e.ctrlKey||e.metaKey)&&e.key==='\\'){this.tab='dev';e.preventDefault();}
+      if((e.ctrlKey||e.metaKey)&&e.key==='k'){document.querySelector('.search input')?.focus();e.preventDefault();}
+    });
+    await this.refresh();
+    // fetch ancillary
+    const tpl=await this.api('/api/v1/templates');if(tpl.ok)this.templates=tpl.data;
+    this.loadTelegram();
+    const vc=await this.api('/api/v1/voices');if(vc.ok)this.voices=vc.data;
+    this.loadExternalSongs();
+    this.loadWeather();
+    setInterval(()=>this.tickLive(),12000);
+    setInterval(()=>this.loadQueueHistory(),20000);
+    setInterval(()=>this.loadCopilot(),60000);
+    this.$nextTick(()=>this.tick());
+  },
+  toggleTheme(){this.theme=this.theme==='flat'?'glow':'flat';localStorage.setItem('rc_theme',this.theme);document.body.setAttribute('data-theme',this.theme);},
+  tick(){if(window.lucide&&window.lucide.createIcons)window.lucide.createIcons();},
+  setActive(s){this.active=s;localStorage.setItem('rc_active_station',String(s.id));this.loadStation(s.id);this.streamPlaying=false;},
+  get activeListenUrl(){if(!this.active||!this.mounts.length)return '';const def=this.mounts.find(m=>m.is_default)||this.mounts[0];return def && def.links && def.links.listen ? def.links.listen : `${this.baseUrl}/listen/${this.active.short_name}/radio.mp3`;},
+  get currentArt(){const n=this.nowPlayingList.find(x=>x.now_playing&&x.now_playing.song);return n && n.now_playing.song.art || null;},
+  // ---- LIVE STREAM player + analyser ----
+  toggleStream(){
+    const a=document.getElementById('rc-audio');if(!a)return;
+    if(this.streamPlaying){a.pause();this.streamPlaying=false;if(this._eqRAF){cancelAnimationFrame(this._eqRAF);this._eqRAF=null;}return;}
+    a.src=this.activeListenUrl+'?t='+Date.now();
+    a.volume=this.streamVolume/100;
+    a.play().then(()=>{this.streamPlaying=true;this._wireAnalyser(a);}).catch(e=>this.toast(this.t('error'),e.message,'err'));
+  },
+  setStreamVolume(){const a=document.getElementById('rc-audio');if(a)a.volume=this.streamVolume/100;},
+  _wireAnalyser(audio){
+    try{
+      if(!this._audioCtx)this._audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+      if(!this._analyser){const src=this._audioCtx.createMediaElementSource(audio);this._analyser=this._audioCtx.createAnalyser();this._analyser.fftSize=64;src.connect(this._analyser);this._analyser.connect(this._audioCtx.destination);}
+      const buf=new Uint8Array(this._analyser.frequencyBinCount);
+      const loop=()=>{
+        if(!this.streamPlaying)return;
+        this._analyser.getByteFrequencyData(buf);
+        const slots=[2,5,9,15,22];
+        this.eqLevels=slots.map(i=>Math.round((buf[i]||0)/255*22));
+        this._eqRAF=requestAnimationFrame(loop);
+      };
+      loop();
+    }catch(e){this.log('analyser: '+e.message);}
+  },
+  // ---- EXTERNAL MUSIC LIBRARY (ACE-Step / Suno via guide) ----
+  async loadExternalSongs(){
+    const r = await this.api('/api/v1/music-library?limit=50');
+    if(r.ok){this.externalSongs = Array.isArray(r.data) ? r.data : (r.data && r.data.songs || []);}
+    else this.toast(this.t('error'), r.error, 'err');
+  },
+  async injectExternalSong(s){
+    if(!this.active){this.toast(this.t('error'), this.t('select_station_first'), 'err'); return;}
+    this.injectingId = s.id;
+    try{
+      const r = await this.api('/api/v1/music-library/inject', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({station_id:this.active.id, song_id:String(s.id||''), audio_url:s.audio_url||s.url||'', title:s.title||s.name||'track'})
+      });
+      if(r.ok){this.toast(this.t('injected'), s.title||s.name||'', 'ok'); this.loadStation(this.active.id);}
+      else this.toast(this.t('error'), r.error, 'err');
+    } finally { this.injectingId = null; }
+  },
+  // ---- VOICEBOX TTS ----
+  async speakAndInject(){
+    if(!this.active){this.toast(this.t('error'), this.t('select_station_first'), 'err'); return;}
+    if(!this.ttsText.trim()) return;
+    this.ttsBusy = true;
+    try{
+      const r = await this.api('/api/v1/voicebox/speak', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({station_id:this.active.id, text:this.ttsText, voice:this.ttsVoice})
+      });
+      if(r.ok){this.toast(this.t('voice_uploaded'), r.data.filename, 'ok'); this.ttsText=''; this.loadStation(this.active.id);}
+      else this.toast(this.t('error'), r.error, 'err');
+    } finally { this.ttsBusy = false; }
+  },
+  // ---- WEATHER ----
+  async loadWeather(){const r=await this.api('/api/v1/weather?city=Cairo');if(r.ok)this.weatherData=r.data;},
+  // ---- DELETE STATION ----
+  async deleteStation(){
+    if(!this.active)return;
+    if(!confirm(this.t('confirm_delete_station')+': '+this.active.name))return;
+    const r=await this.api(`/api/v1/stations/${this.active.id}`,{method:'DELETE'});
+    if(r.ok){this.toast(this.t('settings_saved'),'','ok');localStorage.removeItem('rc_active_station');this.active=null;await this.refresh();}
+    else this.toast(this.t('error'),r.error,'err');
+  },
+  isLive(id){const n=this.nowPlayingList.find(x=>x.station&&x.station.id===id);return !!(n&&n.is_online);},
+  async refresh(){
+    const c=await this.api('/api/v1/config');if(c.ok)this.configured=c.data.configured;
+    const s=await this.api('/api/v1/stations');
+    if(s.ok){
+      this.stations=s.data;
+      const remembered=parseInt(localStorage.getItem('rc_active_station')||'0',10);
+      const pick = (remembered && this.stations.find(x=>x.id===remembered)) || (!this.active && this.stations[0]) || this.active;
+      if(pick && (!this.active || this.active.id!==pick.id)){this.active=pick;this.loadStation(pick.id);}
+    }
+    await this.tickLive();
+    this.$nextTick(()=>this.tick());
+  },
+  async tickLive(){const n=await this.api('/api/v1/nowplaying');if(n.ok)this.nowPlayingList=n.data;this.$nextTick(()=>this.tick());},
+  async loadStation(id){
+    const [pl,mf,q,h,st,wh,mo,po,sd,tl,rq,li,rc]=await Promise.all([
+      this.api(`/api/v1/stations/${id}/playlists`),
+      this.api(`/api/v1/stations/${id}/files`),
+      this.api(`/api/v1/stations/${id}/queue`),
+      this.api(`/api/v1/stations/${id}/history`),
+      this.api(`/api/v1/stations/${id}/streamers`),
+      this.api(`/api/v1/stations/${id}/webhooks`),
+      this.api(`/api/v1/stations/${id}/mounts`),
+      this.api(`/api/v1/stations/${id}/podcasts`),
+      this.api(`/api/v1/stations/${id}/schedule`),
+      this.api(`/api/v1/stations/${id}/reports/best`),
+      this.api(`/api/v1/stations/${id}/request-log`),
+      this.api(`/api/v1/stations/${id}/listeners`),
+      this.api(`/api/v1/stations/${id}/recordings`),
+    ]);
+    if(pl.ok)this.playlists=pl.data;
+    if(mf.ok)this.media=mf.data;
+    if(q.ok)this.queue=q.data;
+    if(h.ok)this.history=h.data;
+    if(st.ok)this.streamers=st.data;
+    if(wh.ok)this.webhooks=wh.data;
+    if(mo.ok)this.mounts=mo.data;
+    if(po.ok)this.podcasts=po.data;
+    if(sd.ok)this.scheduleData=sd.data;
+    if(tl.ok){const mp=(tl.data&&tl.data.mostPlayed)||(Array.isArray(tl.data)?tl.data:[]);this.topSongs=mp.map(x=>({song:x.song||{text:x.text},plays:x.num_plays??x.plays??0}));}
+    if(rq.ok)this.requestLog=Array.isArray(rq.data)?rq.data:(rq.data&&rq.data.rows||[]);
+    if(li.ok)this.currentListeners=li.data;
+    if(rc.ok)this.recordings=Array.isArray(rc.data)?rc.data:[];
+    // load day-builder cached blocks for this station
+    try{const cached=localStorage.getItem('rc_blocks_'+id);if(cached)this.dayBlocks=JSON.parse(cached);else this.dayBlocks=[];}catch(e){this.dayBlocks=[];}
+    this.loadCopilot();
+    // station detail for branding
+    const det=await this.api(`/api/v1/stations/${id}`);if(det.ok&&det.data.branding_config)this.branding={...this.branding,...det.data.branding_config};
+    // listener chart
+    const lc=await this.api(`/api/v1/stations/${id}/reports/listeners`);if(lc.ok)this.renderChart(lc.data);
+    this.$nextTick(()=>this.tick());
+  },
+  async loadQueueHistory(){if(!this.active)return;const [q,h]=await Promise.all([this.api(`/api/v1/stations/${this.active.id}/queue`),this.api(`/api/v1/stations/${this.active.id}/history`)]);if(q.ok)this.queue=q.data;if(h.ok)this.history=h.data;},
+  renderChart(data){
+    const ctx=document.getElementById('chart-listeners');if(!ctx||!window.Chart)return;
+    // AzuraCast charts: {daily:{data:[{x:ms,y}]}, hourly:{...}, day_of_week:{...}}
+    let series=[];
+    if(data && data.daily && Array.isArray(data.daily.data)) series=data.daily.data;
+    else if(data && data.listeners && data.listeners.metrics) series=data.listeners.metrics;
+    else if(Array.isArray(data && data.metrics)) series=data.metrics;
+    const toDate=(x)=> new Date(x>1e12 ? x : x*1000);  // ms vs sec
+    const labels=series.map(p=>{const d=toDate(p.x!=null?p.x:p[0]);return `${d.getDate()}/${d.getMonth()+1}`;});
+    const values=series.map(p=>p.y!=null?p.y:(p[1]||0));
+    if(this.listenerChart)this.listenerChart.destroy();
+    this.listenerChart=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:this.t('listeners'),data:values,borderColor:'#71edbd',backgroundColor:'rgba(113,237,189,0.12)',tension:0.35,fill:true,borderWidth:2,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#8fa19a',font:{size:10}},grid:{color:'#27312e'}},y:{ticks:{color:'#8fa19a',font:{size:10}},grid:{color:'#27312e'},beginAtZero:true}}}});
+  },
+  get filteredMedia(){let m=this.media;if(this.region)m=m.filter(x=>(x.region||'global')===this.region);if(this.q){const q=this.q.toLowerCase();m=m.filter(x=>JSON.stringify(x).toLowerCase().includes(q));}return m;},
+  _q(arr){if(!this.q)return arr;const q=this.q.toLowerCase();return arr.filter(x=>JSON.stringify(x).toLowerCase().includes(q));},
+  get filteredPlaylists(){return this._q(this.playlists);},
+  get filteredHistory(){return this._q(this.history);},
+  get filteredStations(){return this._q(this.stations);},
+  get totalListeners(){return this.nowPlayingList.reduce((a,n)=>a+((n.listeners&&n.listeners.current)||0),0);},
+  get currentTrack(){const n=this.nowPlayingList.find(x=>x.now_playing&&x.now_playing.song);return n&&n.now_playing.song.text;},
+  get nextTrack(){const n=this.nowPlayingList.find(x=>x.playing_next&&x.playing_next.song);return n&&n.playing_next.song.text;},
+  get currentStation(){const n=this.nowPlayingList.find(x=>x.now_playing&&x.now_playing.song);return n&&n.station&&n.station.name;},
+  toggleSelect(id){const i=this.selected.indexOf(id);if(i>=0)this.selected.splice(i,1);else this.selected.push(id);},
+  toggleBulkPl(id){const i=this.bulkPlIds.indexOf(id);if(i>=0)this.bulkPlIds.splice(i,1);else this.bulkPlIds.push(id);},
+  toggleScheduleDay(d){const i=this.newSchedule.days.indexOf(d);if(i>=0)this.newSchedule.days.splice(i,1);else this.newSchedule.days.push(d);},
+  blocksFor(dayNum){
+    // Read directly from playlists.schedule_items (HHMM ints + days[]) — timezone-safe.
+    const palette=['mint','amber','blue','violet','rose'];
+    const items=[];
+    for(const pl of (this.playlists||[])){
+      for(const it of (pl.schedule_items||[])){
+        const days=it.days||[];
+        if(days.length && !days.includes(dayNum))continue;
+        items.push({id:`${pl.id}-${dayNum}-${it.start_time}`,playlist_id:pl.id,start:it.start_time,end:it.end_time,name:pl.name,color:palette[pl.id%palette.length]});
+      }
+    }
+    return items;
+  },
+  async createStation(){
+    if(!this.newStation.name)return;
+    const r=await this.api('/api/v1/stations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(this.newStation)});
+    if(!r.ok)return this.toast(this.t('error'),r.error,'err');
+    // If a template was picked, pre-create playlists named after the show keys
+    const tplKey=this.newStation.template;
+    if(tplKey){
+      const tpl=this.templates.find(t=>t.key===tplKey);
+      const newStationId=r.data && r.data.id;
+      if(tpl && newStationId){
+        for(const [key,show] of Object.entries(tpl.shows||{})){
+          await this.api(`/api/v1/stations/${newStationId}/playlists`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:show.description, weight:3})});
+          // also schedule it weekly Mon-Sun
+          const pls=await this.api(`/api/v1/stations/${newStationId}/playlists`);
+          const created=pls.ok && pls.data.find(p=>p.name===show.description);
+          if(created){
+            const st=parseInt(show.start_time||'0',10);
+            const en=parseInt(show.end_time||'0',10);
+            if(st && en) await this.api(`/api/v1/stations/${newStationId}/playlists/${created.id}/schedule`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({start_time:st,end_time:en,days:[1,2,3,4,5,6,7]})});
+          }
+        }
+        this.toast(this.t('template_applied'),tpl.name,'ok');
+      }
+    }
+    this.showCreateStation=false;
+    this.newStation={name:'',short_name:'',description:'',template:''};
+    await this.refresh();
+  },
+  // ---- COPILOT ----
+  async loadCopilot(){if(!this.active)return;const r=await this.api(`/api/v1/stations/${this.active.id}/copilot`);if(r.ok)this.copilot=r.data;},
+  async applyCopilotSuggestion(s){
+    if(s.action && s.action.url){
+      const r=await this.api(s.action.url,{method:s.action.method||'POST'});
+      if(r.ok){this.toast(this.t('applied'),s.desc,'ok');this.loadCopilot();}
+      else this.toast(this.t('error'),r.error,'err');
+    } else if(s.action && s.action.goto_tab){
+      this.tab=s.action.goto_tab;this.$nextTick(()=>this.tick());
+    }
+  },
+  // ---- DAY BUILDER ----
+  saveBlocks(){if(this.active)localStorage.setItem('rc_blocks_'+this.active.id,JSON.stringify(this.dayBlocks));},
+  onDragStart(ev,item){this.isDragging=true;ev.dataTransfer.setData('application/json',JSON.stringify(item));ev.dataTransfer.effectAllowed='copy';},
+  handleDayDrop(ev){
+    this.isDragging=false;
+    const raw=ev.dataTransfer.getData('application/json');if(!raw)return;
+    try{
+      const item=JSON.parse(raw);
+      const ruler=ev.currentTarget;
+      const rect=ruler.getBoundingClientRect();
+      const x=ev.clientX-rect.left;
+      const hourFloat=(x/rect.width)*24;
+      const hour=Math.max(0,Math.min(23,Math.floor(hourFloat)));
+      this.addDayBlock(item,hour);
+    }catch(e){this.toast('drop error',e.message,'err');}
+  },
+  addDayBlock(item,startHour){
+    let durationMins=60;
+    if(item.type==='music')durationMins=Math.max(2,(item.duration||4));
+    if(item.type==='weather')durationMins=item.duration||5;
+    if(item.type==='voice')durationMins=item.duration||10;
+    if(item.type==='ai-show')durationMins=item.duration||60;
+    const block={id:'b_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),type:item.type,title:item.title||'—',startHour,durationMins,data:item.data||null};
+    this.dayBlocks.push(block);this.selectedDayBlockId=block.id;this.saveBlocks();this.$nextTick(()=>this.tick());
+  },
+  removeDayBlock(id){this.dayBlocks=this.dayBlocks.filter(b=>b.id!==id);if(this.selectedDayBlockId===id)this.selectedDayBlockId=null;this.saveBlocks();},
+  selectDayBlock(b){this.selectedDayBlockId=this.selectedDayBlockId===b.id?null:b.id;},
+  blockStyle(b){const startPct=(b.startHour/24)*100;const widthPct=((b.durationMins/60)/24)*100;return `left:${startPct}%;width:${Math.max(widthPct,2)}%;`;},
+  formatBlockTime(b){const sH=String(b.startHour).padStart(2,'0');const endMin=b.startHour*60+b.durationMins;const eH=String(Math.floor(endMin/60)%24).padStart(2,'0');const eM=String(endMin%60).padStart(2,'0');return `${sH}:00 — ${eH}:${eM}`;},
+  getBlockIcon(type){return ({'ai-show':'🎙️','music':'🎵','weather':'🌤','voice':'🗣️'})[type]||'📻';},
+  nowOffsetPercent(){const n=new Date();return ((n.getHours()*60+n.getMinutes())/(24*60))*100;},
+  scrollTimelineToNow(){const wrap=document.getElementById('tl24-wrap');if(!wrap)return;const pct=this.nowOffsetPercent()/100;wrap.scrollLeft=Math.max(0,wrap.scrollWidth*pct - wrap.clientWidth/2);},
+  async createPlaylist(){if(!this.active||!this.newPlaylist.name)return;const r=await this.api(`/api/v1/stations/${this.active.id}/playlists`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(this.newPlaylist)});if(r.ok){this.showCreatePlaylist=false;this.newPlaylist={name:'',type:'default',weight:3};this.loadStation(this.active.id);}else this.toast(this.t('error'),r.error,'err');},
+  async togglePlaylist(p){const r=await this.api(`/api/v1/stations/${this.active.id}/playlists/${p.id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({is_enabled:!p.is_enabled})});if(r.ok)this.loadStation(this.active.id);else this.toast(this.t('error'),r.error,'err');},
+  async deletePlaylist(p){if(!confirm(this.t('cancel')+'?'))return;const r=await this.api(`/api/v1/stations/${this.active.id}/playlists/${p.id}`,{method:'DELETE'});if(r.ok)this.loadStation(this.active.id);else this.toast(this.t('error'),r.error,'err');},
+  async bulkAssign(){if(!this.selected.length||!this.bulkPlIds.length)return;const r=await this.api(`/api/v1/stations/${this.active.id}/files/bulk-assign`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({file_ids:this.selected,playlist_ids:this.bulkPlIds})});if(r.ok){this.showBulkAssign=false;this.selected=[];this.bulkPlIds=[];this.loadStation(this.active.id);}else this.toast(this.t('error'),r.error,'err');},
+  async uploadFiles(ev){if(!this.active){this.toast(this.t('error'),this.t('select_station_first'),'err');return;}let ok=0,fail=0;for(const f of ev.target.files){const fd=new FormData();fd.append('file',f);fd.append('path',f.name);this.log(`upload ${f.name}`);const r=await fetch(`/api/v1/stations/${this.active.id}/upload`,{method:'POST',body:fd});const j=await r.json();if(j.ok)ok++;else{fail++;this.toast(this.t('upload_failed'),f.name,'err');}}if(ok)this.toast(this.t('upload_ok'),`${ok} ${this.t('files')}`,'ok');this.loadStation(this.active.id);},
+  async addSchedule(){
+    if(!this.newSchedule.playlist_id)return;
+    const toHHMM=(s)=>{const[h,m]=s.split(':').map(Number);return h*100+m;};
+    const body={start_time:toHHMM(this.newSchedule.start_str),end_time:toHHMM(this.newSchedule.end_str),days:this.newSchedule.days};
+    const r=await this.api(`/api/v1/stations/${this.active.id}/playlists/${this.newSchedule.playlist_id}/schedule`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(r.ok){this.showAddSchedule=false;this.loadStation(this.active.id);}else this.toast(this.t('error'),r.error,'err');
+  },
+  async removeScheduleItem(b){
+    if(!confirm(this.t('cancel')+'?'))return;
+    // We need the playlist's schedule_items index. Simplest: fetch playlist, find matching index, delete.
+    const plRes=await this.api(`/api/v1/stations/${this.active.id}/playlists`);
+    if(!plRes.ok)return;
+    const pl=plRes.data.find(p=>p.id===b.playlist_id);
+    if(!pl||!pl.schedule_items)return;
+    const idx=pl.schedule_items.findIndex(it=>it.start_time===b.start && it.end_time===b.end);
+    if(idx<0)return;
+    const r=await this.api(`/api/v1/stations/${this.active.id}/playlists/${b.playlist_id}/schedule/${idx}`,{method:'DELETE'});
+    if(r.ok)this.loadStation(this.active.id);
+  },
+  async createStreamer(){const r=await this.api(`/api/v1/stations/${this.active.id}/streamers`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(this.newStreamer)});if(r.ok){this.showCreateStreamer=false;this.newStreamer={display_name:'',streamer_username:'',streamer_password:'',comments:'',is_active:true};this.loadStation(this.active.id);}else this.toast(this.t('error'),r.error,'err');},
+  async deleteStreamer(id){if(!confirm('?'))return;const r=await this.api(`/api/v1/stations/${this.active.id}/streamers/${id}`,{method:'DELETE'});if(r.ok)this.loadStation(this.active.id);},
+  async createWebhook(){const body={name:this.newWebhook.name,type:this.newWebhook.type,is_enabled:true,triggers:['song_changed'],config:{webhook_url:this.newWebhook.url}};const r=await this.api(`/api/v1/stations/${this.active.id}/webhooks`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(r.ok){this.showCreateWebhook=false;this.newWebhook={name:'',type:'discord',url:''};this.loadStation(this.active.id);}else this.toast(this.t('error'),r.error,'err');},
+  async deleteWebhook(id){if(!confirm('?'))return;const r=await this.api(`/api/v1/stations/${this.active.id}/webhooks/${id}`,{method:'DELETE'});if(r.ok)this.loadStation(this.active.id);},
+  async createMount(){const r=await this.api(`/api/v1/stations/${this.active.id}/mounts`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(this.newMount)});if(r.ok){this.showCreateMount=false;this.newMount={name:'/hifi.mp3',autodj_format:'mp3',autodj_bitrate:192};this.loadStation(this.active.id);}else this.toast(this.t('error'),r.error,'err');},
+  async deleteMount(id){if(!confirm('?'))return;const r=await this.api(`/api/v1/stations/${this.active.id}/mounts/${id}`,{method:'DELETE'});if(r.ok)this.loadStation(this.active.id);},
+  async createPodcast(){const r=await this.api(`/api/v1/stations/${this.active.id}/podcasts`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(this.newPodcast)});if(r.ok){this.showCreatePodcast=false;this.newPodcast={title:'',description:'',author:'',language:'ar'};this.loadStation(this.active.id);}else this.toast(this.t('error'),r.error,'err');},
+  async saveBranding(){if(!this.active)return;const r=await this.api(`/api/v1/stations/${this.active.id}/branding`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(this.branding)});if(r.ok)this.toast(this.t('branding_saved'),'','ok');else this.toast(this.t('error'),r.error,'err');},
+  openSettings(){if(!this.active)return;this.settings={name:this.active.name,description:this.active.description,timezone:this.active.timezone||'UTC',max_listeners:this.active.max_listeners||0,enable_streamers:!!this.active.enable_streamers,enable_requests:!!this.active.enable_requests,enable_public_page:!!this.active.enable_public_page,enable_on_demand:!!this.active.enable_on_demand};this.showSettings=true;},
+  async saveSettings(){if(!this.active)return;const r=await this.api(`/api/v1/stations/${this.active.id}/settings`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(this.settings)});if(r.ok){this.showSettings=false;this.toast(this.t('settings_saved'),'','ok');await this.refresh();}else this.toast(this.t('error'),r.error,'err');},
+  async openFolderModal(p){this.folderPlaylist=p;this.newFolderPath='';const r=await this.api(`/api/v1/stations/${this.active.id}/directories`);this.folderRules=r.ok&&Array.isArray(r.data)?r.data:[];this.showFolderModal=true;this.$nextTick(()=>this.tick());},
+  async assignFolder(){if(!this.newFolderPath){return;}const r=await this.api(`/api/v1/stations/${this.active.id}/playlists/${this.folderPlaylist.id}/assign-folder`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:this.newFolderPath})});if(r.ok){this.showFolderModal=false;this.toast(this.t('folder_assigned'),`${this.newFolderPath} → ${this.folderPlaylist.name}`,'ok');this.loadStation(this.active.id);}else this.toast(this.t('error'),r.error,'err');},
+  async runBackup(){const r=await this.api('/api/v1/backups',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});if(r.ok)this.log('✓ backup queued');else this.toast(this.t('error'),r.error,'err');const list=await this.api('/api/v1/backups');if(list.ok)this.backups=list.data;},
+  async buildQueue(){if(!this.active)return;await this.api(`/api/v1/stations/${this.active.id}/build-queue`,{method:'POST'});setTimeout(()=>this.loadQueueHistory(),2000);},
+  async skipSong(){if(!this.active)return;await this.api(`/api/v1/stations/${this.active.id}/skip`,{method:'POST'});setTimeout(()=>this.tickLive(),1500);},
+  // ---- IDENT STUDIO ----
+  openIdent(){
+    if(!window.IdentStudio){this.toast(this.t('error'),'IdentStudio not loaded','err');return;}
+    this.identPresetKeys = window.IdentStudio.listKeys();
+    if(!this.identPreset || !this.identPresetKeys.includes(this.identPreset)) this.identPreset = this.identPresetKeys[0];
+    if(!this.identName && this.active) this.identName = this.active.short_name + '-ident';
+    this.showIdent = true;
+    this.$nextTick(()=>this.tick());
+  },
+  closeIdent(){window.IdentStudio && window.IdentStudio.stopPreview();this.showIdent=false;},
+  identLabel(k){
+    const p = window.IdentStudio && window.IdentStudio.presets[k];
+    if(!p) return k;
+    return this.lang==='ar' ? p.label_ar : p.label_en;
+  },
+  previewIdent(){
+    if(!window.IdentStudio)return;
+    const dur = window.IdentStudio.preview(this.identPreset);
+    if(dur) this.toast(this.identLabel(this.identPreset), `${dur.toFixed(1)}s`, 'ok');
+  },
+  async saveIdent(){
+    if(!this.active){this.toast(this.t('error'),this.t('select_station_first'),'err');return;}
+    if(!window.IdentStudio){this.toast(this.t('error'),'IdentStudio missing','err');return;}
+    this.identSaving = true;
+    try{
+      const blob = window.IdentStudio.toWavBlob(this.identPreset);
+      if(!blob){this.toast(this.t('error'),'render failed','err');this.identSaving=false;return;}
+      const name = (this.identName || 'ident').replace(/[^a-z0-9-_]+/gi,'_') + '.wav';
+      const fd = new FormData();
+      fd.append('file', blob, name);
+      fd.append('path', 'idents/' + name);
+      const r = await fetch(`/api/v1/stations/${this.active.id}/upload`, {method:'POST', body: fd});
+      const j = await r.json();
+      if(j.ok){
+        this.toast(this.t('ident_saved'), name, 'ok');
+        this.closeIdent();
+        this.loadStation(this.active.id);
+      } else {
+        this.toast(this.t('error'), j.error || 'upload failed', 'err');
+      }
+    } finally {
+      this.identSaving = false;
+    }
+  },
+  openAI(){this.showAI=true;this.$nextTick(()=>this.tick());},
+  async sendAI(presetText){
+    const text = (presetText && typeof presetText==='string') ? presetText : this.aiInput.trim();
+    if(!text || this.aiBusy)return;
+    this.aiInput='';
+    this.aiMessages.push({role:'user', content:text});
+    this.aiBusy=true;
+    this.$nextTick(()=>{const el=document.getElementById('ai-msgs');if(el)el.scrollTop=el.scrollHeight;});
+    const ctx = {
+      station_id: this.active && this.active.id,
+      station_name: this.active && this.active.name,
+      tab: this.tab,
+      now_playing: this.currentTrack,
+      listeners: this.totalListeners,
+      playlists: this.playlists.map(p=>({id:p.id, name:p.name, weight:p.weight, enabled:p.is_enabled, songs:p.num_songs})),
+      media_count: this.media.length,
+      regions_present: [...new Set(this.media.map(m=>m.region))],
+    };
+    try{
+      const r = await fetch('/api/v1/ai/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:this.aiMessages.filter(m=>m.role==='user'||m.role==='assistant').map(m=>({role:m.role,content:m.content})),context:ctx,lang:this.lang})});
+      const j = await r.json();
+      if(j.ok){
+        this.aiMessages.push({role:'assistant', content:j.data.reply || this.t('ai_no_reply')});
+        await this.loadStation(this.active.id); // refresh in case tools mutated state
+      } else {
+        this.aiMessages.push({role:'assistant', content:'⚠ '+(j.error||'AI error')});
+      }
+    }catch(e){
+      this.aiMessages.push({role:'assistant', content:'⚠ '+e.message});
+    }
+    this.aiBusy=false;
+    this.$nextTick(()=>{this.tick();const el=document.getElementById('ai-msgs');if(el)el.scrollTop=el.scrollHeight;});
+  },
+};
+}
+</script>
+</body>
+</html>

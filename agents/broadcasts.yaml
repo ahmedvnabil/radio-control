@@ -1,0 +1,19 @@
+# Telegram broadcasts to followers — editable. Add/remove rules freely.
+# trigger: show_start -> auto-posts when the show's start_time hits
+#                        (needs the scheduler + TELEGRAM_BOT_TOKEN)
+#          manual      -> only fires from the Send button / fire endpoint
+# template placeholders: {script} {description} {station_name} {station} {show} {date}
+channel: ""        # default chat/channel id; empty = use TELEGRAM_CHAT_ID env
+rules:
+  - id: islamic-morning
+    trigger: show_start
+    station: islamic
+    show: morning
+    enabled: false       # turn on when you're ready to go live
+    generate: true        # generate the show script and include it
+    template: |
+      📻 الآن على {station_name}
+      برنامج: {description}
+
+      {script}
+    chat_id: ""          # optional override; empty = default channel
