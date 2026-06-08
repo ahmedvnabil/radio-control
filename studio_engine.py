@@ -24,6 +24,7 @@ Hot-reload: files are read at request time, no restart needed.
 from __future__ import annotations
 
 import json
+import logging
 import os
 import re
 import time
@@ -32,6 +33,8 @@ from pathlib import Path
 
 import frontmatter
 from flask import Blueprint, jsonify, request
+
+log = logging.getLogger("studio")
 
 
 # ---------- paths -----------------------------------------------------------
@@ -435,3 +438,21 @@ def api_studio_run():
     except AgentError as e:
         status = 503 if e.code == "NO_API_KEY" else 400
         return _err(str(e), e.code or "RUN_FAILED", status)
+    except Exception as e:  # noqa: BLE001 — convert SDK/transport failures to clean JSON
+        # When Meridian (claude.zad.tools / CT 125) or Anthropic is unreachable the SDK
+        # raises APIConnectionError / APITimeoutError / PermissionDeniedError / InternalServerError.
+        # Degrade gracefully instead of bubbling a 500 HTML page to the UI.
+        etype = type(e).__name__
+        transient = any(k in etype for k in (
+            "APITimeout", "APIConnection", "InternalServerError",
+            "PermissionDenied", "ServiceUnavailable", "RateLimit", "Overloaded",
+        ))
+        if transient:
+            log.warning("studio/run provider error (%s): %s", etype, str(e)[:200])
+            return _err(
+                "مزوّد الذكاء (Meridian/Claude) غير متاح مؤقتاً — حاول بعد لحظات. "
+                "AI provider temporarily unavailable — please retry shortly.",
+                "PROVIDER_UNAVAILABLE", 502,
+            )
+        log.exception("studio/run unexpected error")
+        return _err(f"unexpected error: {etype}", "RUN_FAILED", 500)
