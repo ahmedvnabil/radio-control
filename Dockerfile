@@ -19,4 +19,5 @@ ENTRYPOINT ["docker-entrypoint.sh"]
 # producing duplicate AzuraCast /nextsong triggers and (without the broadcast-state
 # lock) duplicate Telegram posts. If you need horizontal scaling, move the loops
 # into a separate worker container with -w 1, keeping the web tier on >1 workers.
-CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:4180", "--access-logfile", "-", "app:app"]
+CMD ["gunicorn", "-w", "1", "-t", "120", "-b", "0.0.0.0:4180", "--access-logfile", "-", "app:app"]
+
