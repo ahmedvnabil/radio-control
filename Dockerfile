@@ -14,4 +14,9 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 ENV PORT=4180
 EXPOSE 4180
 ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["gunicorn", "-w", "2", "-b", "0.0.0.0:4180", "--access-logfile", "-", "app:app"]
+# NOTE: -w 1 (single worker) is intentional. The app runs two background threads
+# (_queue_keeper_loop, _broadcast_loop). With 2+ workers each thread would run 2x,
+# producing duplicate AzuraCast /nextsong triggers and (without the broadcast-state
+# lock) duplicate Telegram posts. If you need horizontal scaling, move the loops
+# into a separate worker container with -w 1, keeping the web tier on >1 workers.
+CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:4180", "--access-logfile", "-", "app:app"]

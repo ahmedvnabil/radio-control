@@ -797,6 +797,61 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
             </template>
           </div>
         </div>
+
+        <!-- ╔═══ SHARE / EMBED ═══╗ -->
+        <div class="pane" style="margin-top:14px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h2><i data-lucide="link" style="width:15px;height:15px"></i> <span x-text="t('share')"></span></h2>
+            <a class="btn sm" :href="streamUrls() && streamUrls().player" target="_blank" x-show="streamUrls()">
+              <i data-lucide="external-link" style="width:12px;height:12px"></i> <span x-text="t('open')"></span>
+            </a>
+          </div>
+          <p class="sub" x-text="t('share_sub')"></p>
+          <div x-show="!streamUrls()" style="color:var(--muted);font-size:12px;text-align:center;padding:14px" x-text="t('no_active_station')"></div>
+
+          <template x-if="streamUrls()">
+            <div>
+              <!-- URL rows -->
+              <template x-for="row in [
+                {label:t('player_link'),  url:streamUrls().player,  icon:'monitor-play'},
+                {label:t('mp3_192'),       url:streamUrls().mp3_192,  icon:'radio'},
+                {label:t('mp3_320'),       url:streamUrls().mp3_320,  icon:'radio'},
+                {label:t('now_api'),       url:streamUrls().nowApi,   icon:'code-2'}
+              ]" :key="row.label">
+                <div class="item" style="margin-bottom:6px">
+                  <div class="cover"><i :data-lucide="row.icon" style="width:12px;height:12px"></i></div>
+                  <div class="meta" style="min-width:0;flex:1">
+                    <strong x-text="row.label"></strong>
+                    <small x-text="row.url" style="display:block;font-family:ui-monospace,monospace;font-size:11px;opacity:0.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr;text-align:start"></small>
+                  </div>
+                  <button class="btn sm" @click="copyText(row.url,row.label)" :title="t('copy')">
+                    <i data-lucide="copy" style="width:12px;height:12px"></i>
+                  </button>
+                  <a class="btn sm" :href="row.url" target="_blank" :title="t('open')">
+                    <i data-lucide="external-link" style="width:12px;height:12px"></i>
+                  </a>
+                </div>
+              </template>
+
+              <!-- Embed snippet rows (iframe + audio) -->
+              <template x-for="snip in [
+                {label:t('embed_iframe'), code:embedSnippets().iframe},
+                {label:t('embed_audio'),  code:embedSnippets().audio}
+              ]" :key="snip.label">
+                <div style="margin-top:12px">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                    <strong style="font-size:13px" x-text="snip.label"></strong>
+                    <button class="btn sm" @click="copyText(snip.code,snip.label)">
+                      <i data-lucide="copy" style="width:12px;height:12px"></i>
+                      <span x-text="t('copy')"></span>
+                    </button>
+                  </div>
+                  <pre style="margin:0;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:6px;font-family:ui-monospace,monospace;font-size:11px;color:var(--text);overflow-x:auto;direction:ltr;text-align:start;white-space:pre" x-text="snip.code"></pre>
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
       </div>
 
       <!-- ╔═══ TELEGRAM ═══╗ -->
@@ -943,6 +998,68 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
                 </div>
               </template>
               <div x-show="backups.length===0" style="color:var(--muted);font-size:12px;text-align:center;padding:14px" x-text="t('no_backups')"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ╔═══ STUDIO (agent-studio merged) ═══╗ -->
+      <div x-show="tab==='studio'" x-cloak>
+        <div class="row" style="margin-bottom:14px">
+          <!-- LEFT: agent list -->
+          <div class="pane" style="grid-column:span 1">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <h2 x-text="t('studio_agents')"></h2>
+              <button class="btn sm primary" @click="studioCreatePrompt()"><i data-lucide="plus" style="width:11px;height:11px"></i> <span x-text="t('studio_new')"></span></button>
+            </div>
+            <p class="sub" x-text="t('studio_agents_sub')"></p>
+            <div class="list" style="margin-top:6px">
+              <template x-for="a in studioAgents" :key="a.name">
+                <div class="item" :class="studioActive===a.name && 'mint'" style="cursor:pointer" @click="studioOpen(a.name)">
+                  <div class="cover"><i data-lucide="wand-2" style="width:14px;height:14px"></i></div>
+                  <div class="meta">
+                    <strong x-text="a.label_ar || a.label_en || a.name"></strong>
+                    <small x-text="a.model + ' · ' + (a.tools.length ? a.tools.join(', ') : 'no-tools')"></small>
+                  </div>
+                </div>
+              </template>
+              <div x-show="studioAgents.length===0" style="color:var(--muted);font-size:12px;text-align:center;padding:14px" x-text="t('studio_no_agents')"></div>
+            </div>
+          </div>
+
+          <!-- RIGHT: editor + runner -->
+          <div class="pane" style="grid-column:span 2">
+            <div x-show="!studioActive" x-cloak style="color:var(--muted);text-align:center;padding:30px" x-text="t('studio_select')"></div>
+            <div x-show="studioActive" x-cloak>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <h2 x-text="studioActive"></h2>
+                <div style="display:flex;gap:6px">
+                  <button class="btn sm" @click="studioSave()" :disabled="!studioDirty"><i data-lucide="save" style="width:11px;height:11px"></i> <span x-text="t('save')"></span></button>
+                  <button class="btn sm danger" @click="studioDelete()"><i data-lucide="trash-2" style="width:11px;height:11px"></i></button>
+                </div>
+              </div>
+              <textarea x-model="studioContent" @input="studioDirty=true" style="width:100%;min-height:280px;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;background:#0d1110;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px;resize:vertical"></textarea>
+              <div style="margin-top:10px">
+                <label class="sub" style="display:block;margin-bottom:4px" x-text="t('studio_input')"></label>
+                <textarea x-model="studioInput" :placeholder="t('studio_input_ph')" style="width:100%;min-height:70px;border:1px solid var(--line);border-radius:8px;padding:8px;background:#111;color:var(--ink);resize:vertical"></textarea>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+                  <span class="sub" x-show="studioBusy" x-text="t('studio_running')"></span>
+                  <span class="sub" x-show="studioUsage" x-text="studioUsage"></span>
+                  <button class="btn primary" @click="studioRun()" :disabled="studioBusy || !studioInput.trim()">
+                    <i data-lucide="sparkles" style="width:12px;height:12px"></i>
+                    <span x-text="t('studio_run')"></span>
+                  </button>
+                </div>
+              </div>
+              <div x-show="studioOutput" x-cloak style="margin-top:14px;padding:12px;background:rgba(113,237,189,0.06);border:1px solid rgba(113,237,189,0.25);border-radius:8px;white-space:pre-wrap;font-size:13px;line-height:1.6" x-text="studioOutput"></div>
+              <details x-show="studioTrace.length" x-cloak style="margin-top:8px">
+                <summary style="cursor:pointer;color:var(--muted);font-size:12px" x-text="t('studio_trace')+ ' ('+studioTrace.length+')'"></summary>
+                <div class="console" style="margin-top:6px;max-height:180px">
+                  <template x-for="(t,i) in studioTrace" :key="i">
+                    <div :class="t.error && 'err'"><span x-text="'▸ '+t.tool+' '+JSON.stringify(t.input)"></span></div>
+                  </template>
+                </div>
+              </details>
             </div>
           </div>
         </div>
@@ -1260,6 +1377,7 @@ return {
   recordings:[], toasts:[], _toastId:0,
   templates:[], voices:[],
   copilot:{score:null, status_text:'', suggestions:[], totals:null},
+  azBase:'',  // AzuraCast base URL — populated by refresh() from /api/v1/config; used to build stream/embed URLs in the broadcast tab
   builderView:'week', dayBlocks:[], isDragging:false, selectedDayBlockId:null,
   theme: localStorage.getItem('rc_theme') || 'flat',
   showAI:false, aiMessages:[], aiInput:'', aiBusy:false,
@@ -1283,6 +1401,9 @@ return {
   folderPlaylist:null, folderRules:[], newFolderPath:'',
   showCreateStation:false, showCreatePlaylist:false, showBulkAssign:false, showAddSchedule:false,
   showCreateStreamer:false, showCreateWebhook:false, showCreateMount:false, showCreatePodcast:false,
+  // ── Studio (agent-studio) state ──
+  studioAgents:[], studioActive:null, studioContent:'', studioDirty:false,
+  studioInput:'', studioOutput:'', studioTrace:[], studioBusy:false, studioUsage:'',
   showSettings:false, showFolderModal:false,
   newStation:{name:'',short_name:'',description:'',template:''},
   newPlaylist:{name:'',type:'default',weight:3},
@@ -1300,6 +1421,7 @@ return {
     {id:'audience',icon:'bar-chart-3'},
     {id:'broadcast',icon:'mic'},
     {id:'telegram',icon:'send'},
+    {id:'studio',icon:'wand-2'},
     {id:'setup',icon:'settings'},
     {id:'dev',icon:'terminal'},
   ],
@@ -1307,7 +1429,8 @@ return {
   days:['mon','tue','wed','thu','fri','sat','sun'],
   i18n:{
     ar:{
-      views:'العروض',stations:'المحطات',live:'البث',media:'الوسائط',playlists:'القوائم',schedule:'الجدول',audience:'الجمهور',broadcast:'البث',telegram:'تلجرام',setup:'الإعداد',dev:'المطوّر',add:'إضافة',
+      views:'العروض',stations:'المحطات',live:'البث',media:'الوسائط',playlists:'القوائم',schedule:'الجدول',audience:'الجمهور',broadcast:'البث',telegram:'تلجرام',studio:'الاستوديو',setup:'الإعداد',dev:'المطوّر',add:'إضافة',
+      studio_agents:'الوكلاء',studio_agents_sub:'كاتب الكلمات / فحص الجودة / Suno prompts (Claude + أدوات)',studio_no_agents:'لا توجد وكلاء',studio_select:'اختر وكيلاً لتعديله أو تشغيله',studio_input:'المُدخل',studio_input_ph:'فكرة الأغنية، البيت، أو السطر اللي عاوز يفحصه...',studio_run:'شغّل',studio_running:'يعمل…',studio_trace:'تتبع الأدوات',studio_new:'جديد',studio_name_ph:'اسم الوكيل (lowercase, dashes)',saved:'تم الحفظ',deleted:'تم الحذف',confirm_delete:'حذف',
       tg_on:'متصل',tg_off:'مش متظبّط',tg_sub:'بث للمتابعين على تلجرام — إيفنتات أوتوماتيك أو بعت يدوي',tg_not_configured:'محتاج TELEGRAM_BOT_TOKEN في إعدادات السيرفر عشان يشتغل',tg_enabled_rules:'قواعد مفعّلة',tg_send:'بعت للقناة',tg_send_sub:'ابعت رسالة مباشرة للمتابعين',tg_text_ph:'اكتب الرسالة بالعربي…',tg_send_btn:'بعت',tg_sent:'اتبعت للقناة',tg_rules:'القواعد (الإيفنتات)',tg_rules_sub:'show_start = أوتوماتيك لما البرنامج يبدأ · manual = يدوي',tg_fire:'جرّب',tg_fired:'اتنفّذ',tg_no_rules:'مفيش قواعد لسه',tg_editor:'محرر القواعد (broadcasts.yaml)',tg_editor_sub:'عدّل القواعد واحفظ — بيشتغل في الحال',tg_save:'حفظ',tg_saved:'اتحفظ',
       search_ph:'ابحث عن أغنية، قائمة، محطة…',connected:'متصل',offline:'غير متصل',refresh:'تحديث',
       now_playing:'الآن يُذاع',next:'التالي',skip:'تخطي',build_queue:'بناء الطابور',no_live:'لا يوجد بث',
@@ -1328,6 +1451,7 @@ return {
       streamers:'البثاثون (DJs)',streamers_sub:'حسابات للبث المباشر',new_streamer:'بثّاث جديد',display_name:'الاسم الظاهر',username:'اسم المستخدم',password:'كلمة المرور',comments:'ملاحظات',active:'نشط',inactive:'معطّل',no_streamers:'لا يوجد بثاثون',
       webhooks:'الـ Webhooks',webhooks_sub:'إشعارات على Discord/Slack/الخ',new_webhook:'webhook جديد',webhook_url:'الرابط',no_webhooks:'لا توجد webhooks',
       mounts:'الـ Mounts',mounts_sub:'نقاط بث متعددة بترميزات مختلفة',new_mount:'mount جديد',mount_path:'المسار',format:'الصيغة',bitrate:'البتريت',listen:'استماع',
+      share:'الروابط والمشاركة',share_sub:'الروابط المباشرة للبث + أكواد جاهزة تدمجها في أي موقع',player_link:'صفحة المشغّل العامة',mp3_192:'بث MP3 192k',mp3_320:'بث MP3 320k (Hi-Fi)',now_api:'API الأغنية الحالية (JSON)',embed_iframe:'تضمين كامل (iframe)',embed_audio:'مشغّل HTML5 بسيط',copy:'نسخ',copied:'اتنسخ',open:'فتح',no_active_station:'اختر محطة من اليسار عشان الروابط تظهر',
       branding:'الهوية البصرية',branding_sub:'تخصيص الصفحة العامة',offline_text:'نص خارج البث',offline_default:'البث غير متاح حالياً',public_css:'CSS مخصص',save:'حفظ',
       public_player:'المشغل العام',public_player_sub:'روابط المشغل لكل محطة',open:'افتح',
       podcasts:'البودكاست',podcasts_sub:'استضافة بودكاست بإيبيزودات',new_podcast:'بودكاست جديد',title:'العنوان',description:'الوصف',author:'المؤلف',language:'اللغة',episodes:'حلقة',no_podcasts:'لا توجد بودكاست',
@@ -1351,7 +1475,8 @@ return {
       voicebox_tts:'تحويل النص لصوت',voicebox_tts_sub:'استخدم VoiceBox لتوليد فقرة صوتية وارفعها مباشرة لـ AzuraCast',voice:'الصوت',default_voice:'الصوت الافتراضي',tts_text:'النص',tts_placeholder:'اكتب الفقرة بالعربية الفصحى — مثلاً: \"مساء النور، مع برنامج موجة\"',generate_upload:'توليد ورفع',voice_uploaded:'تم رفع الفقرة الصوتية',
     },
     en:{
-      views:'Views',stations:'Stations',live:'Live',media:'Media',playlists:'Playlists',schedule:'Schedule',audience:'Audience',broadcast:'Broadcast',telegram:'Telegram',setup:'Setup',dev:'Developer',add:'Add',
+      views:'Views',stations:'Stations',live:'Live',media:'Media',playlists:'Playlists',schedule:'Schedule',audience:'Audience',broadcast:'Broadcast',telegram:'Telegram',studio:'Studio',setup:'Setup',dev:'Developer',add:'Add',
+      studio_agents:'Agents',studio_agents_sub:'Lyric writer / QC / Suno prompts (Claude + tools)',studio_no_agents:'No agents',studio_select:'Pick an agent to edit or run',studio_input:'Input',studio_input_ph:'Song idea, verse, or line to check...',studio_run:'Run',studio_running:'Running…',studio_trace:'Tool trace',studio_new:'New',studio_name_ph:'agent name (lowercase, dashes)',saved:'Saved',deleted:'Deleted',confirm_delete:'Delete',
       tg_on:'Connected',tg_off:'Not set up',tg_sub:'Broadcast to followers on Telegram — automatic events or manual send',tg_not_configured:'Needs TELEGRAM_BOT_TOKEN in the server env to work',tg_enabled_rules:'Enabled rules',tg_send:'Send to channel',tg_send_sub:'Post a message straight to followers',tg_text_ph:'Write the message…',tg_send_btn:'Send',tg_sent:'Sent to channel',tg_rules:'Rules (events)',tg_rules_sub:'show_start = auto when the show starts · manual = on demand',tg_fire:'Fire',tg_fired:'Fired',tg_no_rules:'No rules yet',tg_editor:'Rules editor (broadcasts.yaml)',tg_editor_sub:'Edit the rules and save — takes effect immediately',tg_save:'Save',tg_saved:'Saved',
       search_ph:'Search tracks, playlists, stations…',connected:'Connected',offline:'Offline',refresh:'Refresh',
       now_playing:'Now Playing',next:'Next',skip:'Skip',build_queue:'Build Queue',no_live:'No live broadcast',
@@ -1372,6 +1497,7 @@ return {
       streamers:'Streamers (DJs)',streamers_sub:'Live broadcast accounts',new_streamer:'New Streamer',display_name:'Display name',username:'Username',password:'Password',comments:'Comments',active:'Active',inactive:'Inactive',no_streamers:'No streamers yet',
       webhooks:'Webhooks',webhooks_sub:'Notifications to Discord/Slack/etc',new_webhook:'New Webhook',webhook_url:'URL',no_webhooks:'No webhooks',
       mounts:'Mounts',mounts_sub:'Multiple stream endpoints with different encodings',new_mount:'New Mount',mount_path:'Path',format:'Format',bitrate:'Bitrate',listen:'Listen',
+      share:'Links & Share',share_sub:'Direct stream URLs + ready-to-paste embed snippets for any site',player_link:'Public player page',mp3_192:'MP3 stream 192k',mp3_320:'MP3 stream 320k (Hi-Fi)',now_api:'Now Playing API (JSON)',embed_iframe:'Full embed (iframe)',embed_audio:'Simple HTML5 player',copy:'Copy',copied:'Copied',open:'Open',no_active_station:'Pick a station on the left to see its links',
       branding:'Branding',branding_sub:'Customize the public page',offline_text:'Offline text',offline_default:'Stream offline',public_css:'Custom CSS',save:'Save',
       public_player:'Public Player',public_player_sub:'Per-station player URLs',open:'Open',
       podcasts:'Podcasts',podcasts_sub:'Host a podcast with episodes',new_podcast:'New Podcast',title:'Title',description:'Description',author:'Author',language:'Language',episodes:'episodes',no_podcasts:'No podcasts yet',
@@ -1401,6 +1527,34 @@ return {
     this.toasts.push({id,title,body:body||'',kind:kind||'ok'});
     this.$nextTick(()=>this.tick());
     setTimeout(()=>{this.toasts=this.toasts.filter(t=>t.id!==id);},4500);
+  },
+  // ── stream URL + embed snippet builders (broadcast tab "Share" pane) ──
+  // Built deterministically from azBase + the active station's short_name so we
+  // don't depend on AzuraCast's admin endpoints returning public URLs.
+  streamUrls(){
+    if(!this.azBase||!this.active||!this.active.short_name)return null;
+    const b=this.azBase, s=this.active.short_name;
+    return {
+      player:    `${b}/public/${s}`,
+      embed:     `${b}/public/${s}/embed`,
+      mp3_192:   `${b}/listen/${s}/radio.mp3`,
+      mp3_320:   `${b}/listen/${s}/hifi.mp3`,
+      nowApi:    `${b}/api/nowplaying/${s}`,
+    };
+  },
+  embedSnippets(){
+    const u=this.streamUrls(); if(!u)return null;
+    return {
+      iframe: `<iframe src="${u.embed}" frameborder="0" allowtransparency="true" style="width:100%;min-height:200px;border:0"></iframe>`,
+      audio:  `<audio controls preload="none" style="width:100%">\n  <source src="${u.mp3_192}" type="audio/mpeg">\n  <source src="${u.mp3_320}" type="audio/mpeg">\n</audio>`,
+    };
+  },
+  async copyText(text,label){
+    try{
+      if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);}
+      else{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);}
+      this.toast(this.t('copied'),label||'','ok');
+    }catch(e){this.toast(this.t('error'),String(e),'err');}
   },
   setLang(l){this.lang=l;this.dir=l==='ar'?'rtl':'ltr';this.$nextTick(()=>this.tick());},
   pad(n){return String(n).padStart(2,'0');},
@@ -1451,6 +1605,7 @@ return {
     const vc=await this.api('/api/v1/voices');if(vc.ok)this.voices=vc.data;
     this.loadExternalSongs();
     this.loadWeather();
+    this.studioList();
     setInterval(()=>this.tickLive(),12000);
     setInterval(()=>this.loadQueueHistory(),20000);
     setInterval(()=>this.loadCopilot(),60000);
@@ -1529,7 +1684,7 @@ return {
   },
   isLive(id){const n=this.nowPlayingList.find(x=>x.station&&x.station.id===id);return !!(n&&n.is_online);},
   async refresh(){
-    const c=await this.api('/api/v1/config');if(c.ok)this.configured=c.data.configured;
+    const c=await this.api('/api/v1/config');if(c.ok){this.configured=c.data.configured; this.azBase=(c.data.azuracast_base_url||'').replace(/\/+$/,'');}
     const s=await this.api('/api/v1/stations');
     if(s.ok){
       this.stations=s.data;
@@ -1541,6 +1696,59 @@ return {
     this.$nextTick(()=>this.tick());
   },
   async tickLive(){const n=await this.api('/api/v1/nowplaying');if(n.ok)this.nowPlayingList=n.data;this.$nextTick(()=>this.tick());},
+  // ── Studio (agent-studio) methods ──
+  async studioList(){
+    const r=await this.api('/api/v1/studio/agents');
+    if(r.ok) this.studioAgents=r.data||[];
+  },
+  async studioOpen(name){
+    const r=await this.api('/api/v1/studio/agents/'+encodeURIComponent(name));
+    if(r.ok){
+      this.studioActive=name;
+      this.studioContent=r.data.content;
+      this.studioDirty=false;
+      this.studioOutput='';this.studioTrace=[];this.studioUsage='';
+    } else this.toast(this.t('error'),r.error||'load failed','err');
+  },
+  async studioSave(){
+    if(!this.studioActive||!this.studioDirty)return;
+    const r=await fetch('/api/v1/studio/agents/'+encodeURIComponent(this.studioActive),{
+      method:'PUT', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({content:this.studioContent})
+    }).then(r=>r.json()).catch(e=>({ok:false,error:e.message}));
+    if(r.ok){this.studioDirty=false;this.toast(this.t('saved'),this.studioActive,'ok');this.studioList();}
+    else this.toast(this.t('error'),r.error||'save failed','err');
+  },
+  async studioDelete(){
+    if(!this.studioActive||!confirm(this.t('confirm_delete')+' '+this.studioActive+'?'))return;
+    const r=await fetch('/api/v1/studio/agents/'+encodeURIComponent(this.studioActive),{method:'DELETE'})
+      .then(r=>r.json()).catch(e=>({ok:false,error:e.message}));
+    if(r.ok){this.studioActive=null;this.studioContent='';this.studioList();this.toast(this.t('deleted'),'','ok');}
+    else this.toast(this.t('error'),r.error||'delete failed','err');
+  },
+  async studioCreatePrompt(){
+    const name=prompt(this.t('studio_name_ph'));
+    if(!name||!name.trim())return;
+    const r=await fetch('/api/v1/studio/agents',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name:name.trim()})}).then(r=>r.json()).catch(e=>({ok:false,error:e.message}));
+    if(r.ok){await this.studioList();this.studioOpen(name.trim());}
+    else this.toast(this.t('error'),r.error||'create failed','err');
+  },
+  async studioRun(){
+    if(!this.studioActive||!this.studioInput.trim()||this.studioBusy)return;
+    this.studioBusy=true;this.studioOutput='';this.studioTrace=[];this.studioUsage='';
+    const r=await fetch('/api/v1/studio/run',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({agent:this.studioActive,input:this.studioInput})})
+      .then(r=>r.json()).catch(e=>({ok:false,error:e.message}));
+    this.studioBusy=false;
+    if(r.ok){
+      this.studioOutput=r.data.output||'';
+      this.studioTrace=r.data.trace||[];
+      const u=r.data.usage||{};
+      this.studioUsage=`${r.data.model} · in=${u.input_tokens||0} out=${u.output_tokens||0}`;
+    } else this.toast(this.t('error'),r.error||'run failed','err');
+    this.$nextTick(()=>this.tick());
+  },
   async loadStation(id){
     const [pl,mf,q,h,st,wh,mo,po,sd,tl,rq,li,rc]=await Promise.all([
       this.api(`/api/v1/stations/${id}/playlists`),
@@ -1570,8 +1778,19 @@ return {
     if(rq.ok)this.requestLog=Array.isArray(rq.data)?rq.data:(rq.data&&rq.data.rows||[]);
     if(li.ok)this.currentListeners=li.data;
     if(rc.ok)this.recordings=Array.isArray(rc.data)?rc.data:[];
-    // load day-builder cached blocks for this station
-    try{const cached=localStorage.getItem('rc_blocks_'+id);if(cached)this.dayBlocks=JSON.parse(cached);else this.dayBlocks=[];}catch(e){this.dayBlocks=[];}
+    // load day-builder blocks: try server first, fall back to localStorage on failure
+    this.dayBlocks=[];
+    try{
+      const r=await this.api(`/api/v1/stations/${id}/day-blocks`);
+      if(r.ok && Array.isArray(r.data) && r.data.length){this.dayBlocks=r.data;}
+      else {
+        const cached=localStorage.getItem('rc_blocks_'+id);
+        if(cached){this.dayBlocks=JSON.parse(cached); this.saveBlocks();}  // migrate localStorage → server
+      }
+    }catch(e){
+      const cached=localStorage.getItem('rc_blocks_'+id);
+      if(cached)try{this.dayBlocks=JSON.parse(cached);}catch(_){}
+    }
     this.loadCopilot();
     // station detail for branding
     const det=await this.api(`/api/v1/stations/${id}`);if(det.ok&&det.data.branding_config)this.branding={...this.branding,...det.data.branding_config};
@@ -1658,7 +1877,21 @@ return {
     }
   },
   // ---- DAY BUILDER ----
-  saveBlocks(){if(this.active)localStorage.setItem('rc_blocks_'+this.active.id,JSON.stringify(this.dayBlocks));},
+  saveBlocks(){
+    if(!this.active)return;
+    // Mirror to localStorage immediately for instant rebound on next load
+    try{localStorage.setItem('rc_blocks_'+this.active.id,JSON.stringify(this.dayBlocks));}catch(_){}
+    // Persist to server (debounced — coalesce rapid edits)
+    clearTimeout(this._blockSaveT);
+    this._blockSaveT=setTimeout(async()=>{
+      try{
+        await fetch(`/api/v1/stations/${this.active.id}/day-blocks`,{
+          method:'PUT', headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({blocks:this.dayBlocks})
+        });
+      }catch(e){/* localStorage already has it */}
+    },600);
+  },
   onDragStart(ev,item){this.isDragging=true;ev.dataTransfer.setData('application/json',JSON.stringify(item));ev.dataTransfer.effectAllowed='copy';},
   handleDayDrop(ev){
     this.isDragging=false;

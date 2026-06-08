@@ -4,3 +4,9 @@ __pycache__/
 .env
 # runtime state for Telegram show_start de-dup (not source)
 agents/.broadcast_state/
+agents/.queue_state/
+agents.original/
+*.png
+*.tar.gz
+*.b64
+Dockerfile.hardened

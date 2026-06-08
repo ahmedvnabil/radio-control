@@ -12,6 +12,7 @@ import logging
 import os
 import threading
 import time
+from pathlib import Path
 from typing import Any
 from urllib.parse import urljoin
 
@@ -40,6 +41,11 @@ FREELLM_API_KEY = os.environ.get("FREELLM_API_KEY", "")
 VOICEBOX_API_KEY = os.environ.get("VOICEBOX_API_KEY", "")               # api-key / Bearer for VoiceBox generation
 ACE_STEP_TOKEN = os.environ.get("ACE_STEP_TOKEN", "")                   # bearer token for the songs.* service
 
+# Cloudflare Access service-token credentials. The 3 zad.tools tunnels have an Access policy
+# on /api/* — we pass these headers so the policy lets the container through.
+CF_ACCESS_CLIENT_ID = os.environ.get("CF_ACCESS_CLIENT_ID", "")
+CF_ACCESS_CLIENT_SECRET = os.environ.get("CF_ACCESS_CLIENT_SECRET", "")
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev")
 log = logging.getLogger("radio-control")
@@ -47,9 +53,12 @@ log = logging.getLogger("radio-control")
 # File-based show personas live in agents/ — see agents_engine.py
 from agents_engine import agents_bp, build_station_templates  # noqa: E402
 from telegram_engine import telegram_bp, tick as _broadcast_tick  # noqa: E402
+# Agent Studio (lyric writer / QC / Suno prompts) — merged from the agent-studio app.
+from studio_engine import studio_bp  # noqa: E402
 
 app.register_blueprint(agents_bp)
 app.register_blueprint(telegram_bp)
+app.register_blueprint(studio_bp)
 
 
 # ---------- helpers ---------------------------------------------------------
@@ -61,6 +70,11 @@ INTEG_UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
             "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36")
 _integ = requests.Session()
 _integ.headers.update({"User-Agent": INTEG_UA})
+if CF_ACCESS_CLIENT_ID and CF_ACCESS_CLIENT_SECRET:
+    _integ.headers.update({
+        "CF-Access-Client-Id": CF_ACCESS_CLIENT_ID,
+        "CF-Access-Client-Secret": CF_ACCESS_CLIENT_SECRET,
+    })
 
 
 def _vb_headers() -> dict:
@@ -157,19 +171,27 @@ def api_integrations_health() -> tuple[Response, int]:
     }
     ua = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
           "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
+    cf_hdr = {"CF-Access-Client-Id": CF_ACCESS_CLIENT_ID,
+              "CF-Access-Client-Secret": CF_ACCESS_CLIENT_SECRET} if (CF_ACCESS_CLIENT_ID and CF_ACCESS_CLIENT_SECRET) else {}
     out = {}
     for name, (base, probe) in targets.items():
         info = {"configured": bool(base), "base": base or None}
         if base:
-            for label, hdr in (("plain", {}), ("browser_ua", {"User-Agent": ua})):
+            tests = [
+                ("plain", {}),
+                ("browser_ua", {"User-Agent": ua}),
+                ("ua_plus_cf", {"User-Agent": ua, **cf_hdr}),
+            ]
+            for label, hdr in tests:
                 try:
-                    r = requests.get(base + probe, headers=hdr, timeout=6)
+                    r = requests.get(base + probe, headers=hdr, timeout=8)
                     info[label] = r.status_code
                 except Exception as e:
-                    info[label] = type(e).__name__
+                    info[label] = type(e).__name__ + ": " + str(e)[:140]
         out[name] = info
     out["openai_key"] = bool(OPENAI_API_KEY)
     out["freellm_key"] = bool(FREELLM_API_KEY)
+    out["cf_access_configured"] = bool(cf_hdr)
     return _ok(out)
 
 
@@ -494,6 +516,57 @@ def api_delete_mount(sid: int, mid: int) -> tuple[Response, int]:
 @app.get("/api/v1/stations/<int:sid>/listeners")
 def api_listeners(sid: int) -> tuple[Response, int]:
     return _proxy("GET", f"/api/station/{sid}/listeners")
+
+
+# ---------- day-builder persistence ----------------------------------------
+# 24-hour block schedule per station, persisted as JSON on the agents/ volume so
+# edits survive container redeploys and follow the user across browsers/devices.
+
+_DAY_BUILDER_DIR = Path(__file__).resolve().parent / "agents" / "day_builder"
+
+
+def _day_blocks_path(sid: int) -> Path:
+    _DAY_BUILDER_DIR.mkdir(parents=True, exist_ok=True)
+    return _DAY_BUILDER_DIR / f"{sid}.json"
+
+
+@app.get("/api/v1/stations/<int:sid>/day-blocks")
+def api_day_blocks_get(sid: int):
+    p = _day_blocks_path(sid)
+    if not p.exists():
+        return _ok([])
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+        return _ok(data if isinstance(data, list) else [])
+    except Exception as e:
+        log.warning("day-blocks read failed for sid=%s: %s", sid, e)
+        return _ok([])
+
+
+@app.put("/api/v1/stations/<int:sid>/day-blocks")
+def api_day_blocks_put(sid: int):
+    body = request.get_json(silent=True) or {}
+    blocks = body.get("blocks")
+    if not isinstance(blocks, list):
+        return _err("blocks must be a list", "BAD_PAYLOAD")
+    # Sanity-validate each block — keep only the fields the frontend writes.
+    clean: list[dict] = []
+    for b in blocks:
+        if not isinstance(b, dict):
+            continue
+        try:
+            clean.append({
+                "id": str(b.get("id") or "")[:64],
+                "type": str(b.get("type") or "")[:32],
+                "title": str(b.get("title") or "")[:200],
+                "startHour": max(0, min(23, int(b.get("startHour") or 0))),
+                "durationMins": max(1, min(24 * 60, int(b.get("durationMins") or 30))),
+                "data": b.get("data"),
+            })
+        except (TypeError, ValueError):
+            continue
+    _day_blocks_path(sid).write_text(json.dumps(clean, ensure_ascii=False, indent=2), encoding="utf-8")
+    return _ok({"saved": True, "count": len(clean)})
 
 
 @app.get("/api/v1/stations/<int:sid>/reports/listeners")
@@ -951,7 +1024,7 @@ def generate_script_text(show: dict, date: str) -> dict:
             rr = _integ.post(
                 FREELLM_BASE_URL + "/v1/chat/completions",
                 json={
-                    "model": model_override or "auto",
+                    "model": model_override or "auto:fast",
                     "messages": [
                         {"role": "system", "content": sys_prompt},
                         {"role": "user", "content": user_prompt},
@@ -965,8 +1038,9 @@ def generate_script_text(show: dict, date: str) -> dict:
                 j = rr.json()
                 text = (j.get("choices") or [{}])[0].get("message", {}).get("content", "")
                 return {"script": text, "provider": "freellm", "model": j.get("model")}
+            log.warning("freellm HTTP %s — body: %s", rr.status_code, rr.text[:300])
         except Exception as e:
-            log.warning("freellm error: %s", e)
+            log.warning("freellm exception: %s", e)
 
     if OPENAI_API_KEY:
         from openai import OpenAI
@@ -1213,9 +1287,78 @@ def api_ai_chat() -> tuple[Response, int]:
     return _err("Too many tool iterations", "AI_LOOP", 502)
 
 
+# ---------- Studio API (Merged) --------------------------------
+
+import studio_runner  # noqa: E402
+
+
+@app.get("/api/v1/studio/agents")
+def api_studio_agents_list():
+    return _ok(studio_runner.list_agents())
+
+
+@app.post("/api/v1/studio/agents")
+def api_studio_agent_create():
+    payload = request.get_json(silent=True) or {}
+    name = (payload.get("name") or "").strip()
+    if not name:
+        return _err("name required", "VALIDATION")
+    try:
+        return _ok(studio_runner.create_raw(name, payload.get("content")))
+    except studio_runner.AgentError as e:
+        return _err(str(e), e.code or "CREATE_FAILED", 409 if e.code == "EXISTS" else 400)
+
+
+@app.get("/api/v1/studio/agents/<name>")
+def api_studio_agent_get(name):
+    try:
+        return _ok(studio_runner.load_raw(name))
+    except studio_runner.AgentError as e:
+        return _err(str(e), e.code or "NOT_FOUND", 404)
+
+
+@app.put("/api/v1/studio/agents/<name>")
+def api_studio_agent_put(name):
+    payload = request.get_json(silent=True) or {}
+    content = payload.get("content") or ""
+    if not content.strip():
+        return _err("content is required", "EMPTY")
+    try:
+        studio_runner.save_raw(name, content)
+        return _ok({"name": name, "saved": True})
+    except studio_runner.AgentError as e:
+        return _err(str(e), e.code or "SAVE_FAILED")
+
+
+@app.delete("/api/v1/studio/agents/<name>")
+def api_studio_agent_delete(name):
+    try:
+        studio_runner.delete_raw(name)
+        return _ok({"name": name, "deleted": True})
+    except studio_runner.AgentError as e:
+        return _err(str(e), e.code or "NOT_FOUND", 404)
+
+
+@app.post("/api/v1/studio/run")
+def api_studio_run():
+    payload = request.get_json(silent=True) or {}
+    agent = payload.get("agent")
+    user_input = payload.get("input")
+    if not agent:
+        return _err("agent required", "VALIDATION")
+    if not user_input or not user_input.strip():
+        return _err("input is required", "EMPTY_INPUT")
+    try:
+        return _ok(studio_runner.run_agent(agent, user_input))
+    except studio_runner.AgentError as e:
+        status = 503 if e.code == "NO_API_KEY" else 400
+        return _err(str(e), e.code or "RUN_FAILED", status)
+
 # ---------- background queue keeper -----------------------------------------
 
 def _queue_keeper_loop() -> None:
+    STATE_DIR = Path("agents/.queue_state")
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
     while True:
         try:
             if API_KEY:
@@ -1224,7 +1367,24 @@ def _queue_keeper_loop() -> None:
                     for st in r.json() or []:
                         if not st.get("is_enabled"):
                             continue
-                        _az("PUT", f"/api/admin/debug/station/{st['id']}/nextsong")
+                        sid = st["id"]
+                        # Claim this timestamp bucket to prevent other workers from double-calling nextsong
+                        now_bucket = int(time.time() / QUEUE_BUILDER_INTERVAL)
+                        marker = STATE_DIR / f"{sid}_{now_bucket}.lock"
+                        try:
+                            fd = os.open(str(marker), os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+                            os.close(fd)
+                            # Clean up old lock files
+                            for f in STATE_DIR.glob(f"{sid}_*.lock"):
+                                try:
+                                    bucket_part = int(f.stem.split("_")[1])
+                                    if bucket_part < now_bucket - 2:
+                                        f.unlink()
+                                except Exception:
+                                    pass
+                        except FileExistsError:
+                            continue  # Already claimed by another worker
+                        _az("PUT", f"/api/admin/debug/station/{sid}/nextsong")
         except Exception as e:
             log.warning("queue keeper: %s", e)
         time.sleep(QUEUE_BUILDER_INTERVAL)
