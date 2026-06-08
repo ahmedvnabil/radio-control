@@ -11,9 +11,10 @@ COPY agents /app/agents_seed
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-ENV PORT=4180
+ENV PORT=4180 PYTHONUNBUFFERED=1
 EXPOSE 4180
 ENTRYPOINT ["docker-entrypoint.sh"]
+
 # NOTE: -w 1 (single worker) is intentional. The app runs two background threads
 # (_queue_keeper_loop, _broadcast_loop). With 2+ workers each thread would run 2x,
 # producing duplicate AzuraCast /nextsong triggers and (without the broadcast-state
