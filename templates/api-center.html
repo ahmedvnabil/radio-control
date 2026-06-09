@@ -85,6 +85,12 @@
         <span x-show="hasToken" class="w-2 h-2 rounded-full bg-green-500"></span>
         <span x-show="!hasToken" class="w-2 h-2 rounded-full bg-red-500"></span>
       </button>
+      <button @click="setTab('logs')" 
+              :class="tab === 'logs' ? 'border-b-2 border-[var(--accent)] text-white font-bold' : 'text-[var(--muted)] border-b-2 border-transparent hover:text-white'" 
+              class="py-3 px-2 transition-colors flex items-center gap-2" x-show="hasToken">
+        <i data-lucide="activity" class="w-4 h-4"></i>
+        <span>سجل الوصول (Logs)</span>
+      </button>
     </div>
   </div>
 
@@ -184,6 +190,12 @@
           </table>
         </div>
 
+      </div>
+    </div>
+
+    <!-- Logs Tab Content -->
+    <div x-show="tab === 'logs'" class="absolute inset-0 w-full h-full overflow-y-auto p-8" style="display: none;">
+      <div class="max-w-4xl mx-auto space-y-8">
         <!-- Live Access Logs -->
         <div class="bg-[var(--panel)] border border-[var(--border)] rounded p-6" x-show="hasToken">
           <div class="flex justify-between items-center mb-6">
@@ -224,9 +236,9 @@
             </table>
           </div>
         </div>
-
       </div>
     </div>
+
   </div>
 
   <script>
@@ -240,7 +252,7 @@
       const hash = window.location.hash.replace('#', '') || 'explorer';
       
       return {
-        tab: ['explorer', 'list', 'security'].includes(hash) ? hash : 'explorer',
+        tab: ['explorer', 'list', 'security', 'logs'].includes(hash) ? hash : 'explorer',
         tokenInput: getCookie('guide_token') || localStorage.getItem('guide_token') || '',
         hasToken: !!(getCookie('guide_token') || localStorage.getItem('guide_token')),
         msg: '',
