@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" x-data="apiExplorer()" :dir="dir">
+<head>
+  <meta charset="utf-8">
+  <title>API Explorer - Radio Control</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #1a1d24;
+      --border: #2d3139;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #3b82f6;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', 'IBM Plex Sans Arabic', monospace;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+    .method-GET { color: #60a5fa; border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+    .method-POST { color: #4ade80; border-color: #22c55e; background: rgba(34, 197, 94, 0.1); }
+    .method-PUT { color: #facc15; border-color: #eab308; background: rgba(234, 179, 8, 0.1); }
+    .method-PATCH { color: #facc15; border-color: #eab308; background: rgba(234, 179, 8, 0.1); }
+    .method-DELETE { color: #f87171; border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+
+    .brutalist-border {
+      border: 1px solid var(--border);
+    }
+    .brutalist-input {
+      background: #000;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem;
+      width: 100%;
+      outline: none;
+    }
+    .brutalist-input:focus {
+      border-color: var(--accent);
+    }
+    .brutalist-btn {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.1s;
+    }
+    .brutalist-btn:hover {
+      background: var(--border);
+    }
+    .brutalist-btn.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .brutalist-btn.primary:hover {
+      background: #2563eb;
+    }
+    
+    [dir="rtl"] .ml-auto { margin-left: 0; margin-right: auto; }
+    [dir="rtl"] .mr-2 { margin-right: 0; margin-left: 0.5rem; }
+    [dir="rtl"] .border-r { border-right: none; border-left: 1px solid var(--border); }
+    [dir="rtl"] .pl-4 { padding-left: 0; padding-right: 1rem; }
+    
+    /* Print styles */
+    @media print {
+      body { height: auto; overflow: visible; display: block; background: #fff; color: #000; }
+      .no-print { display: none !important; }
+      .print-only { display: block !important; }
+      .brutalist-border { border-color: #ccc; }
+      .method-GET, .method-POST, .method-PUT, .method-DELETE { background: none; border: 1px solid #000; color: #000; }
+      .overflow-y-auto { overflow: visible !important; height: auto !important; }
+      #layout { flex-direction: column; }
+      #sidebar { width: 100%; border-right: none; border-bottom: 2px solid #000; margin-bottom: 20px; }
+      #content { width: 100%; }
+    }
+  </style>
+</head>
+<body class="text-sm">
+
+  <!-- Header -->
+  <header class="brutalist-border flex items-center justify-between p-3 bg-[var(--panel)] no-print">
+    <div class="flex items-center gap-3">
+      <i data-lucide="terminal" class="w-5 h-5 text-[var(--accent)]"></i>
+      <h1 class="text-lg font-bold">API Explorer <span class="text-[var(--muted)] font-normal text-sm">v1.0</span></h1>
+    </div>
+    <div class="flex items-center gap-3">
+      <input type="text" x-model="authToken" :placeholder="t('auth_token')" class="brutalist-input w-64 text-xs" type="password" />
+      <button class="brutalist-btn text-xs" @click="toggleLang()" x-text="lang === 'en' ? 'عربي' : 'English'"></button>
+    </div>
+  </header>
+
+  <div id="layout" class="flex flex-1 overflow-hidden">
+    <!-- Left Sidebar: Endpoints -->
+    <div id="sidebar" class="w-80 flex flex-col border-r border-[var(--border)] bg-[var(--bg)] no-print">
+      <div class="p-3 border-b border-[var(--border)] bg-[var(--panel)]">
+        <input type="text" x-model="searchQuery" :placeholder="t('search')" class="brutalist-input text-xs" />
+      </div>
+      <div class="flex-1 overflow-y-auto p-2 space-y-4">
+        <template x-for="(group, groupName) in groupedEndpoints" :key="groupName">
+          <div x-show="group.length > 0">
+            <h2 class="text-xs font-bold text-[var(--muted)] uppercase tracking-wider mb-2 px-2" x-text="groupName"></h2>
+            <div class="space-y-1">
+              <template x-for="ep in group" :key="ep.id">
+                <button 
+                  @click="selected = ep; response = null"
+                  class="w-full text-left p-2 rounded flex flex-col gap-1 hover:bg-[var(--panel)] border border-transparent focus:outline-none"
+                  :class="{'bg-[var(--panel)] border-[var(--border)]': selected?.id === ep.id}"
+                >
+                  <div class="flex items-center gap-2">
+                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded border" :class="'method-' + ep.method" x-text="ep.method"></span>
+                    <span class="truncate text-xs" x-text="ep.path"></span>
+                  </div>
+                </button>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- Right Content: Details & Try it -->
+    <div id="content" class="flex-1 flex flex-col bg-[var(--bg)] overflow-hidden">
+      <template x-if="selected">
+        <div class="flex flex-col h-full">
+          <!-- Endpoint Header -->
+          <div class="p-6 border-b border-[var(--border)] bg-[var(--panel)]">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-xs font-bold px-2 py-1 rounded border" :class="'method-' + selected.method" x-text="selected.method"></span>
+              <h2 class="text-xl font-bold font-mono tracking-tight" x-text="selected.path"></h2>
+            </div>
+            <p class="text-[var(--muted)] text-sm" x-text="selected.description"></p>
+          </div>
+
+          <!-- Split View for desktop -->
+          <div class="flex flex-1 overflow-hidden flex-col lg:flex-row">
+            
+            <!-- Documentation Left -->
+            <div class="flex-1 overflow-y-auto p-6 border-r border-[var(--border)]">
+              <h3 class="font-bold mb-3 border-b border-[var(--border)] pb-1" x-text="t('parameters')"></h3>
+              <template x-if="!selected.params || selected.params.length === 0">
+                <p class="text-[var(--muted)] text-xs mb-6" x-text="t('no_params')"></p>
+              </template>
+              <template x-if="selected.params && selected.params.length > 0">
+                <table class="w-full text-left mb-6 text-xs brutalist-border">
+                  <thead class="bg-[var(--panel)] border-b border-[var(--border)]">
+                    <tr>
+                      <th class="p-2 border-r border-[var(--border)]" x-text="t('name')"></th>
+                      <th class="p-2 border-r border-[var(--border)]" x-text="t('in')"></th>
+                      <th class="p-2 border-r border-[var(--border)]" x-text="t('type')"></th>
+                      <th class="p-2" x-text="t('required')"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <template x-for="p in selected.params">
+                      <tr class="border-b border-[var(--border)] last:border-0">
+                        <td class="p-2 border-r border-[var(--border)] font-bold text-[var(--accent)]" x-text="p.name"></td>
+                        <td class="p-2 border-r border-[var(--border)] text-[var(--muted)]" x-text="p.in"></td>
+                        <td class="p-2 border-r border-[var(--border)]" x-text="p.type"></td>
+                        <td class="p-2 text-[var(--muted)]" x-text="p.required ? t('yes') : t('no')"></td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+              </template>
+
+              <template x-if="selected.body">
+                <div>
+                  <h3 class="font-bold mb-3 border-b border-[var(--border)] pb-1" x-text="t('request_body')"></h3>
+                  <div class="bg-[#000] p-3 rounded brutalist-border mb-6">
+                    <div class="text-xs text-[var(--muted)] mb-2 font-bold" x-text="selected.body.type"></div>
+                    <pre class="text-xs text-green-400 whitespace-pre-wrap font-mono" x-text="selected.body.example"></pre>
+                  </div>
+                </div>
+              </template>
+
+              <h3 class="font-bold mb-3 border-b border-[var(--border)] pb-1" x-text="t('responses')"></h3>
+              <div class="space-y-4">
+                <div class="brutalist-border rounded">
+                  <div class="bg-[var(--panel)] p-2 text-xs font-bold border-b border-[var(--border)] flex justify-between">
+                    <span class="text-green-400">200 OK</span>
+                    <span class="text-[var(--muted)]">application/json</span>
+                  </div>
+                  <pre class="p-3 text-xs text-[var(--muted)] bg-[#000] font-mono">{
+  "ok": true,
+  "data": { ... },
+  "error": null,
+  "meta": {}
+}</pre>
+                </div>
+                <div class="brutalist-border rounded">
+                  <div class="bg-[var(--panel)] p-2 text-xs font-bold border-b border-[var(--border)] flex justify-between">
+                    <span class="text-red-400">4xx / 5xx Error</span>
+                    <span class="text-[var(--muted)]">application/json</span>
+                  </div>
+                  <pre class="p-3 text-xs text-[var(--muted)] bg-[#000] font-mono">{
+  "ok": false,
+  "data": null,
+  "error": "Error message",
+  "code": "ERROR_CODE"
+}</pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- Try It Right -->
+            <div class="w-full lg:w-96 flex flex-col bg-[var(--panel)] overflow-y-auto no-print">
+              <div class="p-4 border-b border-[var(--border)]">
+                <h3 class="font-bold flex items-center gap-2"><i data-lucide="play" class="w-4 h-4 text-green-400"></i> Try it</h3>
+              </div>
+              <div class="p-4 flex-1 flex flex-col gap-4">
+                <form @submit.prevent="executeRequest" class="flex flex-col gap-4">
+                  <!-- Path/Query Params form -->
+                  <template x-if="selected.params && selected.params.length > 0">
+                    <div class="space-y-2">
+                      <div class="text-xs font-bold text-[var(--muted)]" x-text="t('parameters')"></div>
+                      <template x-for="p in selected.params">
+                        <div>
+                          <label class="text-[10px] uppercase text-[var(--muted)]" x-text="p.name + (p.required?' *':'')"></label>
+                          <input type="text" x-model="requestData.params[p.name]" class="brutalist-input text-xs" :placeholder="p.type">
+                        </div>
+                      </template>
+                    </div>
+                  </template>
+
+                  <!-- Body form -->
+                  <template x-if="selected.body">
+                    <div class="space-y-2 flex-1 flex flex-col">
+                      <div class="text-xs font-bold text-[var(--muted)] flex justify-between">
+                        <span x-text="t('request_body')"></span>
+                        <span x-text="selected.body.type"></span>
+                      </div>
+                      <textarea x-model="requestData.body" class="brutalist-input text-xs font-mono h-32 flex-1 resize-y" placeholder='{"key": "value"}'></textarea>
+                    </div>
+                  </template>
+
+                  <button type="submit" class="brutalist-btn primary mt-auto flex items-center justify-center gap-2" :disabled="loading">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                    <span x-text="loading ? t('sending') : t('send_request')"></span>
+                  </button>
+                </form>
+
+                <!-- Response Panel -->
+                <div x-show="response" class="mt-4 flex-1 flex flex-col border-t border-[var(--border)] pt-4">
+                  <div class="flex justify-between items-center mb-2 text-xs">
+                    <span class="font-bold" :class="response?.status >= 400 ? 'text-red-400' : 'text-green-400'" x-text="response?.status + ' ' + response?.statusText"></span>
+                    <span class="text-[var(--muted)]" x-text="response?.time + ' ms'"></span>
+                  </div>
+                  <div class="brutalist-border rounded bg-[#000] flex-1 overflow-hidden flex flex-col relative">
+                    <div class="absolute top-2 right-2 text-[10px] text-[var(--muted)]">JSON</div>
+                    <pre class="p-3 text-xs overflow-auto font-mono text-[var(--text)] h-full" x-text="response?.body"></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </template>
+
+      <!-- Empty State -->
+      <template x-if="!selected">
+        <div class="flex-1 flex flex-col items-center justify-center text-[var(--muted)] p-6 text-center">
+          <i data-lucide="book-open" class="w-16 h-16 mb-4 opacity-20"></i>
+          <h2 class="text-xl font-bold mb-2">Radio Control API</h2>
+          <p class="max-w-md text-xs">Select an endpoint from the sidebar to view documentation and test requests directly against the server.</p>
+        </div>
+      </template>
+    </div>
+  </div>
+
+  <script>
+    const ENDPOINTS = [
+      { id: 'cfg', group: 'Core', method: 'GET', path: '/api/v1/config', description: 'Returns the configured AzuraCast base URL and whether an API key is loaded.', params: [] },
+      { id: 'st_get', group: 'Stations', method: 'GET', path: '/api/v1/stations', description: 'Lists all stations (proxies GET /api/admin/stations).', params: [] },
+      { id: 'st_post', group: 'Stations', method: 'POST', path: '/api/v1/stations', description: 'Creates a station with Icecast + Liquidsoap defaults.', params: [], body: { type: 'application/json', example: '{\n  "name": "Studio One",\n  "short_name": "studio_one",\n  "description": "...",\n  "max_listeners": 250\n}' } },
+      { id: 'st_f', group: 'Stations', method: 'GET', path: '/api/v1/stations/{id}/files', description: 'Lists media files for the station.', params: [{ name: 'id', in: 'path', required: true, type: 'string' }] },
+      { id: 'st_upl', group: 'Stations', method: 'POST', path: '/api/v1/stations/{id}/upload', description: 'Uploads a file to the station\'s media library.', params: [{ name: 'id', in: 'path', required: true, type: 'string' }], body: { type: 'multipart/form-data', example: 'Form field: file' } },
+      { id: 'st_pl_get', group: 'Stations', method: 'GET', path: '/api/v1/stations/{id}/playlists', description: 'Lists playlists.', params: [{ name: 'id', in: 'path', required: true, type: 'string' }] },
+      { id: 'st_pl_post', group: 'Stations', method: 'POST', path: '/api/v1/stations/{id}/playlists', description: 'Creates a playlist.', params: [{ name: 'id', in: 'path', required: true, type: 'string' }], body: { type: 'application/json', example: '{\n  "name": "Gulf Hits",\n  "type": "default",\n  "weight": 3\n}' } },
+      { id: 'np', group: 'Core', method: 'GET', path: '/api/v1/nowplaying', description: 'Public AzuraCast nowplaying snapshot for all stations.', params: [] },
+      { id: 'hz', group: 'Core', method: 'GET', path: '/healthz', description: 'Liveness probe.', params: [] },
+      { id: 'ag_tmpl', group: 'Agents', method: 'GET', path: '/api/v1/templates', description: 'Returns the 4 station templates with their shows.', params: [] },
+      { id: 'ag_lst', group: 'Agents', method: 'GET', path: '/api/v1/agents', description: 'Flat list of all 16 personas.', params: [] },
+      { id: 'ag_get', group: 'Agents', method: 'GET', path: '/api/v1/agents/{station}/{show}', description: 'Raw file content of one persona.', params: [{ name: 'station', in: 'path', required: true, type: 'string' }, { name: 'show', in: 'path', required: true, type: 'string' }] },
+      { id: 'ag_put', group: 'Agents', method: 'PUT', path: '/api/v1/agents/{station}/{show}', description: 'Validates the frontmatter, then writes the file.', params: [{ name: 'station', in: 'path', required: true, type: 'string' }, { name: 'show', in: 'path', required: true, type: 'string' }], body: { type: 'application/json', example: '{\n  "content": "---\\n...frontmatter...\\n---\\nsystem prompt"\n}' } },
+      { id: 'ag_gen', group: 'Agents', method: 'POST', path: '/api/v1/generate-script', description: 'Generates the show script via FreeLLM.', params: [], body: { type: 'application/json', example: '{\n  "show": { ... },\n  "date": "2026-06-08"\n}' } },
+      { id: 'tg_st', group: 'Telegram', method: 'GET', path: '/api/v1/telegram/status', description: 'Returns telegram configuration and rules status.', params: [] },
+      { id: 'tg_rul_get', group: 'Telegram', method: 'GET', path: '/api/v1/telegram/rules', description: 'Read agents/broadcasts.yaml.', params: [] },
+      { id: 'tg_rul_put', group: 'Telegram', method: 'PUT', path: '/api/v1/telegram/rules', description: 'Replace agents/broadcasts.yaml.', params: [], body: { type: 'application/json', example: '{\n  "content": "<yaml>"\n}' } },
+      { id: 'tg_send', group: 'Telegram', method: 'POST', path: '/api/v1/telegram/send', description: 'Manual post to Telegram.', params: [], body: { type: 'application/json', example: '{\n  "text": "..."\n}\n// OR\n{\n  "station": "islamic",\n  "show": "morning",\n  "date": "2026-06-08"\n}' } },
+      { id: 'tg_fire', group: 'Telegram', method: 'POST', path: '/api/v1/telegram/rules/{id}/fire', description: 'Fire one rule now (test button).', params: [{ name: 'id', in: 'path', required: true, type: 'string' }, { name: 'date', in: 'query', required: false, type: 'string' }] }
+    ];
+
+    const i18n = {
+      en: { search: 'Filter endpoints...', auth_token: 'Bearer Token (X-Guide-Token)', parameters: 'Parameters', request_body: 'Request Body', responses: 'Responses', name: 'Name', in: 'In', type: 'Type', required: 'Required', yes: 'Yes', no: 'No', no_params: 'No parameters required.', send_request: 'Send Request', sending: 'Sending...' },
+      ar: { search: 'ابحث عن نقطة نهاية...', auth_token: 'توكن المصادقة (X-Guide-Token)', parameters: 'المعاملات', request_body: 'محتوى الطلب', responses: 'الاستجابات', name: 'الاسم', in: 'الموقع', type: 'النوع', required: 'مطلوب', yes: 'نعم', no: 'لا', no_params: 'لا توجد معاملات مطلوبة.', send_request: 'إرسال الطلب', sending: 'جاري الإرسال...' }
+    };
+
+    function apiExplorer() {
+      return {
+        endpoints: ENDPOINTS,
+        searchQuery: '',
+        selected: null,
+        lang: 'en',
+        dir: 'ltr',
+        authToken: '',
+        
+        // Try It State
+        requestData: { params: {}, body: '' },
+        loading: false,
+        response: null,
+
+        init() {
+          if (window.lucide) lucide.createIcons();
+          this.$watch('selected', () => {
+            this.requestData = { params: {}, body: this.selected?.body?.example || '' };
+            if (window.lucide) setTimeout(() => lucide.createIcons(), 50);
+          });
+          this.$watch('searchQuery', () => {
+            if (window.lucide) setTimeout(() => lucide.createIcons(), 50);
+          });
+          this.$watch('lang', () => {
+            if (window.lucide) setTimeout(() => lucide.createIcons(), 50);
+          });
+        },
+
+        t(key) { return i18n[this.lang][key] || key; },
+        
+        toggleLang() {
+          this.lang = this.lang === 'en' ? 'ar' : 'en';
+          this.dir = this.lang === 'en' ? 'ltr' : 'rtl';
+        },
+
+        get groupedEndpoints() {
+          const q = this.searchQuery.toLowerCase();
+          const filtered = this.endpoints.filter(ep => 
+            ep.path.toLowerCase().includes(q) || ep.description.toLowerCase().includes(q)
+          );
+          
+          return filtered.reduce((groups, ep) => {
+            if (!groups[ep.group]) groups[ep.group] = [];
+            groups[ep.group].push(ep);
+            return groups;
+          }, {});
+        },
+
+        async executeRequest() {
+          if (!this.selected) return;
+          this.loading = true;
+          this.response = null;
+
+          let url = this.selected.path;
+          const queryParams = new URLSearchParams();
+
+          // Apply params
+          if (this.selected.params) {
+            for (const p of this.selected.params) {
+              const val = this.requestData.params[p.name];
+              if (!val && p.required) {
+                alert(`Missing required param: ${p.name}`);
+                this.loading = false;
+                return;
+              }
+              if (val) {
+                if (p.in === 'path') {
+                  url = url.replace(`{${p.name}}`, encodeURIComponent(val));
+                } else if (p.in === 'query') {
+                  queryParams.append(p.name, val);
+                }
+              }
+            }
+          }
+
+          const qString = queryParams.toString();
+          if (qString) url += `?${qString}`;
+
+          const opts = {
+            method: this.selected.method,
+            headers: {}
+          };
+
+          if (this.authToken) {
+            opts.headers['X-Guide-Token'] = this.authToken;
+          }
+
+          if (this.selected.body && ['POST', 'PUT', 'PATCH'].includes(this.selected.method)) {
+            if (this.selected.body.type === 'application/json') {
+              opts.headers['Content-Type'] = 'application/json';
+              try {
+                opts.body = JSON.stringify(JSON.parse(this.requestData.body)); // validate JSON format
+              } catch (e) {
+                alert("Invalid JSON in body");
+                this.loading = false;
+                return;
+              }
+            } else {
+              // Not implementing multipart try-it in this simple UI
+              alert("Multipart form data not fully supported in this Try-it widget yet.");
+              this.loading = false;
+              return;
+            }
+          }
+
+          const start = performance.now();
+          try {
+            const res = await fetch(url, opts);
+            const time = Math.round(performance.now() - start);
+            
+            let resBody = await res.text();
+            try { resBody = JSON.stringify(JSON.parse(resBody), null, 2); } catch(e){}
+
+            this.response = {
+              status: res.status,
+              statusText: res.statusText || (res.ok ? 'OK' : 'Error'),
+              time,
+              body: resBody
+            };
+          } catch (err) {
+            const time = Math.round(performance.now() - start);
+            this.response = {
+              status: 0,
+              statusText: 'Network Error',
+              time,
+              body: String(err)
+            };
+          } finally {
+            this.loading = false;
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>

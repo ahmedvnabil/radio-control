@@ -148,6 +148,11 @@ def public_player(station_short: str) -> str:
     return render_template("player.html", base_url=BASE_URL, station_short=station_short)
 
 
+@app.get("/docs")
+def api_docs() -> str:
+    return render_template("api-explorer.html")
+
+
 @app.get("/healthz")
 def healthz() -> tuple[Response, int]:
     return jsonify({"ok": True}), 200
