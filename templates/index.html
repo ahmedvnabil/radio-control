@@ -1673,8 +1673,8 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
           <div class="studio-col">
             
             <!-- Script Viewer Card -->
-            <div class="pane" style="margin-bottom: 0;">
-              <h2 x-text="t('scripts_title')"></h2>
+            <div class="pane" style="margin-bottom: 0; border-top: 3px solid var(--rose); background: linear-gradient(180deg, rgba(243,168,179,0.03) 0%, transparent 20%);">
+              <h2 style="display:flex; align-items:center; gap:8px;"><i data-lucide="lightbulb" style="width:18px;height:18px;color:var(--rose);"></i> <span x-text="t('scripts_title')"></span></h2>
               <p class="sub" x-text="active ? active.name : ''"></p>
               
               <div class="tabs-header" style="margin-top: 15px;">
@@ -1776,8 +1776,8 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
           <div class="studio-col">
             
             <!-- Scheduled Tasks Card -->
-            <div class="pane" style="margin-bottom: 0;">
-              <h2 x-text="t('schedules_title')"></h2>
+            <div class="pane" style="margin-bottom: 0; border-top: 3px solid var(--amber); background: linear-gradient(180deg, rgba(241,189,100,0.03) 0%, transparent 20%);">
+              <h2 style="display:flex; align-items:center; gap:8px;"><i data-lucide="calendar-days" style="width:18px;height:18px;color:var(--amber);"></i> <span x-text="t('schedules_title')"></span></h2>
               <p class="sub" x-text="t('schedules_desc')"></p>
               
               <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
@@ -1832,8 +1832,8 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
             </div>
 
             <!-- Media Archive Drawer Card -->
-            <div class="pane" style="margin-bottom: 0;">
-              <h2 x-text="t('archive_title')"></h2>
+            <div class="pane" style="margin-bottom: 0; border-left: 3px solid var(--muted); background: linear-gradient(90deg, rgba(143,161,154,0.03) 0%, transparent 20%);">
+              <h2 style="display:flex; align-items:center; gap:8px;"><i data-lucide="archive" style="width:18px;height:18px;color:var(--muted);"></i> <span x-text="t('archive_title')"></span></h2>
               <p class="sub" x-text="t('archive_desc')"></p>
               
               <div class="source-drawer" style="margin-top: 15px;">
@@ -1875,8 +1875,8 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
         </div>
 
         <div class="row">
-          <div class="pane">
-            <h2 x-text="t('queue')"></h2>
+          <div class="pane" style="border-top: 3px solid var(--violet); background: linear-gradient(180deg, rgba(187,163,255,0.03) 0%, transparent 20%);">
+            <h2 style="display:flex; align-items:center; gap:8px;"><i data-lucide="list-music" style="width:18px;height:18px;color:var(--violet);"></i> <span x-text="t('queue')"></span></h2>
             <p class="sub" x-text="t('queue_sub')"></p>
             <div class="list">
               <template x-for="(q,i) in queue.slice(0,8)" :key="(q.cued_at||'')+i">
@@ -1889,8 +1889,8 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
               <div x-show="queue.length===0" style="color:var(--muted);font-size:12px;text-align:center;padding:16px" x-text="t('queue_empty')"></div>
             </div>
           </div>
-          <div class="pane">
-            <h2 x-text="t('history')"></h2>
+          <div class="pane" style="border-left: 3px solid var(--muted); background: linear-gradient(90deg, rgba(143,161,154,0.03) 0%, transparent 20%);">
+            <h2 style="display:flex; align-items:center; gap:8px;"><i data-lucide="history" style="width:18px;height:18px;color:var(--muted);"></i> <span x-text="t('history')"></span></h2>
             <p class="sub" x-text="t('history_sub')"></p>
             <div class="list">
               <template x-for="(h,i) in filteredHistory.slice(0,8)" :key="(h.sh_id||i)">
@@ -1977,8 +1977,8 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
         </div>
 
         <!-- VOICEBOX QUICK TTS -->
-        <div class="pane" style="margin-top:14px">
-          <div><h2 x-text="t('voicebox_tts')"></h2><p class="sub" x-text="t('voicebox_tts_sub')"></p></div>
+        <div class="pane" style="margin-top:14px; border-top: 3px solid var(--rose); background: linear-gradient(180deg, rgba(243,168,179,0.03) 0%, transparent 20%);">
+          <div><h2 style="display:flex; align-items:center; gap:8px;"><i data-lucide="mic" style="width:18px;height:18px;color:var(--rose);"></i> <span x-text="t('voicebox_tts')"></span></h2><p class="sub" x-text="t('voicebox_tts_sub')"></p></div>
           <div class="fields" style="margin-top:6px">
             <label><span x-text="t('voice')"></span>
               <select x-model="ttsVoice">
@@ -2007,9 +2007,9 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
           </div>
           <div style="font-size:9.5px; color:var(--muted);" x-text="lang === 'ar' ? 'اسحب المقبض لإعادة الترتيب' : 'Drag handle to reorder'"></div>
         </div>
-        <div class="pane">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
-            <div><h2 x-text="t('playlists')"></h2><p class="sub" x-text="t('playlists_sub')"></p></div>
+        <div class="pane" style="border-top: 3px solid var(--mint); background: linear-gradient(180deg, rgba(113,237,189,0.03) 0%, transparent 20%);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div><h2 style="display:flex; align-items:center; gap:8px;"><i data-lucide="list-video" style="width:18px;height:18px;color:var(--mint);"></i> <span x-text="t('playlists')"></span></h2><p class="sub" x-text="t('playlists_sub')"></p></div>
             <button class="btn primary" @click="showCreatePlaylist=true"><i data-lucide="plus" style="width:14px;height:14px"></i><span x-text="t('new_playlist')"></span></button>
           </div>
           <div class="list" style="margin-top:8px">
@@ -2042,9 +2042,9 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
           </div>
           <div style="font-size:9.5px; color:var(--muted);" x-text="lang === 'ar' ? 'اسحب المقبض لإعادة الترتيب' : 'Drag handle to reorder'"></div>
         </div>
-        <div class="pane">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
-            <div><h2 x-text="t('weekly_schedule')"></h2><p class="sub" x-text="t('schedule_sub')"></p></div>
+        <div class="pane" style="border-top: 3px solid var(--violet); background: linear-gradient(180deg, rgba(187,163,255,0.03) 0%, transparent 20%);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div><h2 style="display:flex; align-items:center; gap:8px;"><i data-lucide="repeat" style="width:18px;height:18px;color:var(--violet);"></i> <span x-text="t('weekly_schedule')"></span></h2><p class="sub" x-text="t('schedule_sub')"></p></div>
             <div style="display:flex;gap:8px;align-items:center">
               <div class="builder-toggle">
                 <button :class="builderView==='week' && 'active'" @click="builderView='week'" x-text="t('view_week')"></button>
@@ -2205,13 +2205,13 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
           <div style="font-size:9.5px; color:var(--muted);" x-text="lang === 'ar' ? 'اسحب المقبض لإعادة الترتيب' : 'Drag handle to reorder'"></div>
         </div>
         <div class="row" style="margin-bottom:14px">
-          <div class="pane" style="grid-column:span 2">
-            <h2 x-text="t('listeners_chart')"></h2>
+          <div class="pane" style="grid-column:span 2; border-top: 3px solid var(--mint); background: linear-gradient(180deg, rgba(113,237,189,0.03) 0%, transparent 20%);">
+            <h2 style="display:flex; align-items:center; gap:8px;"><i data-lucide="bar-chart-2" style="width:18px;height:18px;color:var(--mint);"></i> <span x-text="t('listeners_chart')"></span></h2>
             <p class="sub" x-text="t('listeners_chart_sub')"></p>
             <canvas id="chart-listeners" style="margin-top:6px;max-height:240px"></canvas>
           </div>
-          <div class="pane">
-            <h2 x-text="t('current_listeners')"></h2>
+          <div class="pane" style="border-top: 3px solid var(--blue); background: linear-gradient(180deg, rgba(124,199,242,0.03) 0%, transparent 20%);">
+            <h2 style="display:flex; align-items:center; gap:8px;"><i data-lucide="users" style="width:18px;height:18px;color:var(--blue);"></i> <span x-text="t('current_listeners')"></span></h2>
             <div style="font-size:36px;font-weight:800;color:var(--mint);margin-top:8px" x-text="totalListeners"></div>
             <div style="color:var(--muted);font-size:12px" x-text="t('total_listeners_now')"></div>
             <div class="list" style="margin-top:10px">
@@ -2226,8 +2226,8 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
           </div>
         </div>
         <div class="row">
-          <div class="pane">
-            <h2 x-text="t('top_songs')"></h2>
+          <div class="pane" style="border-top: 3px solid var(--amber); background: linear-gradient(180deg, rgba(241,189,100,0.03) 0%, transparent 20%);">
+            <h2 style="display:flex; align-items:center; gap:8px;"><i data-lucide="trending-up" style="width:18px;height:18px;color:var(--amber);"></i> <span x-text="t('top_songs')"></span></h2>
             <div class="list">
               <template x-for="(t,i) in topSongs.slice(0,10)" :key="i">
                 <div class="item">
@@ -2239,8 +2239,8 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
               <div x-show="topSongs.length===0" style="color:var(--muted);font-size:12px;text-align:center;padding:12px" x-text="t('no_data')"></div>
             </div>
           </div>
-          <div class="pane">
-            <h2 x-text="t('requests_inbox')"></h2>
+          <div class="pane" style="border-top: 3px solid var(--violet); background: linear-gradient(180deg, rgba(187,163,255,0.03) 0%, transparent 20%);">
+            <h2 style="display:flex; align-items:center; gap:8px;"><i data-lucide="inbox" style="width:18px;height:18px;color:var(--violet);"></i> <span x-text="t('requests_inbox')"></span></h2>
             <p class="sub" x-text="t('requests_sub')"></p>
             <div class="list">
               <template x-for="(r,i) in requestLog.slice(0,10)" :key="i">
@@ -2267,8 +2267,9 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
           <div style="font-size:9.5px; color:var(--muted);" x-text="lang === 'ar' ? 'اسحب المقبض لإعادة الترتيب' : 'Drag handle to reorder'"></div>
         </div>
         <div class="row" style="margin-bottom:14px">
-          <div class="pane">
-            <div style="display:flex;justify-content:space-between;align-items:center"><h2 x-text="t('streamers')"></h2>
+          <div class="pane" style="border-left: 3px solid var(--blue); background: linear-gradient(90deg, rgba(124,199,242,0.03) 0%, transparent 20%);">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <h2 style="display:flex; align-items:center; gap:8px;"><i data-lucide="user-check" style="width:18px;height:18px;color:var(--blue);"></i> <span x-text="t('streamers')"></span></h2>
             <button class="btn sm primary" @click="showCreateStreamer=true"><i data-lucide="plus" style="width:12px;height:12px"></i></button></div>
             <p class="sub" x-text="t('streamers_sub')"></p>
             <div class="list">
@@ -2283,8 +2284,9 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
               <div x-show="streamers.length===0" style="color:var(--muted);font-size:12px;text-align:center;padding:14px" x-text="t('no_streamers')"></div>
             </div>
           </div>
-          <div class="pane">
-            <div style="display:flex;justify-content:space-between;align-items:center"><h2 x-text="t('webhooks')"></h2>
+          <div class="pane" style="border-left: 3px solid var(--mint); background: linear-gradient(90deg, rgba(113,237,189,0.03) 0%, transparent 20%);">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <h2 style="display:flex; align-items:center; gap:8px;"><i data-lucide="webhook" style="width:18px;height:18px;color:var(--mint);"></i> <span x-text="t('webhooks')"></span></h2>
             <button class="btn sm primary" @click="showCreateWebhook=true"><i data-lucide="plus" style="width:12px;height:12px"></i></button></div>
             <p class="sub" x-text="t('webhooks_sub')"></p>
             <div class="list">
@@ -2300,8 +2302,9 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
             </div>
           </div>
         </div>
-        <div class="pane">
-          <div style="display:flex;justify-content:space-between;align-items:center"><h2 x-text="t('mounts')"></h2>
+        <div class="pane" style="border-left: 3px solid var(--amber); background: linear-gradient(90deg, rgba(241,189,100,0.03) 0%, transparent 20%);">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h2 style="display:flex; align-items:center; gap:8px;"><i data-lucide="radio-tower" style="width:18px;height:18px;color:var(--amber);"></i> <span x-text="t('mounts')"></span></h2>
           <button class="btn sm primary" @click="showCreateMount=true"><i data-lucide="plus" style="width:12px;height:12px"></i></button></div>
           <p class="sub" x-text="t('mounts_sub')"></p>
           <div class="list">
