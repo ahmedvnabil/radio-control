@@ -215,7 +215,8 @@
                  x-transition:enter="transition ease-out duration-300"
                  x-transition:enter-start="opacity-0 scale-95"
                  x-transition:enter-end="opacity-100 scale-100"
-                 class="mt-4 p-3.5 text-sm rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-2.5" 
+                 class="mt-4 p-3.5 text-sm rounded-xl flex items-center gap-2.5" 
+                 :class="msg.includes('خطأ') || msg.includes('فشل') ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'"
                  style="display: none;">
               <i data-lucide="info" class="w-4 h-4 shrink-0"></i>
               <span x-text="msg"></span>
@@ -288,7 +289,7 @@
           <div>
             <h3 class="text-lg font-bold text-slate-300">إدارة التوكنز مقفلة</h3>
             <p class="text-sm text-slate-400 mt-2 max-w-md mx-auto leading-relaxed">
-              يرجى إدخال <strong class="text-slate-300">توكن المسؤول (Guide Token)</strong> في الصندوق أعلاه لتفعيل الصلاحيات وعرض قائمة التوكنز النشطة أو إنشاء مفاتيح جديدة.
+              يرجى إدخال <strong class="text-slate-300">توكن المسؤول الرئيسي للجايد (GUIDE_TOKEN)</strong> في الصندوق أعلاه لتفعيل الصلاحيات وعرض قائمة التوكنز النشطة أو إنشاء مفاتيح جديدة.
             </p>
           </div>
         </div>
@@ -503,18 +504,31 @@
       return {
         tab: ['explorer', 'list', 'security', 'logs'].includes(hash) ? hash : 'explorer',
         tokenInput: getCookie('guide_token') || localStorage.getItem('guide_token') || '',
-        hasToken: !!(getCookie('guide_token') || localStorage.getItem('guide_token')),
+        hasToken: false,
         msg: '',
         
         tokens: [],
         logs: [],
         newTokenObj: null,
 
-        init() {
-          if (this.hasToken) {
-            this.fetchTokens();
-            this.fetchLogs();
+        async init() {
+          // Check if the backend allows accessing the API with current token (or if no token is needed at all)
+          try {
+            const res = await fetch('/api/v1/auth/tokens', { headers: { 'X-Guide-Token': this.tokenInput } });
+            if (res.ok) {
+              // Authorized! Unlock features.
+              this.hasToken = true;
+              const data = await res.json();
+              this.tokens = data.data;
+              this.fetchLogs();
+            } else {
+              // Unauthorized (GUIDE_TOKEN is set and browser has no token, or token is incorrect)
+              this.hasToken = false;
+            }
+          } catch (e) {
+            this.hasToken = false;
           }
+
           this.$nextTick(() => {
             if (window.lucide) lucide.createIcons();
           });
@@ -532,15 +546,27 @@
           window.location.hash = t;
         },
 
-        saveToken() {
+        async saveToken() {
           if (!this.tokenInput) return;
-          document.cookie = `guide_token=${this.tokenInput}; path=/; max-age=${30 * 24 * 60 * 60}; samesite=Lax`;
-          localStorage.setItem('guide_token', this.tokenInput);
-          this.hasToken = true;
-          this.msg = 'تم حفظ التوكن في المتصفح بنجاح! يمكنك الآن استخدام التطبيق بحرية.';
+          try {
+            const res = await fetch('/api/v1/auth/tokens', { headers: { 'X-Guide-Token': this.tokenInput } });
+            if (res.ok) {
+              document.cookie = `guide_token=${this.tokenInput}; path=/; max-age=${30 * 24 * 60 * 60}; samesite=Lax`;
+              localStorage.setItem('guide_token', this.tokenInput);
+              this.hasToken = true;
+              this.msg = 'تم التحقق من التوكن وتفعيل الصلاحيات بنجاح!';
+              const data = await res.json();
+              this.tokens = data.data;
+              this.fetchLogs();
+            } else {
+              this.msg = 'خطأ: التوكن المدخل غير صحيح أو منتهي الصلاحية.';
+              this.hasToken = false;
+            }
+          } catch (e) {
+            this.msg = 'فشل الاتصال بالسيرفر أثناء التحقق.';
+            this.hasToken = false;
+          }
           setTimeout(() => this.msg = '', 4000);
-          this.fetchTokens();
-          this.fetchLogs();
         },
         
         clearToken() {
