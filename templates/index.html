@@ -1270,71 +1270,118 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
             </div>
           </div>
           
-          <div class="tl24-wrap" style="margin-top:8px">
-            <!-- Day Partitions Ruler -->
-            <div style="display: flex; width: 100%; border-bottom: 1px solid var(--line-2); background: rgba(0,0,0,0.15); font-size: 9.5px; font-weight: bold; color: var(--muted);">
-              <div style="width: 25%; text-align: center; padding: 5px; border-inline-end: 1px solid var(--line-2); background: rgba(187,163,255,0.02); color: var(--violet);" x-text="lang === 'ar' ? '🌌 الليل (00:00 - 06:00)' : '🌌 Night (00:00 - 06:00)'"></div>
-              <div style="width: 25%; text-align: center; padding: 5px; border-inline-end: 1px solid var(--line-2); background: rgba(241,189,100,0.02); color: var(--amber);" x-text="lang === 'ar' ? '🌤 الصباح (06:00 - 12:00)' : '🌤 Morning (06:00 - 12:00)'"></div>
-              <div style="width: 25%; text-align: center; padding: 5px; border-inline-end: 1px solid var(--line-2); background: rgba(113,237,189,0.02); color: var(--mint);" x-text="lang === 'ar' ? '☀️ الظهيرة (12:00 - 18:00)' : '☀️ Afternoon (12:00 - 18:00)'"></div>
-              <div style="width: 25%; text-align: center; padding: 5px; background: rgba(243,168,179,0.02); color: var(--rose);" x-text="lang === 'ar' ? '🌆 المساء (18:00 - 24:00)' : '🌆 Evening (18:00 - 24:00)'"></div>
-            </div>
+          <div style="display:grid; gap:16px; margin-top:15px; align-items: stretch;" :style="window.innerWidth > 800 ? 'grid-template-columns: minmax(180px, 240px) 1fr;' : 'grid-template-columns: 1fr;'">
             
-            <div class="tl24">
-              <div class="tl24-hours">
-                <template x-for="h in 24"><span x-text="pad(h-1)+':00'"></span></template>
+            <!-- LEFT: SOURCES TOOLBOX -->
+            <div style="background:rgba(0,0,0,0.15); border:1px solid var(--line-2); border-radius:10px; padding:12px; display:flex; flex-direction:column; gap:12px; max-height:480px; overflow-y:auto;">
+              <h3 style="margin:0; font-size:11.5px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em;" x-text="lang==='ar'?'مصادر الجدولة':'Sources Toolbox'"></h3>
+              
+              <!-- Music Playlists -->
+              <div style="font-size:11px; font-weight:700; color:var(--mint); margin-top:2px;" x-text="t('playlists')"></div>
+              <template x-for="p in playlists" :key="p.id">
+                <div draggable="true" @dragstart="onTimelineSourceDragStart($event, 'music', p.id, p.name)"
+                     style="background:rgba(113,237,189,0.05); border:1px solid rgba(113,237,189,0.2); border-radius:6px; padding:6px 10px; font-size:11.5px; cursor:grab; display:flex; align-items:center; gap:8px; transition:transform 0.15s;"
+                     onmouseover="this.style.transform='translateX(4px)'" onmouseout="this.style.transform='translateX(0)'">
+                  <i data-lucide="music" style="width:14px;height:14px;color:var(--mint);flex-shrink:0;"></i> <span x-text="p.name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
+                </div>
+              </template>
+              <div x-show="playlists.length === 0" style="font-size:10px; color:var(--muted);" x-text="t('no_data')"></div>
+
+              <!-- Voices -->
+              <div style="font-size:11px; font-weight:700; color:var(--rose); margin-top:4px;" x-text="t('studio_agents')"></div>
+              <template x-for="v in voices" :key="v.voice_id">
+                <div draggable="true" @dragstart="onTimelineSourceDragStart($event, 'voice', v.voice_id, v.name)"
+                     style="background:rgba(243,168,179,0.05); border:1px solid rgba(243,168,179,0.2); border-radius:6px; padding:6px 10px; font-size:11.5px; cursor:grab; display:flex; align-items:center; gap:8px; transition:transform 0.15s;"
+                     onmouseover="this.style.transform='translateX(4px)'" onmouseout="this.style.transform='translateX(0)'">
+                  <i data-lucide="mic" style="width:14px;height:14px;color:var(--rose);flex-shrink:0;"></i> <span x-text="v.name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></span>
+                </div>
+              </template>
+
+              <!-- Smart Blocks -->
+              <div style="font-size:11px; font-weight:700; color:var(--amber); margin-top:4px;" x-text="t('type')"></div>
+              <div draggable="true" @dragstart="onTimelineSourceDragStart($event, 'weather', '', t('weather_block'))"
+                   style="background:rgba(241,189,100,0.05); border:1px solid rgba(241,189,100,0.2); border-radius:6px; padding:6px 10px; font-size:11.5px; cursor:grab; display:flex; align-items:center; gap:8px; transition:transform 0.15s;"
+                   onmouseover="this.style.transform='translateX(4px)'" onmouseout="this.style.transform='translateX(0)'">
+                <i data-lucide="cloud-rain" style="width:14px;height:14px;color:var(--amber);flex-shrink:0;"></i> <span x-text="t('weather_block')"></span>
               </div>
-              <div class="tl24-blocks" id="tl24-blocks-home">
-                <div class="tl24-now" :style="`left:${nowOffsetPercent()}%`"></div>
-                <template x-for="b in dayBlocks" :key="b.id">
-                  <div class="tl24-block" :class="['type-' + b.type, selectedDayBlockId === b.id ? 'selected-block' : '', isBlockLive(b) ? 'live-pulsing-block' : '']" :style="blockStyle(b)" @click.stop="selectDayBlock(b)">
-                    <div class="block-title" x-text="getBlockIcon(b.type)+' '+b.title"></div>
-                    <div class="block-time" x-text="formatBlockTime(b)"></div>
-                    <button class="block-x" @click.stop="removeDayBlock(b.id)">×</button>
+              <div draggable="true" @dragstart="onTimelineSourceDragStart($event, 'ai-show', '', t('ai_show'))"
+                   style="background:rgba(187,163,255,0.05); border:1px solid rgba(187,163,255,0.2); border-radius:6px; padding:6px 10px; font-size:11.5px; cursor:grab; display:flex; align-items:center; gap:8px; transition:transform 0.15s;"
+                   onmouseover="this.style.transform='translateX(4px)'" onmouseout="this.style.transform='translateX(0)'">
+                <i data-lucide="wand-2" style="width:14px;height:14px;color:var(--violet);flex-shrink:0;"></i> <span x-text="t('ai_show')"></span>
+              </div>
+              <div style="font-size:9.5px; color:var(--mint); text-align:center; margin-top:auto; font-weight:bold; padding:8px; border:1px dashed var(--mint); border-radius:6px;" x-text="lang==='ar'?'اسحب أي مصدر وأفلته على الخط الزمني 👉':'Drag any source and drop it on the timeline 👉'"></div>
+            </div>
+
+            <!-- RIGHT: TIMELINE & STATS -->
+            <div style="display:flex; flex-direction:column; min-width:0;">
+              
+              <div class="tl24-wrap" style="margin-top:0">
+                <!-- Day Partitions Ruler -->
+                <div style="display: flex; width: 100%; border-bottom: 1px solid var(--line-2); background: rgba(0,0,0,0.15); font-size: 9.5px; font-weight: bold; color: var(--muted);">
+                  <div style="width: 25%; text-align: center; padding: 5px; border-inline-end: 1px solid var(--line-2); background: rgba(187,163,255,0.02); color: var(--violet);" x-text="lang === 'ar' ? '🌌 الليل (00:00 - 06:00)' : '🌌 Night (00:00 - 06:00)'"></div>
+                  <div style="width: 25%; text-align: center; padding: 5px; border-inline-end: 1px solid var(--line-2); background: rgba(241,189,100,0.02); color: var(--amber);" x-text="lang === 'ar' ? '🌤 الصباح (06:00 - 12:00)' : '🌤 Morning (06:00 - 12:00)'"></div>
+                  <div style="width: 25%; text-align: center; padding: 5px; border-inline-end: 1px solid var(--line-2); background: rgba(113,237,189,0.02); color: var(--mint);" x-text="lang === 'ar' ? '☀️ الظهيرة (12:00 - 18:00)' : '☀️ Afternoon (12:00 - 18:00)'"></div>
+                  <div style="width: 25%; text-align: center; padding: 5px; background: rgba(243,168,179,0.02); color: var(--rose);" x-text="lang === 'ar' ? '🌆 المساء (18:00 - 24:00)' : '🌆 Evening (18:00 - 24:00)'"></div>
+                </div>
+                
+                <div class="tl24" @dragover.prevent="timelineDragOver = true" @dragleave.prevent="timelineDragOver = false" @drop.prevent="onTimelineSourceDrop($event)" :class="timelineDragOver ? 'dragover' : ''">
+                  <div class="tl24-hours">
+                    <template x-for="h in 24"><span x-text="pad(h-1)+':00'"></span></template>
                   </div>
-                </template>
-                <div x-show="dayBlocks.length===0" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--muted);font-size:12px;text-align:center;pointer-events:none;opacity:0.7">
-                  <div x-text="t('queue_empty')"></div>
+                  <div class="tl24-blocks" id="tl24-blocks-home">
+                    <div class="tl24-now" :style="`left:${nowOffsetPercent()}%`"></div>
+                    <template x-for="b in dayBlocks" :key="b.id">
+                      <div class="tl24-block" :class="['type-' + b.type, selectedDayBlockId === b.id ? 'selected-block' : '', isBlockLive(b) ? 'live-pulsing-block' : '']" :style="blockStyle(b)" @click.stop="selectDayBlock(b)">
+                        <div class="block-title" x-text="getBlockIcon(b.type)+' '+b.title"></div>
+                        <div class="block-time" x-text="formatBlockTime(b)"></div>
+                        <button class="block-x" @click.stop="removeDayBlock(b.id)">×</button>
+                      </div>
+                    </template>
+                    <div x-show="dayBlocks.length===0" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--muted);font-size:12px;text-align:center;pointer-events:none;opacity:0.7">
+                      <div x-text="t('queue_empty')"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <!-- Timeline Density & Coverage Dashboard -->
-          <div x-data="{ stats: null }" x-init="$watch('dayBlocks.length', () => stats = getTimelineStats()); stats = getTimelineStats();" style="margin-top: 10px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; font-size: 11px; margin-bottom: 15px;">
-            <div class="pane" style="padding: 10px; background: rgba(0,0,0,0.12); border: 1px solid var(--line-2); display: flex; flex-direction: column; gap: 6px; border-radius: 8px;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-weight: 700; color: var(--ink-2); display: flex; align-items: center; gap: 4px;">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 13px; height: 13px; color: var(--mint);">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                  </svg>
-                  <span x-text="lang === 'ar' ? '📊 تغطية جدول البث اليومي:' : '📊 Daily Schedule Coverage:'"></span>
-                </span>
-                <strong style="color: var(--mint);" x-text="stats?.totalHours + ' / 24 ' + (lang === 'ar' ? 'ساعة' : 'hours') + ' (' + stats?.coveragePct + '%)'"></strong>
-              </div>
-              <div style="width: 100%; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.05); overflow: hidden; display: flex;">
-                <div :style="`width: ${stats?.coveragePct}%`" style="height: 100%; background: var(--mint); transition: width 0.3s; border-radius: 3px;"></div>
-              </div>
-            </div>
-            
-            <div class="pane" style="padding: 10px; background: rgba(0,0,0,0.12); border: 1px solid var(--line-2); display: flex; flex-direction: column; gap: 6px; border-radius: 8px;">
-              <span style="font-weight: 700; color: var(--ink-2); display: flex; align-items: center; gap: 4px;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 13px; height: 13px; color: var(--amber);">
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-                </svg>
-                <span x-text="lang === 'ar' ? '🎨 تنوع محتوى البث اليومي:' : '🎨 Daily Program Density:'"></span>
-              </span>
-              <div style="width: 100%; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.05); overflow: hidden; display: flex;">
-                <div :style="`width: ${stats?.musicPct}%`" style="height: 100%; background: var(--mint);" :title="'Music: ' + stats?.musicPct + '%'"></div>
-                <div :style="`width: ${stats?.weatherPct}%`" style="height: 100%; background: var(--amber);" :title="'Weather: ' + stats?.weatherPct + '%'"></div>
-                <div :style="`width: ${stats?.voicePct}%`" style="height: 100%; background: var(--rose);" :title="'Voice: ' + stats?.voicePct + '%'"></div>
-                <div :style="`width: ${stats?.aiShowPct}%`" style="height: 100%; background: var(--violet);" :title="'AI Show: ' + stats?.aiShowPct + '%'"></div>
-              </div>
-              <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--muted); margin-top: 2px;">
-                <span>🎵 أغاني (<span x-text="stats?.musicPct"></span>%)</span>
-                <span>🌤 طقس (<span x-text="stats?.weatherPct"></span>%)</span>
-                <span>🎙️ صوت (<span x-text="stats?.voicePct"></span>%)</span>
-                <span>🪄 حواري (<span x-text="stats?.aiShowPct"></span>%)</span>
+              <!-- Timeline Density & Coverage Dashboard -->
+              <div x-data="{ stats: null }" x-init="$watch('dayBlocks.length', () => stats = getTimelineStats()); stats = getTimelineStats();" style="margin-top: 10px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; font-size: 11px; margin-bottom: 15px;">
+                <div class="pane" style="padding: 10px; background: rgba(0,0,0,0.12); border: 1px solid var(--line-2); display: flex; flex-direction: column; gap: 6px; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 700; color: var(--ink-2); display: flex; align-items: center; gap: 4px;">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 13px; height: 13px; color: var(--mint);">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      <span x-text="lang === 'ar' ? '📊 تغطية جدول البث اليومي:' : '📊 Daily Schedule Coverage:'"></span>
+                    </span>
+                    <strong style="color: var(--mint);" x-text="stats?.totalHours + ' / 24 ' + (lang === 'ar' ? 'ساعة' : 'hours') + ' (' + stats?.coveragePct + '%)'"></strong>
+                  </div>
+                  <div style="width: 100%; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.05); overflow: hidden; display: flex;">
+                    <div :style="`width: ${stats?.coveragePct}%`" style="height: 100%; background: var(--mint); transition: width 0.3s; border-radius: 3px;"></div>
+                  </div>
+                </div>
+                
+                <div class="pane" style="padding: 10px; background: rgba(0,0,0,0.12); border: 1px solid var(--line-2); display: flex; flex-direction: column; gap: 6px; border-radius: 8px;">
+                  <span style="font-weight: 700; color: var(--ink-2); display: flex; align-items: center; gap: 4px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 13px; height: 13px; color: var(--amber);">
+                      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                    </svg>
+                    <span x-text="lang === 'ar' ? '🎨 تنوع محتوى البث اليومي:' : '🎨 Daily Program Density:'"></span>
+                  </span>
+                  <div style="width: 100%; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.05); overflow: hidden; display: flex;">
+                    <div :style="`width: ${stats?.musicPct}%`" style="height: 100%; background: var(--mint);" :title="'Music: ' + stats?.musicPct + '%'"></div>
+                    <div :style="`width: ${stats?.weatherPct}%`" style="height: 100%; background: var(--amber);" :title="'Weather: ' + stats?.weatherPct + '%'"></div>
+                    <div :style="`width: ${stats?.voicePct}%`" style="height: 100%; background: var(--rose);" :title="'Voice: ' + stats?.voicePct + '%'"></div>
+                    <div :style="`width: ${stats?.aiShowPct}%`" style="height: 100%; background: var(--violet);" :title="'AI Show: ' + stats?.aiShowPct + '%'"></div>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--muted); margin-top: 2px;">
+                    <span>🎵 أغاني (<span x-text="stats?.musicPct"></span>%)</span>
+                    <span>🌤 طقس (<span x-text="stats?.weatherPct"></span>%)</span>
+                    <span>🎙️ صوت (<span x-text="stats?.voicePct"></span>%)</span>
+                    <span>🪄 حواري (<span x-text="stats?.aiShowPct"></span>%)</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -3056,6 +3103,49 @@ return {
   externalSongs:[], injectingId:null,
   ttsText:'', ttsVoice:'', ttsBusy:false,
   weatherData:null,
+  timelineDragOver: false,
+  onTimelineSourceDragStart(e, type, id, title) {
+    e.dataTransfer.setData('application/json', JSON.stringify({ type, id, title }));
+    e.dataTransfer.effectAllowed = 'copyMove';
+  },
+  onTimelineSourceDrop(e) {
+    e.preventDefault();
+    this.timelineDragOver = false;
+    let data;
+    try {
+      data = JSON.parse(e.dataTransfer.getData('application/json'));
+    } catch(err) { return; }
+    if (!data.type) return;
+
+    // Calculate drop hour
+    const blocksDiv = document.getElementById('tl24-blocks-home') || e.currentTarget.querySelector('.tl24-blocks');
+    if(!blocksDiv) return;
+    const rect = blocksDiv.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    if(this.dir === 'rtl') { x = rect.width - x; }
+    let pct = x / rect.width;
+    let dropHour = Math.floor(pct * 24);
+    if(dropHour < 0) dropHour = 0;
+    if(dropHour > 23) dropHour = 23;
+
+    // Default durations
+    let durationMins = 60;
+    if(data.type === 'weather' || data.type === 'voice') durationMins = 5;
+    if(data.type === 'ai-show') durationMins = 30;
+
+    const newBlock = {
+      id: 'blk_' + Date.now(),
+      type: data.type,
+      title: data.title || '',
+      playlist_id: data.type === 'music' ? data.id : '',
+      voice_id: data.type === 'voice' ? data.id : '',
+      startHour: dropHour,
+      durationMins: durationMins
+    };
+
+    this.dayBlocks.push(newBlock);
+    this.$nextTick(() => { this.tick(); this.toast(this.t('saved_ok'), 'ok'); });
+  },
   startTour() {
     this.tab = 'live';
     this.showBlueprint = true;
