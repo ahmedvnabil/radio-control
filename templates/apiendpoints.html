@@ -6,773 +6,2053 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 text-gray-100 p-8 font-sans">
-  <div class="max-w-5xl mx-auto">
+  <div class="max-w-6xl mx-auto">
     <h1 class="text-3xl font-bold text-blue-400 mb-6">قائمة وظائف الـ API الخاصة بتطبيق الراديو</h1>
-    <p class="mb-8 text-gray-400 text-lg leading-relaxed">هذه القائمة تفصل بين الـ Endpoints التي تقوم بإرجاع بيانات فقط (Outputs) والـ Endpoints التي تستقبل بيانات وتنفذ أوامر (Inputs & Actions).</p>
+    <p class="mb-8 text-gray-400 text-lg leading-relaxed">هذه القائمة تفصل بين الـ Endpoints التي تقوم بإرجاع بيانات فقط (Outputs) والـ Endpoints التي تستقبل بيانات وتنفذ أوامر (Inputs & Actions). كما تتضمن المقارنة مع المسارات الخاصة بـ AzuraCast.</p>
 <h2 class="text-2xl font-bold text-green-400 mt-10 mb-4 border-b border-gray-700 pb-2">نقط إدخال البيانات وتنفيذ الأوامر (تستقبل طلب)</h2>
 <div class="grid gap-4">
 
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/agents/<station>/<show></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/upload</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/ai/chat</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/files/<int:fid></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/auth/tokens</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/files/bulk-assign</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/auth/tokens/<token_id></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Body: {file_ids: [...], playlist_ids: [...]}.</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/backups</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST /api/admin/backups/run</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists/<int:pid></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/generate-script</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Generate a show script using the show's prompts (FreeLLM → OpenAI).</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists/<int:pid></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/music-library/inject</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Download an ACE-Step song and upload it directly to AzuraCast via our own /files endpoint.</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists/<int:pid>/schedule</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/radio/stations</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Proxy station configuration save/update to the Guide.</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Add a schedule item to a playlist. Body:</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists/<int:pid>/schedule/<int:idx></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/radio/stations/<shortcode></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Proxy station configuration delete to the Guide.</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/queue/<int:qid></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/run/<action_id></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Proxy the Guide's background action runner (e.g. run-radio-pipeline).</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/build-queue</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/scripts</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Save/update a generated or edited talk show script in the registry.</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/skip</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/scripts</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Delete a generated talk show script from the registry.</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Skip the current song. Triggers next from queue.</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/restart</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/streamers</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE /api/admin/station/{sid}</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/streamers/<int:strid></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/branding</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT /api/admin/station/{sid}</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/webhooks</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/build-queue</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/webhooks/<int:wid></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/day-blocks</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/webhooks/<int:wid>/test</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/files/<int:fid></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE /api/station/{sid}/file/{fid}</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/mounts</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/files/bulk-assign</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Body: {file_ids: [...], playlist_ids: [...]}.</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/mounts/<int:mid></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/mounts</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST /api/station/{sid}/mounts</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/day-blocks</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/mounts/<int:mid></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE /api/station/{sid}/mount/{mid}</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/podcasts</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST /api/station/{sid}/playlists</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists/<int:pid>/assign-folder</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists/<int:pid></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Body: {path: 'egypt'}. Assigns every file currently in that folder to this playlist.</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT /api/station/{sid}/playlist/{pid}</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists/<int:pid></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE /api/station/{sid}/playlist/{pid}</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/settings</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists/<int:pid>/assign-folder</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Body: {path: 'egypt'}. Assigns every file currently in that folder to this playlist.</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Body is a subset of the AzuraCast station record (admin).</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/podcasts/<podcast_id>/episodes</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists/<int:pid>/schedule</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Add a schedule item to a playlist. Body:</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT /api/station/{sid}/playlist/{pid}</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/branding</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists/<int:pid>/schedule/<int:idx></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT /api/station/{sid}/playlist/{pid}</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/backups</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/podcasts</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST /api/station/{sid}/podcasts</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/music-library/inject</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/podcasts/<podcast_id>/episodes</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Download an ACE-Step song and upload it directly to AzuraCast via our own /files endpoint.</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST /api/station/{sid}/podcast/{podcast_id}/episodes</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/voicebox/speak</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/queue/<int:qid></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Generate TTS via VoiceBox and upload result to AzuraCast as a media file.</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE /api/station/{sid}/queue/{qid}</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/generate-script</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/restart</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Generate a show script using the show's prompts (FreeLLM → OpenAI).</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST /api/station/{sid}/restart</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/scripts</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/settings</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Body is a subset of the AzuraCast station record (admin).</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Save/update a generated or edited talk show script in the registry.</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT /api/admin/station/{sid}</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/scripts</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/skip</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Skip the current song. Triggers next from queue.</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Delete a generated talk show script from the registry.</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST /api/station/{sid}/backend/skip</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/radio/stations</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/streamers</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Proxy station configuration save/update to the Guide.</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST /api/station/{sid}/streamers</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/radio/stations/<shortcode></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/streamers/<int:strid></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Proxy station configuration delete to the Guide.</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE /api/station/{sid}/streamer/{strid}</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/run/<action_id></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/upload</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Proxy the Guide's background action runner (e.g. run-radio-pipeline).</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/ai/chat</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/webhooks</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST /api/station/{sid}/webhooks</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/webhooks/<int:wid></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE /api/station/{sid}/webhook/{wid}</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents/<name></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/webhooks/<int:wid>/test</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT /api/station/{sid}/webhook/{wid}/test</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents/<name></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/run</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/agents/<station>/<show></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents/<name></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/telegram/rules</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents/<name></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/telegram/send</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents/<name></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Manual send: {text} for raw text, or {station, show[, date, template]} to generate.</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/telegram/rules/<rid>/fire</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents/<name></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/run</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents/<name></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/run</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents/<name></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/telegram/rules</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/run</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/telegram/rules/<rid>/fire</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/telegram/send</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Manual send: {text} for raw text, or {station, show[, date, template]} to generate.</p>
+          </div>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/voicebox/speak</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Generate TTS via VoiceBox and upload result to AzuraCast as a media file.</p>
+          </div>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         </div>
 <h2 class="text-2xl font-bold text-blue-400 mt-10 mb-4 border-b border-gray-700 pb-2">نقاط استرجاع وعرض البيانات (تُخرج بيانات)</h2>
 <div class="grid gap-4">
 
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/p/<station_short></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/agents</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/docs</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/agents/<station>/<show></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/healthz</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/auth/logs</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/config</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/auth/tokens</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/integrations/health</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/backups</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Diagnostic: which integration URLs are set, and can the container actually reach them?</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET /api/admin/backups</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/config</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/files</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/integrations/health</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Diagnostic: which integration URLs are set, and can the container actually reach them?</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/music-library</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/schedule</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/nowplaying</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Pull full schedule (events) for visualisation.</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET /api/nowplaying</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/queue</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/radio/stations</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Proxy configured AI radio stations from the Guide.</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/history</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/runs/<run_id></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Proxy the Guide's background action status/output logs.</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/nowplaying</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/scripts</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Proxy the Guide's stored radio scripts registry.</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/streamers</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/webhooks</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET /api/admin/station/{sid}</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/mounts</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/copilot</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Analyze the station and return actionable suggestions. No LLM cost.</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/listeners</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/day-blocks</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/day-blocks</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/directories</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> List media folders so the UI can assign a whole folder to a playlist.</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/reports/listeners</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/files</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/reports/best</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/history</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET /api/station/{sid}/history</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/requestable</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/listeners</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET /api/station/{sid}/listeners</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/request-log</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/mounts</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET /api/station/{sid}/mounts</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/podcasts</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET /api/station/{sid}/playlists</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/directories</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists/<int:pid>/folders</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> List media folders so the UI can assign a whole folder to a playlist.</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists/<int:pid>/folders</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/podcasts</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET /api/station/{sid}/podcasts</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/podcasts/<podcast_id>/episodes</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/podcasts/<podcast_id>/episodes</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET /api/station/{sid}/podcast/{podcast_id}/episodes</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/recordings</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/queue</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET /api/station/{sid}/queue</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/recordings</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/backups</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/reports/best</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET /api/station/{sid}/reports/overview/best-and-worst</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/templates</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/reports/listeners</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET /api/station/{sid}/reports/overview/charts</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/copilot</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/request-log</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Analyze the station and return actionable suggestions. No LLM cost.</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET /api/station/{sid}/reports/requests</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/voices</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/requestable</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET /api/station/{sid}/requests</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/music-library</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/schedule</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Pull full schedule (events) for visualisation.</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/weather</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/streamers</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET /api/station/{sid}/streamers</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/scripts</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/webhooks</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Proxy the Guide's stored radio scripts registry.</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-purple-400 font-bold text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET /api/station/{sid}/webhooks</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/radio/stations</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Proxy configured AI radio stations from the Guide.</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/runs/<run_id></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Proxy the Guide's background action status/output logs.</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents/<name></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents/<name></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents/<name></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/agents</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/config</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/agents/<station>/<show></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/telegram/rules</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/telegram/status</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/telegram/status</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/telegram/rules</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/templates</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/config</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/voices</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents</span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/api/v1/weather</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         
-        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
-          <div class="flex items-center gap-3 mb-2" dir="ltr">
-            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
-            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents/<name></span>
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/apiendpoints</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
           </div>
-          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/apiendpoints/raw</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          </div>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/docs</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          </div>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/docs/raw</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          </div>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/healthz</span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          </div>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Radio Control Side -->
+          <div>
+            <div class="text-xs text-gray-500 mb-1">Radio Control Endpoint</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+              <span class="font-mono text-gray-300 font-semibold">/p/<station_short></span>
+            </div>
+            <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+          </div>
+          
+          <!-- AzuraCast Side -->
+          <div class="border-t md:border-t-0 md:border-r border-gray-700 pt-4 md:pt-0 md:pr-4">
+            <div class="text-xs text-gray-500 mb-1" dir="rtl">المسار الموازي في (AzuraCast)</div>
+            <div class="flex items-center gap-3 mb-2" dir="ltr">
+              <span class="font-mono text-gray-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">N/A (Local / Native)</span>
+            </div>
+          </div>
         </div>
         </div>
 
