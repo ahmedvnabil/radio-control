@@ -3363,7 +3363,7 @@ return {
       if(r.ok){this.toast(this.t('applied'),s.desc,'ok');this.loadCopilot();}
       else this.toast(this.t('error'),r.error,'err');
     } else if(s.action && s.action.goto_tab){
-      this.tab=s.action.goto_tab;this.$nextTick(()=>this.tick());
+      this.scrollToSection(s.action.goto_tab);
     }
   },
   // ---- DAY BUILDER ----

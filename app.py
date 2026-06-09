@@ -801,8 +801,8 @@ def api_copilot(sid: int) -> tuple[Response, int]:
     if len(queue) == 0:
         suggestions.append({
             "id": "build_queue",
-            "badge": "تنبيه", "badgeClass": "warn",
-            "desc": "طابور AutoDJ فارغ — اضغط لبنائه فوراً",
+            "badge": "خطة اليوم", "badgeClass": "danger",
+            "desc": "طابور البث فارغ تماماً! دعنا نملأ الساعات القادمة فوراً أو نطلق الـ Pipeline لبناء كتل إذاعية مبتكرة.",
             "action": {"method": "POST", "url": f"/api/v1/stations/{sid}/build-queue"},
         })
 
@@ -810,8 +810,8 @@ def api_copilot(sid: int) -> tuple[Response, int]:
     if not any((p.get("num_songs") or 0) > 0 for p in enabled_pls):
         suggestions.append({
             "id": "upload_media",
-            "badge": "أساسي", "badgeClass": "danger",
-            "desc": "لا توجد أغانٍ في أي قائمة — ارفع وسائط أولاً",
+            "badge": "المكتبة الموسيقية", "badgeClass": "danger",
+            "desc": "المكتبة الموسيقية صامتة وخالية! ما رأيك في استيراد أغانٍ جديدة من استوديو التلحين (ACE-Step) أو رفع مقاطع حصرية؟",
             "action": {"goto_tab": "media"},
         })
 
@@ -819,8 +819,8 @@ def api_copilot(sid: int) -> tuple[Response, int]:
     for p in empty_enabled[:3]:
         suggestions.append({
             "id": f"fill_pl_{p.get('id')}",
-            "badge": "تحسين", "badgeClass": "info",
-            "desc": f"القائمة \"{p.get('name')}\" مفعّلة لكنها فارغة",
+            "badge": "فقرة مفقودة", "badgeClass": "warn",
+            "desc": f"القائمة الموسيقية '{p.get('name')}' جاهزة للبث ولكنها تفتقر للمحتوى الموسيقي. ارفع إليها أغانٍ أو خصص لها نصوصاً.",
             "action": {"goto_tab": "playlists"},
         })
 
@@ -828,8 +828,8 @@ def api_copilot(sid: int) -> tuple[Response, int]:
     if has_scheduled == 0 and len(enabled_pls) >= 2:
         suggestions.append({
             "id": "add_schedule",
-            "badge": "تحسين", "badgeClass": "info",
-            "desc": "لا توجد جدولة أسبوعية — أضف كتل زمنية للقوائم",
+            "badge": "تطوير البث", "badgeClass": "warn",
+            "desc": "خريطة البث فارغة اليوم! وزّع فترات اليوم الإذاعي (صباحي، يومي، مسائي) لتناوب تلقائي بين المواد الغنائية والإخبارية.",
             "action": {"goto_tab": "schedule"},
         })
 
@@ -837,8 +837,8 @@ def api_copilot(sid: int) -> tuple[Response, int]:
     if station.get("enable_streamers") and not streamers:
         suggestions.append({
             "id": "add_streamer",
-            "badge": "تحسين", "badgeClass": "info",
-            "desc": "البث المباشر مفعّل لكن لا يوجد حساب DJ — أضف واحداً",
+            "badge": "بث مباشر", "badgeClass": "info",
+            "desc": "استغل قدرتك على المقاطعة الحية! أنشئ حساب مذيع (DJ) لتمكين المذيعين أو بوتات الصوت الذكية من قطع البث المعتاد بفقرات حية.",
             "action": {"goto_tab": "broadcast"},
         })
 
@@ -846,8 +846,8 @@ def api_copilot(sid: int) -> tuple[Response, int]:
     if not webhooks:
         suggestions.append({
             "id": "add_webhook",
-            "badge": "اختياري", "badgeClass": "muted",
-            "desc": "لا توجد إشعارات Discord/Slack — اربط webhook لمتابعة البث",
+            "badge": "تفاعل الجمهور", "badgeClass": "muted",
+            "desc": "جمهورك غائب عن جديدك! اربط ويب هوك (Discord/Slack) لإشعار المستمعين تلقائياً بمجرد انطلاق فقرة إذاعية ذكية جديدة.",
             "action": {"goto_tab": "broadcast"},
         })
 
@@ -855,8 +855,8 @@ def api_copilot(sid: int) -> tuple[Response, int]:
     if len(mounts) == 1:
         suggestions.append({
             "id": "add_mount",
-            "badge": "اختياري", "badgeClass": "muted",
-            "desc": "بث بصيغة واحدة فقط — أضف mount بصيغة AAC أو HLS",
+            "badge": "جودة البث", "badgeClass": "muted",
+            "desc": "سهّل الوصول للجميع! أضف نقطة بث رديفة (Mount) بجودة AAC أو HLS لتمكين المستمعين من الاستماع بسلاسة عبر الجوال.",
             "action": {"goto_tab": "broadcast"},
         })
 
@@ -864,10 +864,45 @@ def api_copilot(sid: int) -> tuple[Response, int]:
     if len(enabled_pls) < 3 and files_count >= 10:
         suggestions.append({
             "id": "more_playlists",
-            "badge": "تحسين", "badgeClass": "info",
-            "desc": "عدد القوائم قليل بالنسبة لحجم المكتبة — أنشئ قوائم متنوعة",
+            "badge": "القدرات المخفية", "badgeClass": "info",
+            "desc": "تجنب رتابة البث! وزع أغانيك على 3 قوائم متخصصة (صباحي هادئ، حماسي بعد الظهر، كلاسيك مسائي) لخلق إيقاع راديو متوازن.",
             "action": {"goto_tab": "playlists"},
         })
+
+    # 9. AI block scheduling suggestion (New)
+    today_str = time.strftime("%Y-%m-%d")
+    try:
+        p_today = _day_blocks_path(sid, today_str)
+        has_today_blocks = False
+        if p_today.exists():
+            blocks = json.loads(p_today.read_text(encoding="utf-8"))
+            if len(blocks) > 0:
+                has_today_blocks = True
+        if not has_today_blocks:
+            suggestions.append({
+                "id": "schedule_day_blocks",
+                "badge": "توجيه إبداعي", "badgeClass": "warn",
+                "desc": f"اليوم الإذاعي ({today_str}) غير مجدول بالكتل الزمنية الذكية. خطط كتل اليوم الآن في قسم الجدولة لعرضها على الخط الزمني.",
+                "action": {"goto_tab": "schedule"},
+            })
+    except Exception:
+        pass
+
+    # 10. AI Personas / Script generation (New)
+    suggestions.append({
+        "id": "generate_ai_scripts",
+        "badge": "شخصية إذاعية", "badgeClass": "info",
+        "desc": "استخدم استوديو الكلمات لكتابة نصوص للمذيع الآلي لليوم، ثم استخدم شخصيات الراديو (Personas) لبث روح تفاعلية حية بين الأغاني.",
+        "action": {"goto_tab": "studio"},
+    })
+
+    # 11. Snippet Recorder suggestion (New)
+    suggestions.append({
+        "id": "record_stream_snippets",
+        "badge": "لمسة حية", "badgeClass": "muted",
+        "desc": "سجّل فواصل إذاعية مميزة (Station IDs) مباشرة من البث المشغل بالأسفل وأعد رفعها لمكتبتك الموسيقية لربط الفقرات بذكاء.",
+        "action": {"goto_tab": "live"},
+    })
 
     # Score: weight by severity, base 100 minus penalties
     score = 100
