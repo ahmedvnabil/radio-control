@@ -159,11 +159,42 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
 
 /* === VINYL DISC VISUALIZER === */
 .vinyl-wrap{display:flex;align-items:center;gap:18px;}
-.vinyl{position:relative;width:96px;height:96px;border-radius:50%;background:#0a0a0a;border:5px solid #1a1a1a;box-shadow:0 0 16px rgba(0,0,0,0.6),inset 0 0 8px rgba(255,255,255,0.08);overflow:hidden;flex-shrink:0;}
+.vinyl-container{position:relative;width:96px;height:96px;flex-shrink:0;}
+.vinyl{width:100%;height:100%;border-radius:50%;background:#0a0a0a;border:5px solid #1a1a1a;box-shadow:0 0 16px rgba(0,0,0,0.6),inset 0 0 8px rgba(255,255,255,0.08);overflow:hidden;}
 .vinyl::before{content:"";position:absolute;inset:0;background:repeating-radial-gradient(circle at center, rgba(255,255,255,0.04) 0 2px, transparent 2px 4px);border-radius:50%;z-index:1;pointer-events:none;}
 .vinyl::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:var(--bg);border:3px solid #0a0a0a;box-shadow:inset 0 0 4px rgba(0,0,0,0.6);z-index:3;}
 .vinyl-disc{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 30% 30%, var(--mint-2), var(--violet) 60%, #0a0a0a 90%);animation:spin 12s linear infinite;animation-play-state:paused;background-size:cover;background-position:center;}
 .vinyl.playing .vinyl-disc{animation-play-state:running;}
+
+.vinyl-arm {
+  position:absolute;
+  top:-8px;
+  right:8px;
+  width:24px;
+  height:48px;
+  border-right:2.5px solid rgba(255,255,255,0.45);
+  border-top:2.5px solid rgba(255,255,255,0.45);
+  border-top-right-radius:8px;
+  transform-origin:100% 0%;
+  transform:rotate(-28deg);
+  transition:transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  pointer-events:none;
+  z-index:10;
+}
+.vinyl-arm::after {
+  content:"";
+  position:absolute;
+  bottom:0;
+  right:-3.5px;
+  width:6px;
+  height:10px;
+  background:var(--mint);
+  border-radius:1px;
+  box-shadow:0 0 6px var(--mint);
+}
+.vinyl-arm.playing {
+  transform:rotate(6deg);
+}
 
 /* === EMBEDDED PLAYER === */
 .player-row{display:flex;align-items:center;gap:10px;margin-top:14px;padding:10px;border:1px solid var(--line);border-radius:9px;background:rgba(255,255,255,0.02);}
@@ -174,14 +205,11 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
 .player-toggle.playing{background:var(--rose);color:#fff;}
 @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 
-.eq{display:inline-flex;align-items:flex-end;gap:3px;height:22px;}
-.eq .bar{width:3px;height:4px;background:var(--mint);border-radius:2px;}
-.eq.playing .bar{animation:eqBounce 1.2s infinite ease-in-out;}
-.eq.playing .bar:nth-child(2){animation-delay:0.15s;background:var(--blue);}
-.eq.playing .bar:nth-child(3){animation-delay:0.3s;}
-.eq.playing .bar:nth-child(4){animation-delay:0.45s;background:var(--violet);}
-.eq.playing .bar:nth-child(5){animation-delay:0.25s;}
-@keyframes eqBounce{0%,100%{height:4px}50%{height:20px}}
+.eq{display:inline-flex;align-items:flex-end;gap:3px;height:24px;}
+.eq .bar{width:3px;height:4px;background:var(--mint);border-radius:2px;transition:height 0.1s ease;}
+.eq .bar:nth-child(3n+1){background:var(--mint);}
+.eq .bar:nth-child(3n+2){background:var(--blue);}
+.eq .bar:nth-child(3n){background:var(--violet);}
 
 /* === COPILOT === */
 .copilot{display:grid;grid-template-columns:240px 1fr;gap:14px;}
@@ -411,8 +439,11 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
             <h2 x-text="t('now_playing')"></h2>
             <p class="sub" x-text="active && active.name"></p>
             <div class="vinyl-wrap" style="margin-top:10px">
-              <div class="vinyl" :class="streamPlaying && 'playing'">
-                <div class="vinyl-disc" :style="currentArt ? `background-image:url('${currentArt}')` : ''"></div>
+              <div class="vinyl-container">
+                <div class="vinyl" :class="streamPlaying && 'playing'">
+                  <div class="vinyl-disc" :style="currentArt ? `background-image:url('${currentArt}')` : ''"></div>
+                </div>
+                <div class="vinyl-arm" :class="streamPlaying && 'playing'"></div>
               </div>
               <div style="flex:1;min-width:0">
                 <div style="font-size:18px;font-weight:700" x-text="currentTrack || t('no_live')"></div>
@@ -443,9 +474,145 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
           <div class="pane">
             <h2 x-text="t('listeners')"></h2>
             <div style="font-size:36px;font-weight:800;color:var(--mint);margin-top:8px" x-text="totalListeners"></div>
-            <div style="color:var(--muted);font-size:12px" x-text="t('listeners_now')"></div>
           </div>
         </div>
+
+        <!-- TODAY'S TIMELINE -->
+        <div class="pane" style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div>
+              <h2 x-text="t('weekly_schedule')"></h2>
+              <p class="sub" x-text="t('day_builder_note')"></p>
+            </div>
+            <button class="btn sm primary" @click="showAddBlockHome=true; $nextTick(() => tick())"><i data-lucide="plus" style="width:12px;height:12px"></i> <span x-text="t('add')"></span></button>
+          </div>
+          
+          <div class="tl24-wrap" style="margin-top:8px">
+            <div class="tl24">
+              <div class="tl24-hours">
+                <template x-for="h in 24"><span x-text="pad(h-1)+':00'"></span></template>
+              </div>
+              <div class="tl24-blocks" id="tl24-blocks-home">
+                <div class="tl24-now" :style="`left:${nowOffsetPercent()}%`"></div>
+                <template x-for="b in dayBlocks" :key="b.id">
+                  <div class="tl24-block" :class="['type-' + b.type, selectedDayBlockId === b.id ? 'selected-block' : '']" :style="blockStyle(b)" @click.stop="selectDayBlock(b)">
+                    <div class="block-title" x-text="getBlockIcon(b.type)+' '+b.title"></div>
+                    <div class="block-time" x-text="formatBlockTime(b)"></div>
+                    <button class="block-x" @click.stop="removeDayBlock(b.id)">×</button>
+                  </div>
+                </template>
+                <div x-show="dayBlocks.length===0" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--muted);font-size:12px;text-align:center;pointer-events:none;opacity:0.7">
+                  <div x-text="t('queue_empty')"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- HOME ADD BLOCK PANEL -->
+          <template x-if="showAddBlockHome">
+            <div class="pane" style="margin-top:12px; border-color:rgba(113,237,189,0.3); background:rgba(113,237,189,0.02); max-width: 600px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h3 style="margin:0; font-size:13px; font-weight:700; color:var(--mint);" x-text="t('add_block')"></h3>
+                <button class="btn sm" @click="showAddBlockHome=false" x-text="t('cancel')"></button>
+              </div>
+              <div class="row" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:10px;">
+                <label style="display:grid; gap:4px; font-size:11px; color:var(--muted);">
+                  <span x-text="t('type')"></span>
+                  <select x-model="newHomeBlock.type" @change="newHomeBlock.title = newHomeBlock.type === 'weather' ? t('weather_block') : ''">
+                    <option value="music" x-text="t('media')"></option>
+                    <option value="weather" x-text="t('weather')"></option>
+                    <option value="voice" x-text="t('voices')"></option>
+                    <option value="ai-show" x-text="t('playlists')"></option>
+                  </select>
+                </label>
+                
+                <template x-if="newHomeBlock.type === 'music'">
+                  <label style="display:grid; gap:4px; font-size:11px; color:var(--muted);">
+                    <span x-text="t('playlist')"></span>
+                    <select x-model="newHomeBlock.playlist_id" @change="const pl = playlists.find(p => p.id == $event.target.value); newHomeBlock.title = pl ? pl.name : '';">
+                      <option value="" x-text="t('select')"></option>
+                      <template x-for="p in playlists" :key="p.id">
+                        <option :value="p.id" x-text="p.name"></option>
+                      </template>
+                    </select>
+                  </label>
+                </template>
+                
+                <template x-if="newHomeBlock.type === 'voice'">
+                  <label style="display:grid; gap:4px; font-size:11px; color:var(--muted);">
+                    <span x-text="t('voice')"></span>
+                    <select x-model="newHomeBlock.voice_id" @change="const v = voices.find(vc => vc.id == $event.target.value); newHomeBlock.title = v ? v.name : '';">
+                      <option value="" x-text="t('select')"></option>
+                      <template x-for="v in voices" :key="v.id">
+                        <option :value="v.id" x-text="v.name"></option>
+                      </template>
+                    </select>
+                  </label>
+                </template>
+                
+                <template x-if="newHomeBlock.type === 'ai-show'">
+                  <label style="display:grid; gap:4px; font-size:11px; color:var(--muted);">
+                    <span x-text="t('playlist')"></span>
+                    <select x-model="newHomeBlock.playlist_id" @change="const pl = playlists.find(p => p.id == $event.target.value); newHomeBlock.title = pl ? pl.name : '';">
+                      <option value="" x-text="t('select')"></option>
+                      <template x-for="p in playlists" :key="p.id">
+                        <option :value="p.id" x-text="p.name"></option>
+                      </template>
+                    </select>
+                  </label>
+                </template>
+              </div>
+              <div class="row" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:10px;">
+                <label style="display:grid; gap:4px; font-size:11px; color:var(--muted);">
+                  <span x-text="t('start_time')"></span>
+                  <select x-model.number="newHomeBlock.startHour">
+                    <template x-for="h in Array.from({length: 24}, (_, i) => i)">
+                      <option :value="h" x-text="pad(h) + ':00'"></option>
+                    </template>
+                  </select>
+                </label>
+                <label style="display:grid; gap:4px; font-size:11px; color:var(--muted);">
+                  <span x-text="t('duration_mins')"></span>
+                  <input type="number" min="5" max="1440" x-model.number="newHomeBlock.durationMins" style="width: 100%;" />
+                </label>
+                <div style="display:flex; align-items:flex-end;">
+                  <button class="btn primary" style="width:100%;" @click="submitAddHomeBlock()" x-text="t('save')"></button>
+                </div>
+              </div>
+            </div>
+          </template>
+          
+          <!-- BLOCK EDITOR PANEL (shared editor) -->
+          <template x-if="selectedBlock">
+            <div class="pane" style="margin-top:12px; border-color:rgba(113,237,189,0.3); background:rgba(113,237,189,0.02); max-width: 600px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h3 style="margin:0; font-size:13px; font-weight:700; color:var(--mint);">
+                  <span x-text="t('edit_block')"></span>: <span x-text="selectedBlock?.title"></span>
+                </h3>
+                <button class="btn sm danger" @click="selectedBlock && removeDayBlock(selectedBlock.id)" x-text="t('delete_block')"></button>
+              </div>
+              <div class="row" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:10px;">
+                <label style="display:grid; gap:4px; font-size:11px; color:var(--muted);">
+                  <span x-text="t('start_time')"></span>
+                  <select :value="selectedBlock?.startHour"
+                          @change="if(selectedBlock) { selectedBlock.startHour = parseInt($event.target.value); saveBlocks(); }">
+                    <template x-for="h in Array.from({length: 24}, (_, i) => i)">
+                      <option :value="h" x-text="pad(h) + ':00'"></option>
+                    </template>
+                  </select>
+                </label>
+                <label style="display:grid; gap:4px; font-size:11px; color:var(--muted);">
+                  <span x-text="t('duration_mins')"></span>
+                  <input type="number" min="5" max="1440"
+                         :value="selectedBlock?.durationMins"
+                         @input="if(selectedBlock) { selectedBlock.durationMins = parseInt($event.target.value) || 60; saveBlocks(); }"
+                         style="width: 100%;" />
+                </label>
+              </div>
+            </div>
+          </template>
+        </div>
+
         <div class="row">
           <div class="pane">
             <h2 x-text="t('queue')"></h2>
@@ -1424,7 +1591,7 @@ return {
   theme: localStorage.getItem('rc_theme') || 'flat',
   showAI:false, aiMessages:[], aiInput:'', aiBusy:false,
   showIdent:false, identPreset:'studio', identName:'', identSaving:false, identPresetKeys:[],
-  streamPlaying:false, streamVolume:80, eqLevels:[6,6,6,6,6], _audioCtx:null, _analyser:null, _eqRAF:null,
+  streamPlaying:false, streamVolume:80, eqLevels:[6,6,6,6,6,6,6,6,6,6,6,6], showAddBlockHome:false, newHomeBlock:{type:'music', playlist_id:'', voice_id:'', title:'', startHour:8, durationMins:60}, _audioCtx:null, _analyser:null, _eqRAF:null,
   externalSongs:[], injectingId:null,
   ttsText:'', ttsVoice:'', ttsBusy:false,
   weatherData:null,
@@ -1518,6 +1685,7 @@ return {
       group_onair:'البث والمستمعين',group_content:'المحتوى والإنتاج',group_scheduling:'الجدولة والتحكم',group_channels:'التوزيع والتواصل',group_system:'الإعدادات والصيانة',
       edit_block:'تعديل الفقرة',duration_mins:'المدة (بالدقائق)',delete_block:'حذف الفقرة',
       live_dj:'بث مباشر',autodj:'بث تلقائي (AutoDJ)',
+      add_block:'إضافة فقرة للجدول',playlist:'قائمة التشغيل',select:'اختر...',save:'حفظ',weather_block:'النشرة الجوية',
     },
 
     en:{
@@ -1568,6 +1736,7 @@ return {
       group_onair:'On-Air & Audience',group_content:'Content & Studio',group_scheduling:'Scheduling & Control',group_channels:'Broadcasting & Social',group_system:'Settings & Dev',
       edit_block:'Edit Block',duration_mins:'Duration (Minutes)',delete_block:'Delete Block',
       live_dj:'Live DJ',autodj:'AutoDJ',
+      add_block:'Add Block to Schedule',playlist:'Playlist',select:'Select...',save:'Save',weather_block:'Weather Block',
     },
 
   },
@@ -1674,7 +1843,13 @@ return {
   // ---- LIVE STREAM player + analyser ----
   toggleStream(){
     const a=document.getElementById('rc-audio');if(!a)return;
-    if(this.streamPlaying){a.pause();this.streamPlaying=false;if(this._eqRAF){cancelAnimationFrame(this._eqRAF);this._eqRAF=null;}return;}
+    if(this.streamPlaying){
+      a.pause();
+      this.streamPlaying=false;
+      this.eqLevels=Array(12).fill(6);
+      if(this._eqRAF){cancelAnimationFrame(this._eqRAF);this._eqRAF=null;}
+      return;
+    }
     a.src=this.activeListenUrl+'?t='+Date.now();
     a.volume=this.streamVolume/100;
     a.play().then(()=>{this.streamPlaying=true;this._wireAnalyser(a);}).catch(e=>this.toast(this.t('error'),e.message,'err'));
@@ -1683,17 +1858,37 @@ return {
   _wireAnalyser(audio){
     try{
       if(!this._audioCtx)this._audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-      if(!this._analyser){const src=this._audioCtx.createMediaElementSource(audio);this._analyser=this._audioCtx.createAnalyser();this._analyser.fftSize=64;src.connect(this._analyser);this._analyser.connect(this._audioCtx.destination);}
-      const buf=new Uint8Array(this._analyser.frequencyBinCount);
-      const loop=()=>{
-        if(!this.streamPlaying)return;
+      if(!this._analyser){
+        const src=this._audioCtx.createMediaElementSource(audio);
+        this._analyser=this._audioCtx.createAnalyser();
+        this._analyser.fftSize=64;
+        src.connect(this._analyser);
+        this._analyser.connect(this._audioCtx.destination);
+      }
+    }catch(e){
+      this.log('analyser wire error: '+e.message);
+    }
+    if(this._eqRAF)cancelAnimationFrame(this._eqRAF);
+    const buf=this._analyser ? new Uint8Array(this._analyser.frequencyBinCount) : null;
+    const slots=[1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23];
+    const loop=()=>{
+      if(!this.streamPlaying)return;
+      let rawLevels=[];
+      if(this._analyser && buf){
         this._analyser.getByteFrequencyData(buf);
-        const slots=[2,5,9,15,22];
-        this.eqLevels=slots.map(i=>Math.round((buf[i]||0)/255*22));
-        this._eqRAF=requestAnimationFrame(loop);
-      };
-      loop();
-    }catch(e){this.log('analyser: '+e.message);}
+        rawLevels=slots.map(i=>Math.round((buf[i]||0)/255*24));
+      }
+      if(rawLevels.length===0 || rawLevels.every(l=>l<=2)){
+        this.eqLevels=this.eqLevels.map(l=>{
+          const delta=Math.floor(Math.random()*8)-4;
+          return Math.max(4,Math.min(24,l+delta));
+        });
+      }else{
+        this.eqLevels=rawLevels;
+      }
+      this._eqRAF=requestAnimationFrame(loop);
+    };
+    loop();
   },
   // ---- EXTERNAL MUSIC LIBRARY (ACE-Step / Suno via guide) ----
   async loadExternalSongs(){
@@ -2003,7 +2198,25 @@ return {
   formatBlockTime(b){const sH=String(b.startHour).padStart(2,'0');const endMin=b.startHour*60+b.durationMins;const eH=String(Math.floor(endMin/60)%24).padStart(2,'0');const eM=String(endMin%60).padStart(2,'0');return `${sH}:00 — ${eH}:${eM}`;},
   getBlockIcon(type){return ({'ai-show':'🎙️','music':'🎵','weather':'🌤','voice':'🗣️'})[type]||'📻';},
   nowOffsetPercent(){const n=new Date();return ((n.getHours()*60+n.getMinutes())/(24*60))*100;},
-  scrollTimelineToNow(){const wrap=document.getElementById('tl24-wrap');if(!wrap)return;const pct=this.nowOffsetPercent()/100;wrap.scrollLeft=Math.max(0,wrap.scrollWidth*pct - wrap.clientWidth/2);},
+  scrollTimelineToNow(){
+    const wraps=document.querySelectorAll('.tl24-wrap');
+    const pct=this.nowOffsetPercent()/100;
+    wraps.forEach(wrap=>{
+      wrap.scrollLeft=Math.max(0,wrap.scrollWidth*pct - wrap.clientWidth/2);
+    });
+  },
+  submitAddHomeBlock(){
+    if(!this.active)return;
+    const item={
+      type:this.newHomeBlock.type,
+      title:this.newHomeBlock.title || '—',
+      duration:this.newHomeBlock.durationMins,
+      data:this.newHomeBlock.type==='music'||this.newHomeBlock.type==='ai-show'?{playlist_id:this.newHomeBlock.playlist_id}:null
+    };
+    this.addDayBlock(item,this.newHomeBlock.startHour);
+    this.showAddBlockHome=false;
+    this.newHomeBlock={type:'music',playlist_id:'',voice_id:'',title:'',startHour:8,durationMins:60};
+  },
   async createPlaylist(){if(!this.active||!this.newPlaylist.name)return;const r=await this.api(`/api/v1/stations/${this.active.id}/playlists`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(this.newPlaylist)});if(r.ok){this.showCreatePlaylist=false;this.newPlaylist={name:'',type:'default',weight:3};this.loadStation(this.active.id);}else this.toast(this.t('error'),r.error,'err');},
   async togglePlaylist(p){const r=await this.api(`/api/v1/stations/${this.active.id}/playlists/${p.id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({is_enabled:!p.is_enabled})});if(r.ok)this.loadStation(this.active.id);else this.toast(this.t('error'),r.error,'err');},
   async deletePlaylist(p){if(!confirm(this.t('cancel')+'?'))return;const r=await this.api(`/api/v1/stations/${this.active.id}/playlists/${p.id}`,{method:'DELETE'});if(r.ok)this.loadStation(this.active.id);else this.toast(this.t('error'),r.error,'err');},
