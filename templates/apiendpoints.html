@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="utf-8">
+  <title>تصنيف نقاط الاتصال (API Endpoints)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 p-8 font-sans">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl font-bold text-blue-400 mb-6">قائمة وظائف الـ API الخاصة بتطبيق الراديو</h1>
+    <p class="mb-8 text-gray-400 text-lg leading-relaxed">هذه القائمة تفصل بين الـ Endpoints التي تقوم بإرجاع بيانات فقط (Outputs) والـ Endpoints التي تستقبل بيانات وتنفذ أوامر (Inputs & Actions).</p>
+<h2 class="text-2xl font-bold text-green-400 mt-10 mb-4 border-b border-gray-700 pb-2">نقط إدخال البيانات وتنفيذ الأوامر (تستقبل طلب)</h2>
+<div class="grid gap-4">
+
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/upload</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/files/<int:fid></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/files/bulk-assign</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Body: {file_ids: [...], playlist_ids: [...]}.</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists/<int:pid></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists/<int:pid></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists/<int:pid>/schedule</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Add a schedule item to a playlist. Body:</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists/<int:pid>/schedule/<int:idx></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/queue/<int:qid></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/build-queue</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/skip</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Skip the current song. Triggers next from queue.</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/restart</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/streamers</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/streamers/<int:strid></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/webhooks</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/webhooks/<int:wid></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/webhooks/<int:wid>/test</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/mounts</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/mounts/<int:mid></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/day-blocks</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/podcasts</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists/<int:pid>/assign-folder</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Body: {path: 'egypt'}. Assigns every file currently in that folder to this playlist.</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/settings</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Body is a subset of the AzuraCast station record (admin).</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/podcasts/<podcast_id>/episodes</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/branding</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/backups</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/music-library/inject</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Download an ACE-Step song and upload it directly to AzuraCast via our own /files endpoint.</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/voicebox/speak</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Generate TTS via VoiceBox and upload result to AzuraCast as a media file.</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/generate-script</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Generate a show script using the show's prompts (FreeLLM → OpenAI).</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/scripts</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Save/update a generated or edited talk show script in the registry.</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/scripts</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Delete a generated talk show script from the registry.</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/radio/stations</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Proxy station configuration save/update to the Guide.</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/radio/stations/<shortcode></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Proxy station configuration delete to the Guide.</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/run/<action_id></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Proxy the Guide's background action runner (e.g. run-radio-pipeline).</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/ai/chat</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents/<name></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents/<name></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/run</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/agents/<station>/<show></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/telegram/rules</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/telegram/send</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Manual send: {text} for raw text, or {station, show[, date, template]} to generate.</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/telegram/rules/<rid>/fire</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-yellow-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">PUT</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents/<name></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-red-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">DELETE</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents/<name></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-green-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">POST</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/run</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        </div>
+<h2 class="text-2xl font-bold text-blue-400 mt-10 mb-4 border-b border-gray-700 pb-2">نقاط استرجاع وعرض البيانات (تُخرج بيانات)</h2>
+<div class="grid gap-4">
+
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/p/<station_short></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/docs</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/healthz</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/config</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/integrations/health</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Diagnostic: which integration URLs are set, and can the container actually reach them?</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/files</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/schedule</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Pull full schedule (events) for visualisation.</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/queue</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/history</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/nowplaying</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/streamers</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/webhooks</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/mounts</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/listeners</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/day-blocks</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/reports/listeners</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/reports/best</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/requestable</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/request-log</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/podcasts</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/directories</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> List media folders so the UI can assign a whole folder to a playlist.</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/playlists/<int:pid>/folders</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/podcasts/<podcast_id>/episodes</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/recordings</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/backups</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/templates</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/stations/<int:sid>/copilot</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Analyze the station and return actionable suggestions. No LLM cost.</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/voices</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/music-library</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/weather</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/scripts</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Proxy the Guide's stored radio scripts registry.</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/radio/stations</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Proxy configured AI radio stations from the Guide.</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/runs/<run_id></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> Proxy the Guide's background action status/output logs.</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents/<name></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/agents</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/agents/<station>/<show></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/telegram/status</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/telegram/rules</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/config</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents</span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        
+        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition-colors">
+          <div class="flex items-center gap-3 mb-2" dir="ltr">
+            <span class="font-bold text-blue-500 text-sm px-2 py-1 bg-gray-900 rounded border border-gray-700">GET</span>
+            <span class="font-mono text-gray-300 font-semibold">/api/v1/studio/agents/<name></span>
+          </div>
+          <p class="text-gray-400 text-sm mt-2"><span class="text-gray-500">الوصف:</span> No description</p>
+        </div>
+        </div>
+
+  </div>
+</body>
+</html>

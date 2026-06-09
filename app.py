@@ -153,6 +153,11 @@ def api_docs() -> str:
     return render_template("api-explorer.html")
 
 
+@app.get("/apiendpoints")
+def api_endpoints_list() -> str:
+    return render_template("apiendpoints.html")
+
+
 @app.get("/healthz")
 def healthz() -> tuple[Response, int]:
     return jsonify({"ok": True}), 200
