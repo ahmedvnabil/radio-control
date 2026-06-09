@@ -78,6 +78,13 @@ input:focus,select:focus,textarea:focus{border-color:var(--mint);}
 .lang-toggle button.active{background:var(--panel-2);color:var(--ink);}
 
 .content{overflow-y:auto;padding-right:4px;scroll-behavior:smooth;}
+.blueprint-step{transition:all 0.2s ease-in-out;}
+.blueprint-step:hover{border-color:var(--mint) !important;transform:translateY(-2px);box-shadow:0 6px 16px rgba(113,237,189,0.08);background:var(--panel) !important;}
+.blueprint-arrow{flex-shrink:0;}
+@media (max-width: 900px) {
+  .blueprint-flow { flex-direction: column !important; }
+  .blueprint-arrow { transform: rotate(90deg) !important; padding: 8px 0 !important; }
+}
 [dir="rtl"] .content{padding-right:0;padding-left:4px;}
 .sec-wrap{margin-bottom:48px;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:36px;scroll-margin-top:14px;}
 .sec-wrap:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0;}
@@ -754,6 +761,117 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
 
       <!-- ╔═══ LIVE ═══╗ -->
       <section id="sec-live" class="sec-wrap">
+        <!-- INTERACTIVE LIFE-CYCLE BLUEPRINT MAP -->
+        <div class="pane" style="margin-bottom:14px; border-color: rgba(113,237,189,0.25); background: rgba(113,237,189,0.01);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <h2 style="display:flex; align-items:center; gap:8px;">
+              <i data-lucide="map" style="width:16px; height:16px; color:var(--mint);"></i>
+              <span x-text="lang === 'ar' ? '📁 مسار إنتاج وإدارة اليوم الإذاعي' : '📁 Radio Day Lifecycle Blueprint Map'"></span>
+            </h2>
+            <button class="btn sm" @click="toggleBlueprint()" style="border-color: rgba(255,255,255,0.06); background: rgba(255,255,255,0.02);">
+              <i :data-lucide="showBlueprint ? 'chevron-up' : 'chevron-down'" style="width:12px; height:12px;"></i>
+              <span x-text="lang === 'ar' ? (showBlueprint ? 'إخفاء المسار' : 'عرض المسار') : (showBlueprint ? 'Hide Map' : 'Show Map')"></span>
+            </button>
+          </div>
+          <p class="sub" style="margin-bottom: 0;" x-show="!showBlueprint" x-text="lang === 'ar' ? 'اضغط لفتح المخطط التفاعلي واستعراض مسارات العمل خطوة بخطوة.' : 'Click to expand the interactive step-by-step production map.'"></p>
+          <p class="sub" x-show="showBlueprint" x-text="lang === 'ar' ? 'مخطط تفاعلي يربط أدوات اللوحة ببعضها. اضغط على أي خطوة للذهاب للقسم المخصص والبدء بالعمل.' : 'Interactive production blueprint linking all tools. Click any step to scroll to it and start working.'"></p>
+          
+          <div x-show="showBlueprint" x-transition style="margin-top: 14px;">
+            <div class="blueprint-flow" style="display: flex; gap: 8px; align-items: stretch;">
+              
+              <!-- Step 1 -->
+              <div class="blueprint-step" @click="scrollToSection('studio')" style="flex: 1; min-width: 170px; background: var(--panel-2); border: 1px solid var(--line-2); border-radius: 8px; padding: 12px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;">
+                 <div>
+                   <div style="font-size: 9.5px; font-weight: 700; color: var(--mint); text-transform: uppercase; margin-bottom: 4px;" x-text="lang === 'ar' ? 'الخطوة 1: الكلمات والأفكار' : 'Step 1: Lyrics & Themes'"></div>
+                   <h3 style="margin: 0 0 6px 0; font-size: 13.5px; font-weight: 700;" x-text="lang === 'ar' ? '✍️ استوديو الأغاني' : '✍️ Songwriting Studio'"></h3>
+                   <p style="margin: 0; font-size: 11px; color: var(--muted); line-height: 1.45;" x-text="lang === 'ar' ? 'اكتب الكلمات، اضبط الأوزان والقوافي، وولّد أفكار السلاسل في قسم الاستوديو.' : 'Write lyrics, enforce syllables & rhymes, and draft show outlines in the Studio.'"></p>
+                 </div>
+                 <div style="font-size: 11px; margin-top: 10px; display: flex; align-items: center; justify-content: space-between; color: var(--mint);">
+                   <span x-text="lang === 'ar' ? 'اذهب للاستوديو' : 'Go to Studio'"></span>
+                   <i data-lucide="arrow-left-right" style="width: 11px; height: 11px;"></i>
+                 </div>
+              </div>
+              
+              <!-- Arrow -->
+              <div class="blueprint-arrow">
+                 <i data-lucide="chevron-left" x-show="dir === 'rtl'" style="width: 16px; height: 16px; color: var(--line-2);"></i>
+                 <i data-lucide="chevron-right" x-show="dir === 'ltr'" style="width: 16px; height: 16px; color: var(--line-2);"></i>
+              </div>
+
+              <!-- Step 2 -->
+              <div class="blueprint-step" @click="scrollToSection('media')" style="flex: 1; min-width: 170px; background: var(--panel-2); border: 1px solid var(--line-2); border-radius: 8px; padding: 12px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;">
+                 <div>
+                   <div style="font-size: 9.5px; font-weight: 700; color: var(--mint); text-transform: uppercase; margin-bottom: 4px;" x-text="lang === 'ar' ? 'الخطوة 2: الصوت والمذيع' : 'Step 2: Melodies & Voice'"></div>
+                   <h3 style="margin: 0 0 6px 0; font-size: 13.5px; font-weight: 700;" x-text="lang === 'ar' ? '🎹 الألحان والمذيع' : '🎹 Melody & TTS'"></h3>
+                   <p style="margin: 0; font-size: 11px; color: var(--muted); line-height: 1.45;" x-text="lang === 'ar' ? 'ضخ ألحان ACE-Step أو حوّل النص لصوت مذيع حقيقي عبر VoiceBox لقراءة النشرة الجوية.' : 'Inject ACE-Step tunes or convert outline text to speech using VoiceBox TTS.'"></p>
+                 </div>
+                 <div style="font-size: 11px; margin-top: 10px; display: flex; align-items: center; justify-content: space-between; color: var(--mint);">
+                   <span x-text="lang === 'ar' ? 'افتح الصوت والوسائط' : 'Go to Media & TTS'"></span>
+                   <i data-lucide="arrow-left-right" style="width: 11px; height: 11px;"></i>
+                 </div>
+              </div>
+
+              <!-- Arrow -->
+              <div class="blueprint-arrow">
+                 <i data-lucide="chevron-left" x-show="dir === 'rtl'" style="width: 16px; height: 16px; color: var(--line-2);"></i>
+                 <i data-lucide="chevron-right" x-show="dir === 'ltr'" style="width: 16px; height: 16px; color: var(--line-2);"></i>
+              </div>
+
+              <!-- Step 3 -->
+              <div class="blueprint-step" @click="scrollToSection('schedule')" style="flex: 1; min-width: 170px; background: var(--panel-2); border: 1px solid var(--line-2); border-radius: 8px; padding: 12px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;">
+                 <div>
+                   <div style="font-size: 9.5px; font-weight: 700; color: var(--mint); text-transform: uppercase; margin-bottom: 4px;" x-text="lang === 'ar' ? 'الخطوة 3: تخطيط الكتل' : 'Step 3: Day Timeline'"></div>
+                   <h3 style="margin: 0 0 6px 0; font-size: 13.5px; font-weight: 700;" x-text="lang === 'ar' ? '📋 جدولة اليوم الإذاعي' : '📋 Day Block Planner'"></h3>
+                   <p style="margin: 0; font-size: 11px; color: var(--muted); line-height: 1.45;" x-text="lang === 'ar' ? 'خطط كتل اليوم (موسيقى، فواصل، مذيع) على الخط الزمني لربط البرامج بساعاتها.' : 'Plan date-specific blocks (music, weather, host talk) on the interactive timeline.'"></p>
+                 </div>
+                 <div style="font-size: 11px; margin-top: 10px; display: flex; align-items: center; justify-content: space-between; color: var(--mint);">
+                   <span x-text="lang === 'ar' ? 'افتح المخطط الزمني' : 'Go to Timeline'"></span>
+                   <i data-lucide="arrow-left-right" style="width: 11px; height: 11px;"></i>
+                 </div>
+              </div>
+
+              <!-- Arrow -->
+              <div class="blueprint-arrow">
+                 <i data-lucide="chevron-left" x-show="dir === 'rtl'" style="width: 16px; height: 16px; color: var(--line-2);"></i>
+                 <i data-lucide="chevron-right" x-show="dir === 'ltr'" style="width: 16px; height: 16px; color: var(--line-2);"></i>
+              </div>
+
+              <!-- Step 4 -->
+              <div class="blueprint-step" @click="scrollToSection('playlists')" style="flex: 1; min-width: 170px; background: var(--panel-2); border: 1px solid var(--line-2); border-radius: 8px; padding: 12px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;">
+                 <div>
+                   <div style="font-size: 9.5px; font-weight: 700; color: var(--mint); text-transform: uppercase; margin-bottom: 4px;" x-text="lang === 'ar' ? 'الخطوة 4: الربط الأسبوعي' : 'Step 4: Weekly Rotation'"></div>
+                   <h3 style="margin: 0 0 6px 0; font-size: 13.5px; font-weight: 700;" x-text="lang === 'ar' ? '📅 القوائم والأوزان' : '📅 Playlists & Weights'"></h3>
+                   <p style="margin: 0; font-size: 11px; color: var(--muted); line-height: 1.45;" x-text="lang === 'ar' ? 'وزع الملفات على القوائم وحدد أوزان البث (خفيف، ثقيل، فواصل) لتناوب تلقائي متوازن.' : 'Distribute tracks across weekly playlists and adjust rotation weights.'"></p>
+                 </div>
+                 <div style="font-size: 11px; margin-top: 10px; display: flex; align-items: center; justify-content: space-between; color: var(--mint);">
+                   <span x-text="lang === 'ar' ? 'افتح القوائم والأوزان' : 'Go to Playlists'"></span>
+                   <i data-lucide="arrow-left-right" style="width: 11px; height: 11px;"></i>
+                 </div>
+              </div>
+
+              <!-- Arrow -->
+              <div class="blueprint-arrow">
+                 <i data-lucide="chevron-left" x-show="dir === 'rtl'" style="width: 16px; height: 16px; color: var(--line-2);"></i>
+                 <i data-lucide="chevron-right" x-show="dir === 'ltr'" style="width: 16px; height: 16px; color: var(--line-2);"></i>
+              </div>
+
+              <!-- Step 5 -->
+              <div class="blueprint-step" @click="scrollToSection('live')" style="flex: 1; min-width: 170px; background: var(--panel-2); border: 1px solid var(--line-2); border-radius: 8px; padding: 12px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;">
+                 <div>
+                   <div style="font-size: 9.5px; font-weight: 700; color: var(--mint); text-transform: uppercase; margin-bottom: 4px;" x-text="lang === 'ar' ? 'الخطوة 5: البث والتسجيل' : 'Step 5: Live Recording'"></div>
+                   <h3 style="margin: 0 0 6px 0; font-size: 13.5px; font-weight: 700;" x-text="lang === 'ar' ? '🎙️ البث المباشر واللقطات' : '🎙️ Live & Snippets'"></h3>
+                   <p style="margin: 0; font-size: 11px; color: var(--muted); line-height: 1.45;" x-text="lang === 'ar' ? 'شغل البث، تابع المستمعين، وسجل مقاطع مباشرة (Snippets) لحفظها كـ Station IDs جديدة.' : 'Monitor listeners, play the stream, and record live snippets to save as station IDs.'"></p>
+                 </div>
+                 <div style="font-size: 11px; margin-top: 10px; display: flex; align-items: center; justify-content: space-between; color: var(--mint);">
+                   <span x-text="lang === 'ar' ? 'افتح مشغل البث' : 'Go to Stream Player'"></span>
+                   <i data-lucide="arrow-left-right" style="width: 11px; height: 11px;"></i>
+                 </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
         <!-- AI COPILOT -->
         <div class="pane" style="margin-bottom:14px">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
@@ -2332,6 +2450,7 @@ return {
   recordings:[], toasts:[], _toastId:0,
   templates:[], voices:[],
   copilot:{score:null, status_text:'', suggestions:[], totals:null},
+  showBlueprint: localStorage.getItem('rc_show_blueprint') !== 'false',
   azBase:'',  // AzuraCast base URL — populated by refresh() from /api/v1/config; used to build stream/embed URLs in the broadcast tab
   builderView:'week', dayBlocks:[], isDragging:false, selectedDayBlockId:null,
   theme: localStorage.getItem('rc_theme') || 'flat',
@@ -3356,6 +3475,10 @@ return {
     await this.refresh();
   },
   // ---- COPILOT ----
+  toggleBlueprint(){
+    this.showBlueprint=!this.showBlueprint;
+    localStorage.setItem('rc_show_blueprint', this.showBlueprint);
+  },
   async loadCopilot(){if(!this.active)return;const r=await this.api(`/api/v1/stations/${this.active.id}/copilot`);if(r.ok)this.copilot=r.data;},
   async applyCopilotSuggestion(s){
     if(s.action && s.action.url){
