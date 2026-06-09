@@ -525,14 +525,16 @@ def api_listeners(sid: int) -> tuple[Response, int]:
 _DAY_BUILDER_DIR = Path(__file__).resolve().parent / "agents" / "day_builder"
 
 
-def _day_blocks_path(sid: int) -> Path:
-    _DAY_BUILDER_DIR.mkdir(parents=True, exist_ok=True)
+def _day_blocks_path(sid: int, date: str | None = None) -> Path:
+    if date and all(c.isalnum() or c in "-" for c in date):
+        return _DAY_BUILDER_DIR / f"{sid}_{date}.json"
     return _DAY_BUILDER_DIR / f"{sid}.json"
 
 
 @app.get("/api/v1/stations/<int:sid>/day-blocks")
 def api_day_blocks_get(sid: int):
-    p = _day_blocks_path(sid)
+    date = request.args.get("date")
+    p = _day_blocks_path(sid, date)
     if not p.exists():
         return _ok([])
     try:
@@ -545,6 +547,7 @@ def api_day_blocks_get(sid: int):
 
 @app.route("/api/v1/stations/<int:sid>/day-blocks", methods=["POST", "PUT"])
 def api_day_blocks_put(sid: int):
+    date = request.args.get("date")
     body = request.get_json(silent=True) or {}
     blocks = body.get("blocks")
     if not isinstance(blocks, list):
@@ -562,10 +565,11 @@ def api_day_blocks_put(sid: int):
                 "startHour": max(0, min(23, int(b.get("startHour") or 0))),
                 "durationMins": max(1, min(24 * 60, int(b.get("durationMins") or 30))),
                 "data": b.get("data"),
+                "showKey": str(b.get("showKey") or "")[:32] if b.get("showKey") else None,
             })
         except (TypeError, ValueError):
             continue
-    _day_blocks_path(sid).write_text(json.dumps(clean, ensure_ascii=False, indent=2), encoding="utf-8")
+    _day_blocks_path(sid, date).write_text(json.dumps(clean, ensure_ascii=False, indent=2), encoding="utf-8")
     return _ok({"saved": True, "count": len(clean)})
 
 
@@ -1103,9 +1107,91 @@ def api_weather() -> tuple[Response, int]:
 @app.get("/api/v1/scripts")
 def api_scripts_list() -> tuple[Response, int]:
     """Proxy the Guide's stored radio scripts registry."""
-    r = _guide("GET", "/api/radio/scripts")
+    params = request.args.to_dict()
+    r = _guide("GET", "/api/radio/scripts", params=params)
     if r is None:
         return _ok({})
+    if not r.ok:
+        return _err(r.text[:500], "GUIDE_ERROR", r.status_code)
+    return _ok(r.json())
+
+
+@app.post("/api/v1/scripts")
+def api_scripts_save() -> tuple[Response, int]:
+    """Save/update a generated or edited talk show script in the registry."""
+    body = request.get_json(silent=True) or {}
+    r = _guide("POST", "/api/radio/scripts", json=body)
+    if r is None:
+        return _err("Guide integration not configured", "GUIDE_UNAVAILABLE", 503)
+    if not r.ok:
+        return _err(r.text[:500], "GUIDE_ERROR", r.status_code)
+    return _ok(r.json())
+
+
+@app.delete("/api/v1/scripts")
+def api_scripts_delete() -> tuple[Response, int]:
+    """Delete a generated talk show script from the registry."""
+    params = request.args.to_dict()
+    r = _guide("DELETE", "/api/radio/scripts", params=params)
+    if r is None:
+        return _err("Guide integration not configured", "GUIDE_UNAVAILABLE", 503)
+    if not r.ok:
+        return _err(r.text[:500], "GUIDE_ERROR", r.status_code)
+    return _ok(r.json())
+
+
+@app.get("/api/v1/radio/stations")
+def api_radio_stations_proxy() -> tuple[Response, int]:
+    """Proxy configured AI radio stations from the Guide."""
+    r = _guide("GET", "/api/radio/stations")
+    if r is None:
+        return _ok({"stations": {}})
+    if not r.ok:
+        return _err(r.text[:500], "GUIDE_ERROR", r.status_code)
+    return _ok(r.json())
+
+
+@app.post("/api/v1/radio/stations")
+def api_radio_stations_save_proxy() -> tuple[Response, int]:
+    """Proxy station configuration save/update to the Guide."""
+    body = request.get_json(silent=True) or {}
+    r = _guide("POST", "/api/radio/stations", json=body)
+    if r is None:
+        return _err("Guide integration not configured", "GUIDE_UNAVAILABLE", 503)
+    if not r.ok:
+        return _err(r.text[:500], "GUIDE_ERROR", r.status_code)
+    return _ok(r.json())
+
+
+@app.delete("/api/v1/radio/stations/<shortcode>")
+def api_radio_stations_delete_proxy(shortcode: str) -> tuple[Response, int]:
+    """Proxy station configuration delete to the Guide."""
+    r = _guide("DELETE", f"/api/radio/stations/{shortcode}")
+    if r is None:
+        return _err("Guide integration not configured", "GUIDE_UNAVAILABLE", 503)
+    if not r.ok:
+        return _err(r.text[:500], "GUIDE_ERROR", r.status_code)
+    return _ok(r.json())
+
+
+@app.post("/api/v1/run/<action_id>")
+def api_run_action(action_id: str) -> tuple[Response, int]:
+    """Proxy the Guide's background action runner (e.g. run-radio-pipeline)."""
+    body = request.get_json(silent=True) or {}
+    r = _guide("POST", f"/api/run/{action_id}", json=body)
+    if r is None:
+        return _err("Guide integration not configured", "GUIDE_UNAVAILABLE", 503)
+    if not r.ok:
+        return _err(r.text[:500], "GUIDE_ERROR", r.status_code)
+    return _ok(r.json())
+
+
+@app.get("/api/v1/runs/<run_id>")
+def api_run_status(run_id: str) -> tuple[Response, int]:
+    """Proxy the Guide's background action status/output logs."""
+    r = _guide("GET", f"/api/runs/{run_id}")
+    if r is None:
+        return _err("Guide integration not configured", "GUIDE_UNAVAILABLE", 503)
     if not r.ok:
         return _err(r.text[:500], "GUIDE_ERROR", r.status_code)
     return _ok(r.json())
@@ -1190,6 +1276,74 @@ def _tool_set_station_setting(station_id: int, **kwargs) -> dict:
     return {"ok": r.ok, "applied": list(body.keys())}
 
 
+def _tool_get_day_blocks(station_id: int, date: str) -> dict:
+    p = _day_blocks_path(station_id, date)
+    if not p.exists():
+        return {"blocks": []}
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+        return {"blocks": data}
+    except Exception as e:
+        return {"error": str(e)}
+
+
+def _tool_save_day_block(station_id: int, date: str, type_: str, title: str, start_hour: int, duration_mins: int = 60, show_key: str | None = None) -> dict:
+    p = _day_blocks_path(station_id, date)
+    blocks = []
+    if p.exists():
+        try:
+            blocks = json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    import random
+    import time
+    new_id = f"b_{int(time.time())}_{random.randint(1000, 9999)}"
+    blocks.append({
+        "id": new_id,
+        "type": type_,
+        "title": title,
+        "startHour": start_hour,
+        "durationMins": duration_mins,
+        "data": None,
+        "showKey": show_key
+    })
+    p.write_text(json.dumps(blocks, ensure_ascii=False, indent=2), encoding="utf-8")
+    return {"saved": True, "block_id": new_id}
+
+
+def _tool_get_script(station: str, date: str, show: str) -> dict:
+    r = _guide("GET", "/api/radio/scripts", params={"station": station, "date": date, "show": show})
+    if r and r.ok:
+        return {"script": r.json()}
+    return {"error": "Script not found or connection error"}
+
+
+def _tool_save_script(station: str, date: str, show: str, script: str) -> dict:
+    body = {
+        "station": station,
+        "date": date,
+        "show": show,
+        "script": script,
+        "date_str": date
+    }
+    r = _guide("POST", "/api/radio/scripts", json=body)
+    if r and r.ok:
+        return {"saved": True}
+    return {"error": r.text if r else "Guide connection error"}
+
+
+def _tool_run_radio_pipeline(station: str, date: str, show: str = "all", mode: str = "full") -> dict:
+    args = ["--station", station, "--date", date, "--show", show]
+    if mode == "text":
+        args.append("--text-only")
+    elif mode == "audio":
+        args.append("--audio-only")
+    r = _guide("POST", "/api/run/run-radio-pipeline", json={"args": args})
+    if r and r.ok:
+        return {"started": True, "run_id": r.json().get("run_id")}
+    return {"started": False, "error": r.text if r else "Guide connection error"}
+
+
 TOOL_REGISTRY = {
     "get_station_status": _tool_get_station_status,
     "get_media": _tool_get_media,
@@ -1201,6 +1355,11 @@ TOOL_REGISTRY = {
     "get_top_songs": _tool_get_top_songs,
     "get_history": _tool_get_history,
     "set_station_setting": _tool_set_station_setting,
+    "get_day_blocks": _tool_get_day_blocks,
+    "save_day_block": _tool_save_day_block,
+    "get_script": _tool_get_script,
+    "save_script": _tool_save_script,
+    "run_radio_pipeline": _tool_run_radio_pipeline,
 }
 
 TOOL_SPECS = [
@@ -1214,6 +1373,11 @@ TOOL_SPECS = [
     {"type": "function", "function": {"name": "get_top_songs", "description": "Get the most-played songs report.", "parameters": {"type": "object", "properties": {"station_id": {"type": "integer"}}, "required": ["station_id"]}}},
     {"type": "function", "function": {"name": "get_history", "description": "Get recent play history.", "parameters": {"type": "object", "properties": {"station_id": {"type": "integer"}, "limit": {"type": "integer", "default": 10}}, "required": ["station_id"]}}},
     {"type": "function", "function": {"name": "set_station_setting", "description": "Update station settings (max_listeners, enable_streamers, enable_requests, enable_public_page, enable_on_demand, is_enabled, description).", "parameters": {"type": "object", "properties": {"station_id": {"type": "integer"}, "max_listeners": {"type": "integer"}, "enable_streamers": {"type": "boolean"}, "enable_requests": {"type": "boolean"}, "enable_public_page": {"type": "boolean"}, "enable_on_demand": {"type": "boolean"}, "is_enabled": {"type": "boolean"}, "description": {"type": "string"}}, "required": ["station_id"]}}},
+    {"type": "function", "function": {"name": "get_day_blocks", "description": "Get all scheduled timeline day blocks for a station and date.", "parameters": {"type": "object", "properties": {"station_id": {"type": "integer"}, "date": {"type": "string", "description": "Date in YYYY-MM-DD format"}}, "required": ["station_id", "date"]}}},
+    {"type": "function", "function": {"name": "save_day_block", "description": "Add a new block to the timeline.", "parameters": {"type": "object", "properties": {"station_id": {"type": "integer"}, "date": {"type": "string", "description": "Date in YYYY-MM-DD format"}, "type_": {"type": "string", "enum": ["music", "weather", "voice", "ai-show"]}, "title": {"type": "string"}, "start_hour": {"type": "integer", "description": "0 to 23 start hour"}, "duration_mins": {"type": "integer", "default": 60}, "show_key": {"type": "string", "description": "Show identifier morning/daily/afternoon/evening/night"}}, "required": ["station_id", "date", "type_", "title", "start_hour"]}}},
+    {"type": "function", "function": {"name": "get_script", "description": "Retrieve a generated show script by station, date, and show slot.", "parameters": {"type": "object", "properties": {"station": {"type": "string", "description": "Station short name (e.g. egypt, motivation)"}, "date": {"type": "string", "description": "Date in YYYY-MM-DD format"}, "show": {"type": "string", "description": "Show identifier morning/daily/afternoon/evening/night"}}, "required": ["station", "date", "show"]}}},
+    {"type": "function", "function": {"name": "save_script", "description": "Save or update a show script.", "parameters": {"type": "object", "properties": {"station": {"type": "string", "description": "Station short name"}, "date": {"type": "string", "description": "Date in YYYY-MM-DD format"}, "show": {"type": "string"}, "script": {"type": "string"}}, "required": ["station", "date", "show", "script"]}}},
+    {"type": "function", "function": {"name": "run_radio_pipeline", "description": "Trigger the background radio generation pipeline to generate/broadcast shows.", "parameters": {"type": "object", "properties": {"station": {"type": "string", "description": "Station short name"}, "date": {"type": "string", "description": "Date in YYYY-MM-DD format"}, "show": {"type": "string", "default": "all", "description": "Show identifier or 'all'"}, "mode": {"type": "string", "enum": ["full", "text", "audio"], "default": "full"}}, "required": ["station", "date"]}}},
 ]
 
 

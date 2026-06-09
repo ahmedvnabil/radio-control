@@ -77,8 +77,10 @@ input:focus,select:focus,textarea:focus{border-color:var(--mint);}
 .lang-toggle button:last-child{border-inline-end:0;}
 .lang-toggle button.active{background:var(--panel-2);color:var(--ink);}
 
-.content{overflow-y:auto;padding-right:4px;}
+.content{overflow-y:auto;padding-right:4px;scroll-behavior:smooth;}
 [dir="rtl"] .content{padding-right:0;padding-left:4px;}
+.sec-wrap{margin-bottom:48px;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:36px;scroll-margin-top:14px;}
+.sec-wrap:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0;}
 
 .pane{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:16px;}
 .pane h2{margin:0 0 4px;font-size:15px;font-weight:700;letter-spacing:-0.01em;}
@@ -204,6 +206,8 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
 .player-toggle:hover{filter:brightness(1.06);}
 .player-toggle.playing{background:var(--rose);color:#fff;}
 @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.blinking{animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
 
 .eq{display:inline-flex;align-items:flex-end;gap:3px;height:24px;}
 .eq .bar{width:3px;height:4px;background:var(--mint);border-radius:2px;transition:height 0.1s ease;}
@@ -318,6 +322,351 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
   .shell{grid-template-columns:1fr;}
   .sidebar{display:none;}
 }
+
+/* Calendar Grid & Strip */
+.calendar-strip {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.calendar-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 4px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.calendar-day:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+.calendar-day.active {
+  background: rgba(113, 237, 189, 0.1);
+  border-color: var(--mint);
+}
+.calendar-day.has-shows {
+  position: relative;
+}
+.calendar-day.has-shows::after {
+  content: "";
+  position: absolute;
+  bottom: 5px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--mint);
+  box-shadow: 0 0 6px var(--mint);
+}
+.calendar-day-name {
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 500;
+}
+.calendar-day-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+/* Studio Split Workspace */
+.studio-workspace {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+  align-items: start;
+  margin-top: 24px;
+}
+@media (max-width: 1024px) {
+  .studio-workspace {
+    grid-template-columns: 1fr;
+  }
+}
+.studio-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+/* Tabs Script Viewer */
+.tabs-header {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 10px;
+  overflow-x: auto;
+}
+.tab-trigger {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 13.5px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+.tab-trigger:hover {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.02);
+}
+.tab-trigger.active {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--line-2);
+}
+.tab-trigger.active.show-morning { border-bottom: 3px solid var(--mint); }
+.tab-trigger.active.show-afternoon { border-bottom: 3px solid var(--amber); }
+.tab-trigger.active.show-evening { border-bottom: 3px solid var(--blue); }
+.tab-trigger.active.show-night { border-bottom: 3px solid var(--violet); }
+
+.script-viewer {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.script-header-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  font-size: 12.5px;
+  color: var(--muted);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.script-text {
+  font-size: 15.5px;
+  line-height: 1.8;
+  color: var(--ink);
+  text-align: justify;
+  margin-bottom: 25px;
+  white-space: pre-wrap;
+}
+.script-empty {
+  color: var(--muted);
+  text-align: center;
+  margin: auto 0;
+  font-style: italic;
+  font-size: 14px;
+}
+.script-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 15px;
+}
+
+/* Terminal Console */
+.terminal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.terminal-dots {
+  display: flex;
+  gap: 6px;
+}
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.terminal-dot.red { background-color: #ef4444; }
+.terminal-dot.yellow { background-color: #f59e0b; }
+.terminal-dot.green { background-color: #10b981; }
+.terminal-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+.console {
+  background: #030712;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  color: #34d399;
+  height: 200px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+  direction: ltr;
+  text-align: left;
+}
+.console::-webkit-scrollbar { width: 8px; }
+.console::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
+.gen-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+}
+
+/* Draggable Drawers & Compact Cards */
+.source-drawer {
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  transition: all 0.2s;
+  width: 100%;
+}
+.source-drawer:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+.drawer-header {
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  user-select: none;
+}
+.drawer-header h3 {
+  font-size: 13.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+.drawer-header .count-badge {
+  font-size: 9.5px;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--muted);
+  font-weight: 600;
+}
+.drawer-body {
+  padding: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+.drawer-body::-webkit-scrollbar { width: 5px; }
+.drawer-body::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 3px; }
+
+.source-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: grab;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  transition: all 0.15s;
+  width: 100%;
+  user-select: none;
+}
+.source-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+.source-item:active { cursor: grabbing; }
+
+.song-card-compact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  transition: all 0.15s ease;
+  width: 100%;
+  cursor: grab;
+  user-select: none;
+}
+.song-card-compact:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+.song-card-compact:active {
+  cursor: grabbing;
+}
+.song-title-compact {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.song-style-compact {
+  font-size: 9.5px;
+  color: var(--mint);
+  display: block;
+}
+.preview-mini-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(113, 237, 189, 0.12);
+  border: 1px solid rgba(113, 237, 189, 0.25);
+  color: var(--mint);
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+.preview-mini-btn:hover {
+  background: var(--mint);
+  color: #000;
+  box-shadow: 0 0 8px var(--mint);
+}
+.drag-handle-badge {
+  font-size: 9px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  flex-shrink: 0;
+}
+.quick-add-select {
+  font-size: 10.5px;
+  padding: 2px 4px;
+  height: 22px;
+  background: #111615;
+  border: 1px solid var(--line-2);
+  border-radius: 4px;
+  color: var(--ink-2);
+  cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -339,7 +688,7 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
         <div class="section-title" x-text="t('group_' + g)" style="font-size:9px; opacity:0.8; margin-bottom:4px; padding-top:4px; border-top:1px solid rgba(255,255,255,0.03);"></div>
         <nav class="nav">
           <template x-for="v in views.filter(x => x.group === g)" :key="v.id">
-            <button :class="tab===v.id ? 'active' : ''" @click="tab=v.id; tick()">
+            <button :class="tab===v.id ? 'active' : ''" @click="scrollToSection(v.id)">
               <i :data-lucide="v.icon" style="width:15px;height:15px;flex-shrink:0"></i>
               <span x-text="t(v.id)"></span>
             </button>
@@ -404,7 +753,7 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
     <div class="content">
 
       <!-- ╔═══ LIVE ═══╗ -->
-      <div x-show="tab==='live'" x-cloak>
+      <section id="sec-live" class="sec-wrap">
         <!-- AI COPILOT -->
         <div class="pane" style="margin-bottom:14px">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
@@ -448,6 +797,7 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
               <div style="flex:1;min-width:0">
                 <div style="font-size:18px;font-weight:700" x-text="currentTrack || t('no_live')"></div>
                 <div style="color:var(--muted);font-size:13px;margin-top:3px" x-text="t('next')+': '+(nextTrack||'—')"></div>
+                <canvas id="visualizer-canvas" width="320" height="40" style="width: 100%; height: 40px; background: rgba(0,0,0,0.15); border-radius: 8px; border: 1px solid rgba(255,255,255,0.02); margin: 5px 0;"></canvas>
                 <div class="eq" :class="streamPlaying && 'playing'" style="margin-top:8px">
                   <template x-for="(lvl,i) in eqLevels" :key="i">
                     <div class="bar" :style="`height:${Math.max(4,lvl)}px`"></div>
@@ -468,7 +818,16 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
                 <div style="font-size:11px;color:var(--muted)" x-text="t('listen_live')+' · '+(activeListenUrl||'—')"></div>
                 <audio id="rc-audio" preload="none" crossorigin="anonymous" style="width:100%;margin-top:4px" controls></audio>
               </div>
-              <input class="volume" type="range" min="0" max="100" x-model.number="streamVolume" @input="setStreamVolume()" :title="t('volume')"/>
+              <input class="volume" type="range" min="0" max="100" x-model.number="streamVolume" @input="setStreamVolume()" :title="t('volume')" style="width:70px;" />
+              <button class="btn sm" 
+                      :class="isRecordingStream ? 'err blinking' : ''" 
+                      @click="isRecordingStream ? stopRecordingStream() : startRecordingStream()"
+                      :disabled="!streamPlaying"
+                      style="padding: 6px 10px; display: flex; align-items: center; gap: 6px; font-size: 11px;"
+                      title="تسجيل مقطع من البث المباشر">
+                <span class="dot" :style="isRecordingStream ? 'background-color: var(--rose); width: 8px; height: 8px; border-radius: 50%; display: inline-block;' : 'background-color: var(--muted); width: 8px; height: 8px; border-radius: 50%; display: inline-block;'"></span>
+                <span x-text="isRecordingStream ? pad(Math.floor(recordDuration/60)) + ':' + pad(recordDuration%60) : 'تسجيل مقطع'"></span>
+              </button>
             </div>
           </div>
           <div class="pane">
@@ -485,6 +844,71 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
               <p class="sub" x-text="t('day_builder_note')"></p>
             </div>
             <button class="btn sm primary" @click="showAddBlockHome=true; $nextTick(() => tick())"><i data-lucide="plus" style="width:12px;height:12px"></i> <span x-text="t('add')"></span></button>
+          </div>
+          
+          <!-- Calendar Switcher & Presets -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; margin-top: 15px;">
+            <div style="display: flex; gap: 8px;">
+              <button class="btn" :class="!showFullCalendar ? 'primary' : ''" @click="showFullCalendar = false" style="padding: 6px 12px; font-size: 12.5px;" x-text="t('weekly_strip')">
+              </button>
+              <button class="btn" :class="showFullCalendar ? 'primary' : ''" @click="showFullCalendar = true; buildMonthCalendar()" style="padding: 6px 12px; font-size: 12.5px;" x-text="t('full_calendar')">
+              </button>
+            </div>
+            
+            <!-- Presets -->
+            <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+              <span style="font-size: 12px; color: var(--muted); font-weight: 500;" x-text="t('fast_date')"></span>
+              <button class="btn" style="padding: 4px 8px; font-size: 11.5px;" @click="selectPresetDate('yesterday')" x-text="t('yesterday')"></button>
+              <button class="btn" style="padding: 4px 8px; font-size: 11.5px;" @click="selectPresetDate('today')" x-text="t('today')"></button>
+              <button class="btn" style="padding: 4px 8px; font-size: 11.5px;" @click="selectPresetDate('tomorrow')" x-text="t('tomorrow')"></button>
+              <button class="btn" style="padding: 4px 8px; font-size: 11.5px;" @click="selectPresetDate('dayafter')" x-text="t('dayafter')"></button>
+            </div>
+          </div>
+          
+          <!-- Weekly Calendar Strip (Conditional) -->
+          <div class="calendar-strip" x-show="!showFullCalendar">
+            <template x-for="day in calendarDays" :key="day.iso">
+              <div :class="'calendar-day ' + (day.iso === selectedDate ? 'active ' : '') + (hasScriptsFor(day.iso) ? 'has-shows' : '')" @click="selectedDate = day.iso; fetchHistory(); loadStation(active ? active.id : 0)">
+                <span class="calendar-day-name" x-text="day.name"></span>
+                <span class="calendar-day-num" x-text="day.num"></span>
+              </div>
+            </template>
+          </div>
+
+          <!-- Monthly Grid Calendar (Conditional) -->
+          <div x-show="showFullCalendar" style="background: rgba(0, 0, 0, 0.25); border-radius: 12px; padding: 18px; border: 1px solid var(--line-2); margin-bottom: 25px; display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+              <button class="btn" style="padding: 4px 10px; font-size: 12px;" @click="prevMonth()">◀ السابق</button>
+              <span style="font-weight: 700; font-size: 15px; color: var(--mint);" x-text="getCurrentMonthName()"></span>
+              <button class="btn" style="padding: 4px 10px; font-size: 12px;" @click="nextMonth()">التالي ▶</button>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center;">
+              <!-- Week headers -->
+              <template x-for="dayName in ['أحد', 'إثنين', 'ثلاثاء', 'أربعاء', 'خميس', 'جمعة', 'سبت']">
+                <div style="font-size: 11px; color: var(--muted); font-weight: 700; padding: 4px 0;" x-text="dayName"></div>
+              </template>
+              
+              <!-- Month grid cells -->
+              <template x-for="day in monthDays" :key="day.iso">
+                <div :class="'calendar-day ' + (day.iso === selectedDate ? 'active ' : '') + (hasScriptsFor(day.iso) ? 'has-shows ' : '')" 
+                     :style="day.isCurrentMonth ? '' : 'opacity: 0.35;'"
+                     style="padding: 10px 4px; height: 55px; display: flex; flex-direction: column; justify-content: space-between;"
+                     @click="selectedDate = day.iso; fetchHistory(); loadStation(active ? active.id : 0)">
+                  <span class="calendar-day-num" style="font-size: 14px;" x-text="day.num"></span>
+                  
+                  <!-- Small status dot indicators for generated shows -->
+                  <div style="display: flex; gap: 3px; justify-content: center; margin-top: 2px; min-height: 6px;">
+                    <template x-if="allScripts[active?.short_name]?.[day.iso]">
+                      <template x-for="(scriptObj, showKey) in allScripts[active.short_name][day.iso]" :key="showKey">
+                        <span style="width: 5px; height: 5px; border-radius: 50%; display: inline-block;"
+                              :style="getShowIndicatorColor(showKey)"></span>
+                      </template>
+                    </template>
+                  </div>
+                </div>
+              </template>
+            </div>
           </div>
           
           <div class="tl24-wrap" style="margin-top:8px">
@@ -613,6 +1037,214 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
           </template>
         </div>
 
+        <!-- ===== STUDIO SPLIT WORKSPACE ===== -->
+        <div class="studio-workspace">
+          
+          <!-- RIGHT COLUMN: Scripts Editor & Pipeline Console -->
+          <div class="studio-col">
+            
+            <!-- Script Viewer Card -->
+            <div class="pane" style="margin-bottom: 0;">
+              <h2 x-text="t('scripts_title')"></h2>
+              <p class="sub" x-text="active ? active.name : ''"></p>
+              
+              <div class="tabs-header" style="margin-top: 15px;">
+                <template x-for="(show, key) in (active && guideStations[active.short_name]?.shows ? guideStations[active.short_name].shows : {morning:{}, afternoon:{}, evening:{}, night:{}})" :key="key">
+                  <button :class="'tab-trigger show-' + getShowClass(key) + (activeTab === key ? ' active' : '')" @click="activeTab = key; isEditingScript = false" x-text="getShowLabel(key)"></button>
+                </template>
+              </div>
+              
+              <div class="script-viewer">
+                <div class="script-header-info">
+                  <div>
+                    <span>تاريخ التوليد: </span>
+                    <strong x-text="getActiveScript() ? getActiveScript().date_str : selectedDate"></strong>
+                  </div>
+                  <div style="font-size: 11px;">
+                    <span>تحديث البث الفعلي: </span>
+                    <span x-text="getActiveScript() ? getActiveScript().generated_at : '-'"></span>
+                  </div>
+                </div>
+                
+                <!-- Read Mode -->
+                <div class="script-text" x-show="getActiveScript() && !isEditingScript" x-text="getActiveScript() ? getActiveScript().script : ''"></div>
+                
+                <!-- Edit Mode -->
+                <div x-show="isEditingScript" x-cloak style="margin-bottom: 20px;">
+                  <textarea class="form-textarea" rows="6" x-model="editedScriptText" style="width: 100%; font-family: inherit; font-size: 14px; line-height: 1.6; background: #111615; border: 1px solid var(--line-2); padding: 12px; border-radius: 8px; color: var(--ink); outline: none;" placeholder="اكتب أو عدل النص الإذاعي هنا..."></textarea>
+                </div>
+                
+                <!-- Empty state -->
+                <div class="script-empty" x-show="!getActiveScript() && !isEditingScript" x-text="t('script_empty')"></div>
+
+                <!-- Audio Preview Player (Only when script has been generated) -->
+                <div x-show="getActiveScript() && !isEditingScript" x-cloak style="margin-top: 15px; padding: 10px; background: rgba(255, 255, 255, 0.02); border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.04); display: flex; align-items: center; justify-content: space-between; gap: 15px; flex-wrap: wrap; margin-bottom: 10px;">
+                  <span style="font-size: 12px; color: var(--mint); font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                    🔊 معاينة المادة الصوتية المرفوعة للبث:
+                  </span>
+                  <audio :src="azBase + '/listen/' + (active ? active.short_name : '') + '/' + (active && guideStations[active.short_name]?.shows?.[activeTab]?.filename || (activeTab + '.mp3')) + '?cb=' + Date.now()" controls style="height: 30px; outline: none;"></audio>
+                </div>
+                
+                <!-- Actions -->
+                <div class="script-actions" style="width: 100%;">
+                  <!-- Action triggers when NOT editing -->
+                  <div x-show="!isEditingScript" style="width: 100%;">
+                    <div style="display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap;">
+                      <button class="btn" style="padding: 6px 12px; font-size: 12px;" @click="startEditingScript()">
+                        <span x-text="getActiveScript() ? t('edit_script_manual') : t('create_script_manual')"></span>
+                      </button>
+                      <button class="btn" style="padding: 6px 12px; font-size: 12px;" @click="triggerPipeline(activeTab, 'text')" :disabled="isGenerating" x-text="t('generate_script_ai')">
+                      </button>
+                      <button class="btn primary" style="padding: 6px 12px; font-size: 12px;" :disabled="!getActiveScript() || isGenerating" @click="triggerPipeline(activeTab, 'audio')" x-text="t('broadcast_script')">
+                      </button>
+                      <button class="btn" style="padding: 6px 12px; font-size: 12px;" @click="triggerPipeline(activeTab, 'full')" :disabled="isGenerating" x-text="t('generate_full')">
+                      </button>
+                      <a x-show="getActiveScript()" :href="azBase + '/listen/' + (active ? active.short_name : '') + '/' + (active && guideStations[active.short_name]?.shows?.[activeTab]?.filename || (activeTab + '.mp3'))" target="_blank" class="btn" style="padding: 6px 12px; font-size: 12px;" x-text="t('download_mp3')">
+                      </a>
+                      <button x-show="getActiveScript()" class="btn danger" style="padding: 6px 12px; font-size: 12px;" @click="deleteScript()" x-text="t('delete_script')">
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <!-- Action triggers when editing -->
+                  <div x-show="isEditingScript">
+                    <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                      <button class="btn primary" style="padding: 6px 12px; font-size: 12px;" @click="saveEditedScript()" x-text="t('save_draft')">
+                      </button>
+                      <button class="btn" style="padding: 6px 12px; font-size: 12px;" @click="isEditingScript = false" x-text="t('cancel')">
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pipeline Console Logs Card -->
+            <div class="pane" style="margin-bottom: 0;">
+              <h2 x-text="t('pipeline_console')"></h2>
+              
+              <div class="gen-panel" style="margin-bottom: 15px; margin-top: 10px;">
+                <span style="font-size: 13px; color: var(--muted);">توليد الحلقات لليوم المحدد: <strong><span x-text="selectedDate"></span></strong></span>
+                <button class="btn primary" style="padding: 6px 14px; font-size: 12px; margin-inline-start: auto;" @click="triggerPipeline('all', 'full')" :disabled="isGenerating">
+                  <span x-text="isGenerating ? t('running') : t('generate_day_all')"></span>
+                </button>
+              </div>
+              
+              <div class="terminal-header">
+                <div class="terminal-dots">
+                  <div class="terminal-dot red"></div>
+                  <div class="terminal-dot yellow"></div>
+                  <div class="terminal-dot green"></div>
+                </div>
+                <div class="terminal-title">ai_radio_pipeline.log</div>
+              </div>
+              <div class="console" id="log-console" x-text="logOutput"></div>
+            </div>
+            
+          </div>
+          
+          <!-- LEFT COLUMN: Operations & Media Archive -->
+          <div class="studio-col">
+            
+            <!-- Scheduled Tasks Card -->
+            <div class="pane" style="margin-bottom: 0;">
+              <h2 x-text="t('schedules_title')"></h2>
+              <p class="sub" x-text="t('schedules_desc')"></p>
+              
+              <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+                <!-- Weather Task -->
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--line-2); border-radius: 10px; padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 15px;">
+                  <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+                    <div style="font-size: 20px; flex-shrink:0;">🌤️</div>
+                    <div style="min-width: 0; flex: 1;">
+                      <div style="font-size: 13px; font-weight: 600;" x-text="t('weather_task')"></div>
+                      <div style="font-size: 11px; color: var(--muted);" x-text="t('weather_task_desc')"></div>
+                    </div>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                    <span :class="weatherTaskEnabled ? 'badge-good' : 'badge-poor'" style="font-size: 10px; padding: 3px 8px; border-radius: 12px; background: rgba(113,237,189,0.1); color: var(--mint);" x-text="weatherTaskStatus"></span>
+                    <button class="btn sm" style="padding: 4px 8px; font-size: 11px;" @click="toggleWeatherTask()" x-text="weatherTaskEnabled ? t('disable') : t('enable')"></button>
+                    <button class="btn primary sm" style="padding: 4px 8px; font-size: 11px;" @click="runWeatherTaskNow()" :disabled="isGeneratingWeather">
+                      <span x-text="isGeneratingWeather ? t('running') : t('run_now')"></span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Nightly Pipeline Task -->
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--line-2); border-radius: 10px; padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 15px;">
+                  <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+                    <div style="font-size: 20px; flex-shrink:0;">⚙️</div>
+                    <div style="min-width: 0; flex: 1;">
+                      <div style="font-size: 13px; font-weight: 600;" x-text="t('nightly_task')"></div>
+                      <div style="font-size: 11px; color: var(--muted);" x-text="t('nightly_task_desc')"></div>
+                    </div>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                    <span class="badge badge-cyan" style="font-size: 10px; padding: 3px 8px; border-radius: 12px; background: rgba(124,199,242,0.1); color: var(--blue);" x-text="t('on')"></span>
+                    <button class="btn sm" style="padding: 4px 8px; font-size: 11px;" disabled x-text="t('on')"></button>
+                  </div>
+                </div>
+
+                <!-- AzuraCast Sync Task -->
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--line-2); border-radius: 10px; padding: 12px; display: flex; align-items: center; justify-content: space-between; gap: 15px;">
+                  <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+                    <div style="font-size: 20px; flex-shrink:0;">🔄</div>
+                    <div style="min-width: 0; flex: 1;">
+                      <div style="font-size: 13px; font-weight: 600;" x-text="t('sync_task')"></div>
+                      <div style="font-size: 11px; color: var(--muted);" x-text="t('sync_task_desc')"></div>
+                    </div>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                    <span class="badge badge-cyan" style="font-size: 10px; padding: 3px 8px; border-radius: 12px; background: rgba(124,199,242,0.1); color: var(--blue);" x-text="t('on')"></span>
+                    <button class="btn sm" style="padding: 4px 8px; font-size: 11px;" disabled x-text="t('on')"></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Media Archive Drawer Card -->
+            <div class="pane" style="margin-bottom: 0;">
+              <h2 x-text="t('archive_title')"></h2>
+              <p class="sub" x-text="t('archive_desc')"></p>
+              
+              <div class="source-drawer" style="margin-top: 15px;">
+                <div class="drawer-body" style="max-height: 400px;">
+                  <template x-for="item in generatedArchive" :key="item.id">
+                    <div class="song-card-compact"
+                         draggable="true"
+                         @dragstart="onDragStart($event, {type: 'voice', title: item.title, duration: item.durationMins, data: item})"
+                         @dragend="isDragging = false">
+                      
+                      <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;">
+                        <!-- Inline Play preview button -->
+                        <button class="preview-mini-btn" @click.stop="togglePreview(item)">
+                          <span x-text="previewSongId === item.id && isPreviewPlaying ? '⏸' : '▶'">▶</span>
+                        </button>
+                        <div style="min-width: 0; flex: 1;">
+                          <span class="song-title-compact" x-text="item.title"></span>
+                          <span class="song-style-compact" style="color: var(--amber);" x-text="item.timeStr + ' | ' + item.durationMins + ' min'"></span>
+                        </div>
+                      </div>
+                      
+                      <select class="quick-add-select" @change="quickAddBlock({type: 'voice', title: item.title, duration: item.durationMins, data: item}, $event)" @click.stop>
+                        <option value="" x-text="t('add') + '...'"></option>
+                        <template x-for="hr in hoursList" :key="hr.value">
+                          <option :value="hr.value" x-text="hr.label"></option>
+                        </template>
+                      </select>
+                      <div class="drag-handle-badge" style="background: rgba(241, 189, 100, 0.15); border-color: rgba(241, 189, 100, 0.3); color: var(--amber);">سحب ☰</div>
+                    </div>
+                  </template>
+                  
+                  <div x-show="generatedArchive.length === 0" style="font-size: 12px; color: var(--muted); padding: 15px; text-align: center; background: rgba(255,255,255,0.02); border: 1px dashed var(--line-2); border-radius: 8px;" x-text="t('archive_empty')">
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+
         <div class="row">
           <div class="pane">
             <h2 x-text="t('queue')"></h2>
@@ -643,10 +1275,10 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       <!-- ╔═══ MEDIA ═══╗ -->
-      <div x-show="tab==='media'" x-cloak>
+      <section id="sec-media" class="sec-wrap">
         <div class="pane">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
             <div>
@@ -726,10 +1358,10 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
             <span x-text="ttsBusy ? t('saving') : t('generate_upload')"></span>
           </button>
         </div>
-      </div>
+      </section>
 
       <!-- ╔═══ PLAYLISTS ═══╗ -->
-      <div x-show="tab==='playlists'" x-cloak>
+      <section id="sec-playlists" class="sec-wrap">
         <div class="pane">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
             <div><h2 x-text="t('playlists')"></h2><p class="sub" x-text="t('playlists_sub')"></p></div>
@@ -753,10 +1385,10 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
             </template>
           </div>
         </div>
-      </div>
+      </section>
 
       <!-- ╔═══ SCHEDULE ═══╗ -->
-      <div x-show="tab==='schedule'" x-cloak>
+      <section id="sec-schedule" class="sec-wrap">
         <div class="pane">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
             <div><h2 x-text="t('weekly_schedule')"></h2><p class="sub" x-text="t('schedule_sub')"></p></div>
@@ -899,10 +1531,10 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
           <p class="sub" style="margin-top:10px;font-size:11px" x-text="t('schedule_click_hint')"></p>
           </div><!-- /builderView=week -->
         </div>
-      </div>
+      </section>
 
       <!-- ╔═══ AUDIENCE ═══╗ -->
-      <div x-show="tab==='audience'" x-cloak>
+      <section id="sec-audience" class="sec-wrap">
         <div class="row" style="margin-bottom:14px">
           <div class="pane" style="grid-column:span 2">
             <h2 x-text="t('listeners_chart')"></h2>
@@ -953,10 +1585,10 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       <!-- ╔═══ BROADCAST ═══╗ -->
-      <div x-show="tab==='broadcast'" x-cloak>
+      <section id="sec-broadcast" class="sec-wrap">
         <div class="row" style="margin-bottom:14px">
           <div class="pane">
             <div style="display:flex;justify-content:space-between;align-items:center"><h2 x-text="t('streamers')"></h2>
@@ -1061,10 +1693,10 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
             </div>
           </template>
         </div>
-      </div>
+      </section>
 
       <!-- ╔═══ TELEGRAM ═══╗ -->
-      <div x-show="tab==='telegram'" x-cloak>
+      <section id="sec-telegram" class="sec-wrap">
         <div class="pane" style="margin-bottom:14px">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <h2><i data-lucide="send" style="width:15px;height:15px"></i> <span x-text="t('telegram')"></span></h2>
@@ -1120,10 +1752,10 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
           <p class="sub" x-text="t('tg_editor_sub')"></p>
           <textarea x-model="tg.raw" rows="14" spellcheck="false" dir="ltr" style="width:100%;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12px;line-height:1.5"></textarea>
         </div>
-      </div>
+      </section>
 
       <!-- ╔═══ SETUP ═══╗ -->
-      <div x-show="tab==='setup'" x-cloak>
+      <section id="sec-setup" class="sec-wrap">
         <div class="row" style="margin-bottom:14px">
           <div class="pane">
             <h2 x-text="t('branding')"></h2>
@@ -1209,11 +1841,43 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
               <div x-show="backups.length===0" style="color:var(--muted);font-size:12px;text-align:center;padding:14px" x-text="t('no_backups')"></div>
             </div>
           </div>
+        <!-- AI SHOW PERSONAS -->
+        <div class="row" style="margin-top:14px">
+          <div class="pane" style="grid-column:span 2">
+            <h2 x-text="t('personas_title')"></h2>
+            <p class="sub" x-text="t('personas_desc')"></p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 15px;">
+              <template x-for="p in showPersonas" :key="p.station + '-' + p.show">
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--line-2); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
+                  <div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                      <span class="badge" :class="'show-' + getShowClass(p.show)" x-text="getShowLabel(p.show)" style="font-size: 11px; padding: 2px 6px; border-radius: 4px;"></span>
+                      <span style="font-size: 11px; color: var(--muted); font-weight: 600;" x-text="p.station_name"></span>
+                    </div>
+                    <div style="font-size: 13.5px; font-weight: 700; margin-top: 8px;" x-text="p.description || '—'"></div>
+                    <div style="font-size: 11.5px; color: var(--muted); margin-top: 4px;">
+                      <span x-text="t('timezone') + ': ' + pad(Math.floor(p.start_time/100)) + ':' + pad(p.start_time%100) + ' — ' + pad(Math.floor(p.end_time/100)) + ':' + pad(p.end_time%100)"></span>
+                    </div>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 8px; margin-top: 4px;">
+                    <div style="font-size: 11px; color: var(--muted);">
+                      <span x-text="p.model ? p.model : 'Default Model'"></span> · <span x-text="'Temp: ' + p.temperature"></span>
+                    </div>
+                    <button class="btn sm primary" style="padding: 4px 10px; font-size: 11px;" @click="openPersona(p.station, p.show)">
+                      <i data-lucide="edit" style="width: 12px; height: 12px; margin-inline-end: 4px;"></i>
+                      <span x-text="t('edit')"></span>
+                    </button>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
       <!-- ╔═══ STUDIO (agent-studio merged) ═══╗ -->
-      <div x-show="tab==='studio'" x-cloak>
+      <section id="sec-studio" class="sec-wrap">
         <div class="row" style="margin-bottom:14px">
           <!-- LEFT: agent list -->
           <div class="pane" style="grid-column:span 1">
@@ -1260,7 +1924,14 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
                   </button>
                 </div>
               </div>
-              <div x-show="studioOutput" x-cloak style="margin-top:14px;padding:12px;background:rgba(113,237,189,0.06);border:1px solid rgba(113,237,189,0.25);border-radius:8px;white-space:pre-wrap;font-size:13px;line-height:1.6" x-text="studioOutput"></div>
+              <div x-show="studioOutput" x-cloak>
+                <div style="margin-top:14px;padding:12px;background:rgba(113,237,189,0.06);border:1px solid rgba(113,237,189,0.25);border-radius:8px;white-space:pre-wrap;font-size:13px;line-height:1.6" x-text="studioOutput"></div>
+                <div style="display:flex;justify-content:flex-end;margin-top:8px">
+                  <button class="btn primary" @click="openExportModal()">
+                    <span x-text="t('export_to_radio')"></span>
+                  </button>
+                </div>
+              </div>
               <details x-show="studioTrace.length" x-cloak style="margin-top:8px">
                 <summary style="cursor:pointer;color:var(--muted);font-size:12px" x-text="t('studio_trace')+ ' ('+studioTrace.length+')'"></summary>
                 <div class="console" style="margin-top:6px;max-height:180px">
@@ -1272,10 +1943,10 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       <!-- ╔═══ DEV ═══╗ -->
-      <div x-show="tab==='dev'" x-cloak>
+      <section id="sec-dev" class="sec-wrap">
         <div class="pane">
           <h2>Developer Console</h2>
           <div class="console">
@@ -1288,7 +1959,7 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
             <button class="btn primary" @click="refresh()">Force refresh</button>
           </div>
         </div>
-      </div>
+      </section>
 
     </div>
 
@@ -1304,7 +1975,7 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
       <div class="metric"><i data-lucide="users" style="width:14px;height:14px"></i><div><strong x-text="totalListeners"></strong><small x-text="t('listeners')"></small></div></div>
       <div class="metric"><i data-lucide="activity" style="width:14px;height:14px"></i><div><strong x-text="`${stations.filter(s=>s.is_enabled).length}/${stations.length}`"></strong><small x-text="t('on_air')"></small></div></div>
       <button class="btn" @click="buildQueue()" :title="t('build_queue')"><i data-lucide="play" style="width:14px;height:14px"></i><span x-text="t('build_queue')"></span></button>
-      <button class="btn" @click="tab='dev'"><i data-lucide="terminal" style="width:14px;height:14px"></i> DEV</button>
+      <button class="btn" @click="scrollToSection('dev')"><i data-lucide="terminal" style="width:14px;height:14px"></i> DEV</button>
     </div>
   </main>
 </div>
@@ -1469,7 +2140,7 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
 
   <div class="ai-msgs" id="ai-msgs">
     <template x-for="(m,i) in aiMessages" :key="i">
-      <div class="ai-msg" :class="m.role" x-text="m.content || (m.tool_calls ? '⚡ '+t('using_tools'):'')"></div>
+      <div class="ai-msg" :class="m.role" x-html="formatAiMessage(m.content || (m.tool_calls ? '⚡ ' + t('using_tools') : ''))"></div>
     </template>
     <div x-show="aiBusy" x-cloak class="ai-typing" x-text="t('ai_thinking')"></div>
     <div x-show="!aiMessages.length && !aiBusy" x-cloak style="color:var(--muted);font-size:12px;text-align:center;padding:20px 0" x-text="t('ai_empty')"></div>
@@ -1572,6 +2243,81 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
   </div>
 </div>
 
+<div x-show="showPersonaModal" x-cloak class="scrim" @click.self="if(!personaDirty || confirm(t('cancel')+'?')) showPersonaModal=false">
+  <div class="modal" style="width:720px; max-width:92vw;">
+    <h3 x-text="t('edit_persona') + (personaActive ? ': ' + getShowLabel(personaActive.show) : '')"></h3>
+    <p class="sub" x-text="t('persona_help')" style="color: var(--amber); font-weight: 500;"></p>
+    <div class="fields" style="margin-top:12px">
+      <label>
+        <span x-text="t('persona_content')"></span>
+        <textarea x-model="personaContent" @input="personaDirty=true" rows="18" spellcheck="false" dir="ltr" style="width:100%; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12.5px; line-height:1.5; background:#0b0f19; color:var(--ink); border-color:var(--line-2);"></textarea>
+      </label>
+    </div>
+    <div class="actions" style="margin-top:15px">
+      <button class="btn" @click="showPersonaModal=false" x-text="t('cancel')"></button>
+      <button class="btn primary" @click="savePersona()" :disabled="!personaDirty" x-text="t('save')"></button>
+    </div>
+  </div>
+</div>
+
+<div x-show="showExportModal" x-cloak class="scrim" @click.self="showExportModal=false">
+  <div class="modal" style="width:480px; max-width:92vw;">
+    <h3 x-text="t('export_to_radio')"></h3>
+    <div class="fields" style="margin-top:12px; display:grid; gap:14px;">
+      <label style="display:grid; gap:4px; font-size:11px; color:var(--muted);">
+        <span x-text="t('export_station')"></span>
+        <select x-model="exportStation" style="width:100%;">
+          <template x-for="s in stations" :key="s.id">
+            <option :value="s.short_name" x-text="s.name"></option>
+          </template>
+        </select>
+      </label>
+      <label style="display:grid; gap:4px; font-size:11px; color:var(--muted);">
+        <span x-text="t('export_date')"></span>
+        <input type="date" x-model="exportDate" style="width:100%; border:1px solid var(--line); border-radius:6px; padding:6px 10px; background:var(--surface); color:var(--ink);" />
+      </label>
+      <label style="display:grid; gap:4px; font-size:11px; color:var(--muted);">
+        <span x-text="t('export_show')"></span>
+        <select x-model="exportShow" style="width:100%;">
+          <option value="morning">Morning (الصباح)</option>
+          <option value="daily">Daily (المنوعات)</option>
+          <option value="afternoon">Afternoon (الظهيرة)</option>
+          <option value="evening">Evening (المساء)</option>
+          <option value="night">Night (الليل)</option>
+        </select>
+      </label>
+    </div>
+    <div class="actions" style="margin-top:20px">
+      <button class="btn" @click="showExportModal=false" x-text="t('cancel')" :disabled="exportBusy"></button>
+      <button class="btn primary" @click="submitExport()" :disabled="exportBusy" x-text="exportBusy ? '...' : t('export_confirm')"></button>
+    </div>
+  </div>
+</div>
+
+<div x-show="showSnippetModal" x-cloak class="scrim" @click.self="showSnippetModal=false">
+  <div class="modal" style="width:400px; max-width:92vw;">
+    <h3>💾 حفظ مقطع البث المسجل</h3>
+    <p class="sub">اختر اسم الملف وحدد طريقة حفظ المقطع الصوتي المسجل:</p>
+    <div class="fields" style="margin-top:12px; display:grid; gap:12px;">
+      <label style="display:grid; gap:4px; font-size:11px; color:var(--muted);">
+        <span>اسم الملف (مثال: snippet_1.webm)</span>
+        <input type="text" x-model="snippetFilename" style="width:100%; border:1px solid var(--line); border-radius:6px; padding:6px 10px; background:var(--surface); color:var(--ink);" />
+      </label>
+    </div>
+    <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;">
+      <button class="btn primary" @click="uploadSnippet()" :disabled="snippetUploading" style="width:100%; justify-content:center;">
+        <span x-text="snippetUploading ? 'جاري الحفظ والرفع...' : '🚀 رفع وحفظ في مكتبة الوسائط للمحطة'"></span>
+      </button>
+      <button class="btn" @click="downloadSnippet()" style="width:100%; justify-content:center;">
+        <span>📥 تحميل إلى جهاز الكمبيوتر</span>
+      </button>
+    </div>
+    <div class="actions" style="margin-top:15px; border-top: 1px solid var(--line); padding-top: 12px;">
+      <button class="btn" @click="showSnippetModal=false" x-text="t('cancel')"></button>
+    </div>
+  </div>
+</div>
+
 <script>
 function rc(){
 const DEFAULT_LANG = {{ default_lang|tojson }};
@@ -1595,6 +2341,58 @@ return {
   externalSongs:[], injectingId:null,
   ttsText:'', ttsVoice:'', ttsBusy:false,
   weatherData:null,
+  // ── Date and Calendar state ──
+  selectedDate: '',
+  showFullCalendar: false,
+  calendarDays: [],
+  monthDays: [],
+  calendarYear: new Date().getFullYear(),
+  calendarMonth: new Date().getMonth(),
+  allScripts: {},
+  guideStations: {},
+  showPersonas: [],
+  showPersonaModal: false,
+  personaActive: null,
+  personaContent: '',
+  personaDirty: false,
+  showExportModal: false,
+  exportStation: '',
+  exportDate: '',
+  exportShow: 'morning',
+  exportBusy: false,
+  showSnippetModal: false,
+  snippetBlob: null,
+  snippetFilename: '',
+  snippetUploading: false,
+  isRecordingStream: false,
+  recordStartTime: 0,
+  recordDuration: 0,
+  _mediaRecorder: null,
+  _recordedChunks: [],
+  _recordTimer: null,
+  // ── AI Scripts Editor state ──
+  activeTab: 'morning',
+  isEditingScript: false,
+  editedScriptText: '',
+  logOutput: 'أهلاً بك في وحدة كونسول الراديو الذكي. بانتظار الأوامر...\n',
+  runId: null,
+  pollInterval: null,
+  isGenerating: false,
+  // ── Operations & Archive state ──
+  weatherTaskEnabled: true,
+  weatherTaskStatus: 'مجدول',
+  isGeneratingWeather: false,
+  generatedArchive: [
+    {
+      id: 'gen_archive_1',
+      title: '🎙️ الموجز الإخباري الصباحي (الذكاء الاصطناعي)',
+      audio_url: '/audio/6227b1ac-fb80-4d0c-b7a0-4f635bf58fb8/be037a77-0fcb-4237-8d49-b8b169a91485.mp3',
+      durationMins: 10,
+      timeStr: 'أمس، 08:00'
+    }
+  ],
+  previewSongId: null,
+  isPreviewPlaying: false,
   tg:{status:{configured:false,default_chat:false,rules:0,enabled_rules:0},rules:[],raw:'',sendText:'',sending:false,saving:false},
   aiQuickActions:[
     {id:'ai_q_status'},
@@ -1639,6 +2437,7 @@ return {
   i18n:{
     ar:{
       views:'العروض',stations:'المحطات',live:'البث',media:'الوسائط',playlists:'القوائم',schedule:'الجدول',audience:'الجمهور',broadcast:'البث',telegram:'تلجرام',studio:'الاستوديو',setup:'الإعداد',dev:'المطوّر',add:'إضافة',
+      fast_date:'تاريخ سريع:',yesterday:'أمس',today:'اليوم',tomorrow:'غداً',dayafter:'بعد غد',weekly_strip:'الشريط الأسبوعي السريع',full_calendar:'عرض التقويم الشهري بالكامل',scripts_title:'نصوص الحلقات لليوم المحدد',schedules_title:'⏰ المهام والعمليات المجدولة',schedules_desc:'العمليات التلقائية التي تجري في الخلفية لبناء وتحديث محتوى البث اليومي:',weather_task:'تحديث حالة الطقس اليومي',weather_task_desc:'توليد النشرة الصوتية آلياً (يومياً 07:00 صباحاً)',nightly_task:'توليد البايبلاين الليلي الشامل',nightly_task_desc:'بناء كامل حلقات البث لليوم التالي (يومياً 02:00 صباحاً)',sync_task:'مزامنة جدول بث AzuraCast',sync_task_desc:'مزامنة الخط الزمني الفعلي وحساب Drift البث (كل ساعة)',archive_title:'📥 المواد الصوتية المولدة والأرشيف',archive_desc:'استمع للمواد الصوتية واسحب التراك لجدولة البث:',archive_empty:'لا يوجد محتوى مولد حالياً. استخدم "العمليات المجدولة" لتوليد فقرة الطقس الصباحية الآن!',run_now:'تشغيل الآن',running:'جاري التوليد...',disable:'تعطيل',enable:'تفعيل',edit_script_manual:'✍️ تعديل النص يدوياً',create_script_manual:'➕ إنشاء حلقة يدوية جديدة',generate_script_ai:'🪄 توليد النص بالـ AI',broadcast_script:'🎙️ بث هذا النص الحالي',generate_full:'🚀 توليد كامل (نص وصوت)',download_mp3:'📥 تحميل MP3',delete_script:'🗑️ حذف النص',save_draft:'💾 حفظ النص والمسودة',script_empty:'لا توجد نصوص إذاعية مولدة ومحفوظة لهذه الفترة اليوم. اضغط على أزرار التحكم بالأسفل أو ابدأ بكتابة حلقة يدوياً.',pipeline_console:'⚙️ كونسول التوليد وضخ المحتوى',generate_day_all:'🚀 توليد كامل حلقات القناة لليوم المحدد',personas_title:'🎭 شخصيات البرامج الإذاعية الذكية (AI Show Personas)',personas_desc:'تعديل وتخصيص محتوى البرامج ونماذج الذكاء الاصطناعي ومواعيد البث للبرامج الـ 16:',edit_persona:'تعديل شخصية البرنامج',persona_content:'نص شخصية البرنامج (frontmatter + system_prompt)',persona_help:'تنبيه: لا تقم بحذف الفواصل --- لأنها تحمي البيانات الفوقية للبرنامج (مثل أوقات البث، الموديل، الحرارة).',
       studio_agents:'الوكلاء',studio_agents_sub:'كاتب الكلمات / فحص الجودة / Suno prompts (Claude + أدوات)',studio_no_agents:'لا توجد وكلاء',studio_select:'اختر وكيلاً لتعديله أو تشغيله',studio_input:'المُدخل',studio_input_ph:'فكرة الأغنية، البيت، أو السطر اللي عاوز يفحصه...',studio_run:'شغّل',studio_running:'يعمل…',studio_trace:'تتبع الأدوات',studio_new:'جديد',studio_name_ph:'اسم الوكيل (lowercase, dashes)',saved:'تم الحفظ',deleted:'تم الحذف',confirm_delete:'حذف',
       tg_on:'متصل',tg_off:'مش متظبّط',tg_sub:'بث للمتابعين على تلجرام — إيفنتات أوتوماتيك أو بعت يدوي',tg_not_configured:'محتاج TELEGRAM_BOT_TOKEN في إعدادات السيرفر عشان يشتغل',tg_enabled_rules:'قواعد مفعّلة',tg_send:'بعت للقناة',tg_send_sub:'ابعت رسالة مباشرة للمتابعين',tg_text_ph:'اكتب الرسالة بالعربي…',tg_send_btn:'بعت',tg_sent:'اتبعت للقناة',tg_rules:'القواعد (الإيفنتات)',tg_rules_sub:'show_start = أوتوماتيك لما البرنامج يبدأ · manual = يدوي',tg_fire:'جرّب',tg_fired:'اتنفّذ',tg_no_rules:'مفيش قواعد لسه',tg_editor:'محرر القواعد (broadcasts.yaml)',tg_editor_sub:'عدّل القواعد واحفظ — بيشتغل في الحال',tg_save:'حفظ',tg_saved:'اتحفظ',
       search_ph:'ابحث عن أغنية، قائمة، محطة…',connected:'متصل',offline:'غير متصل',refresh:'تحديث',
@@ -1686,6 +2485,7 @@ return {
       edit_block:'تعديل الفقرة',duration_mins:'المدة (بالدقائق)',delete_block:'حذف الفقرة',
       live_dj:'بث مباشر',autodj:'بث تلقائي (AutoDJ)',
       add_block:'إضافة فقرة للجدول',playlist:'قائمة التشغيل',select:'اختر...',save:'حفظ',weather_block:'النشرة الجوية',
+      export_to_radio:'📥 تصدير كحلقة بث',export_station:'المحطة المستهدفة',export_date:'تاريخ البث',export_show:'البرنامج المستهدف',export_confirm:'تصدير وجدولة',export_success:'تم تصدير النص وجدولته كحلقة بث بنجاح!',
     },
 
     en:{
@@ -1725,6 +2525,7 @@ return {
       recordings:'Recordings',recordings_sub:'Archived broadcast hours',download:'Download',no_recordings:'No recordings',
       branding_saved:'Branding saved',settings_saved:'Settings saved',error:'Error',select_station_first:'Select a station first',upload_ok:'Uploaded',upload_failed:'Upload failed',files:'files',
       ai_assistant:'AI Assistant',ai_sub:'OpenAI-powered, can actually execute panel actions',ai_placeholder:'Ask anything…',ai_thinking:'Thinking…',ai_empty:'Start with a question or tap a quick action',ai_no_reply:'No reply',using_tools:'Using tools…',
+      fast_date:'Quick Date:',yesterday:'Yesterday',today:'Today',tomorrow:'Tomorrow',dayafter:'Day After',weekly_strip:'Quick Weekly Strip',full_calendar:'Show Full Calendar',scripts_title:'Scripts for Selected Day',schedules_title:'⏰ Automation Schedules',schedules_desc:'Automatic background processes to build and refresh daily broadcast content:',weather_task:'Daily Weather Update',weather_task_desc:'Generate voice weather forecast automatically (Daily 07:00 AM)',nightly_task:'Nightly Full Pipeline',nightly_task_desc:'Build all shows for the next day (Daily 02:00 AM)',sync_task:'AzuraCast Schedule Sync',sync_task_desc:'Synchronize active schedule and calculate stream drift (Hourly)',archive_title:'📥 Generated Content Archive',archive_desc:'Listen to generated audio files and drag to schedule:',archive_empty:'No generated content found. Use "Scheduled Operations" to generate weather now!',run_now:'Run Now',running:'Generating...',disable:'Disable',enable:'Enable',edit_script_manual:'✍️ Edit Script Manually',create_script_manual:'➕ Create New Script',generate_script_ai:'🪄 Generate Script (AI)',broadcast_script:'🎙️ Broadcast This Script',generate_full:'🚀 Full Gen (Text & Audio)',download_mp3:'📥 Download MP3',delete_script:'🗑️ Delete Script',save_draft:'💾 Save Script & Draft',script_empty:'No scripts generated or saved for this show and date. Use AI generators or start writing manually.',pipeline_console:'⚙️ Generation & Injection Console',generate_day_all:'🚀 Generate All Shows for Selected Day',personas_title:'🎭 AI Show Personas',personas_desc:'Edit and customize show contents, AI models, and schedules for the 16 show personas:',edit_persona:'Edit Show Persona',persona_content:'Show Persona File Content (frontmatter + system_prompt)',persona_help:'Warning: Do not delete the --- dividers as they guard show metadata (times, model, temperature).',
       ai_q_status:'Station status now',ai_q_top:'Top played today',ai_q_schedule:'Suggest a weekly schedule',ai_q_build:'Fill the queue',ai_q_new_playlist:'New chill playlist',ai_q_skip:'Skip current song',
       copilot_title:'AI Radio Copilot',copilot_sub:'Broadcast quality score with one-tap fixes',analyzing:'Analyzing…',copilot_empty:'🎉 Excellent! Everything looks great, no suggestions.',apply:'Apply',applied:'Applied',
       view_week:'Week',view_day:'Day',weather:'Weather',weather_block:'Weather block',voices:'Voices',drag_drop_hint:'Drag items from the left and drop here',day_builder_note:'Day blocks are saved locally for preview; use the Week tab to schedule real AzuraCast playlists',
@@ -1737,10 +2538,126 @@ return {
       edit_block:'Edit Block',duration_mins:'Duration (Minutes)',delete_block:'Delete Block',
       live_dj:'Live DJ',autodj:'AutoDJ',
       add_block:'Add Block to Schedule',playlist:'Playlist',select:'Select...',save:'Save',weather_block:'Weather Block',
+      export_to_radio:'📥 Export to Show Script',export_station:'Target Station',export_date:'Broadcast Date',export_show:'Target Show',export_confirm:'Export & Schedule',export_success:'Script successfully exported and scheduled!',
     },
 
   },
   t(k){return (this.i18n[this.lang]&&this.i18n[this.lang][k])||k;},
+  formatAiMessage(content) {
+    if (!content) return '';
+    let html = content
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+    // Format headers
+    html = html.replace(/^### (.*$)/gim, '<h4 style="margin: 8px 0 4px 0; font-size:12px; font-weight:700; color:#71edbd;">$1</h4>');
+    html = html.replace(/^## (.*$)/gim, '<h3 style="margin: 10px 0 6px 0; font-size:13px; font-weight:700; color:#71edbd; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:3px;">$1</h3>');
+    html = html.replace(/^# (.*$)/gim, '<h2 style="margin: 12px 0 8px 0; font-size:14px; font-weight:700; color:#71edbd;">$1</h2>');
+
+    // Format bold
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--ink); font-weight:600;">$1</strong>');
+    
+    // Format italic
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+    // Format code blocks
+    html = html.replace(/```([\s\S]*?)```/g, '<pre style="background:rgba(0,0,0,0.4); border:1px solid var(--line); border-radius:6px; padding:6px; font-family:monospace; font-size:11px; overflow-x:auto; margin:6px 0; white-space:pre-wrap; word-break:break-all;">$1</pre>');
+    
+    // Format inline code
+    html = html.replace(/`(.*?)`/g, '<code style="background:rgba(255,255,255,0.06); padding:2px 4px; border-radius:3px; font-family:monospace; font-size:11.5px;">$1</code>');
+
+    // Format bullets
+    html = html.replace(/^\s*[-*+]\s+(.*)$/gim, '<li style="margin-right: 14px; list-style-type: disc; margin-bottom: 2px;">$1</li>');
+
+    // Convert newlines to br
+    html = html.replace(/\n/g, '<br>');
+
+    // Format action badges/buttons like [إجراء: تشغيل البث]
+    html = html.replace(/\[إجراء:\s*(.*?)\]/g, '<button class="btn sm primary" style="padding: 2px 8px; margin: 2px; font-size: 10px; display:inline-flex; border-radius:4px; height:auto; line-height:1.2;" @click="sendAI(\'$1\')">$1</button>');
+
+    // Parse tables
+    if (html.includes('|')) {
+      const lines = html.split('<br>');
+      let inTable = false;
+      let tableHtml = '<table style="width:100%; border-collapse:collapse; margin:8px 0; font-size:11.5px; border:1px solid var(--line);">';
+      
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (line.startsWith('|') && line.endsWith('|')) {
+          if (!inTable) {
+            inTable = true;
+          }
+          const cells = line.split('|').slice(1, -1);
+          if (cells.every(c => c.trim().match(/^-+$/))) {
+            continue;
+          }
+          
+          tableHtml += '<tr style="border-bottom:1px solid var(--line);">';
+          for (let j = 0; j < cells.length; j++) {
+            const cellText = cells[j].trim();
+            const tag = i === 0 || (i === 1 && lines[0].trim().startsWith('|')) ? 'th' : 'td';
+            const style = tag === 'th' ? 'padding:6px; background:rgba(255,255,255,0.03); font-weight:700; text-align:right;' : 'padding:6px; text-align:right;';
+            tableHtml += `<${tag} style="${style}">${cellText}</${tag}>`;
+          }
+          tableHtml += '</tr>';
+          lines[i] = '';
+        } else {
+          if (inTable) {
+            inTable = false;
+            tableHtml += '</table>';
+            lines[i] = tableHtml + '<br>' + lines[i];
+            tableHtml = '<table style="width:100%; border-collapse:collapse; margin:8px 0; font-size:11.5px; border:1px solid var(--line);">';
+          }
+        }
+      }
+      if (inTable) {
+        tableHtml += '</table>';
+        lines.push(tableHtml);
+      }
+      html = lines.filter(l => l !== '').join('<br>');
+    }
+
+    return html;
+  },
+  scrollToSection(id) {
+    this.tab = id;
+    const container = document.querySelector('.content');
+    const target = document.getElementById('sec-' + id);
+    if (container && target) {
+      container.scrollTo({
+        top: target.offsetTop - container.offsetTop - 10,
+        behavior: 'smooth'
+      });
+    }
+  },
+  initScrollspy() {
+    const container = document.querySelector('.content');
+    if (!container) return;
+    let isScrolling = false;
+    container.addEventListener('scroll', () => {
+      if (isScrolling) return;
+      isScrolling = true;
+      requestAnimationFrame(() => {
+        const sections = ['live', 'media', 'playlists', 'schedule', 'audience', 'broadcast', 'telegram', 'setup', 'studio', 'dev'];
+        let activeSec = this.tab;
+        let containerTop = container.scrollTop;
+        for (const id of sections) {
+          const el = document.getElementById('sec-' + id);
+          if (el) {
+            const elTop = el.offsetTop - container.offsetTop;
+            if (containerTop >= elTop - 60) {
+              activeSec = id;
+            }
+          }
+        }
+        this.tab = activeSec;
+        isScrolling = false;
+      });
+    });
+  },
   toast(title,body,kind){
     const id=++this._toastId;
     this.toasts.push({id,title,body:body||'',kind:kind||'ok'});
@@ -1814,17 +2731,30 @@ return {
   async boot(){
     document.body.setAttribute('data-theme', this.theme);
     document.addEventListener('keydown',e=>{
-      if((e.ctrlKey||e.metaKey)&&e.key==='\\'){this.tab='dev';e.preventDefault();}
+      if((e.ctrlKey||e.metaKey)&&e.key==='\\'){this.scrollToSection('dev');e.preventDefault();}
       if((e.ctrlKey||e.metaKey)&&e.key==='k'){document.querySelector('.search input')?.focus();e.preventDefault();}
     });
+    
+    // Initialize target date as tomorrow YYYY-MM-DD
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    this.selectedDate = tomorrow.toISOString().split('T')[0];
+    this.buildCalendarDays();
+    this.buildMonthCalendar();
+    
     await this.refresh();
     // fetch ancillary
     const tpl=await this.api('/api/v1/templates');if(tpl.ok)this.templates=tpl.data;
     this.loadTelegram();
     const vc=await this.api('/api/v1/voices');if(vc.ok)this.voices=vc.data;
+    this.loadGuideStations();
+    this.loadPersonas();
     this.loadExternalSongs();
     this.loadWeather();
     this.studioList();
+    this.animateVisualizer();
+    this.initScrollspy();
+    
     setInterval(()=>this.tickLive(),12000);
     setInterval(()=>this.loadQueueHistory(),20000);
     setInterval(()=>this.loadCopilot(),60000);
@@ -1859,10 +2789,10 @@ return {
     try{
       if(!this._audioCtx)this._audioCtx=new (window.AudioContext||window.webkitAudioContext)();
       if(!this._analyser){
-        const src=this._audioCtx.createMediaElementSource(audio);
+        this._audioSource=this._audioCtx.createMediaElementSource(audio);
         this._analyser=this._audioCtx.createAnalyser();
         this._analyser.fftSize=64;
-        src.connect(this._analyser);
+        this._audioSource.connect(this._analyser);
         this._analyser.connect(this._audioCtx.destination);
       }
     }catch(e){
@@ -1889,6 +2819,244 @@ return {
       this._eqRAF=requestAnimationFrame(loop);
     };
     loop();
+  },
+  async loadGuideStations() {
+    const r = await this.api('/api/v1/radio/stations');
+    if (r.ok) {
+      this.guideStations = r.stations || r.data || r;
+    }
+  },
+  async loadPersonas() {
+    const r = await this.api('/api/v1/agents');
+    if (r.ok) {
+      this.showPersonas = r.data || r;
+    }
+  },
+  async openPersona(station, show) {
+    const r = await this.api(`/api/v1/agents/${station}/${show}`);
+    if (r.ok) {
+      this.personaActive = { station, show };
+      this.personaContent = r.data.content;
+      this.personaDirty = false;
+      this.showPersonaModal = true;
+    } else {
+      this.toast(this.t('error'), r.error || 'load failed', 'err');
+    }
+  },
+  async savePersona() {
+    if (!this.personaActive || !this.personaDirty) return;
+    const { station, show } = this.personaActive;
+    const r = await this.api(`/api/v1/agents/${station}/${show}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: this.personaContent })
+    });
+    if (r.ok) {
+      this.personaDirty = false;
+      this.showPersonaModal = false;
+      this.toast(this.t('saved'), `${station} - ${show}`, 'ok');
+      await this.loadPersonas();
+      await this.loadGuideStations();
+    } else {
+      this.toast(this.t('error'), r.error || 'save failed', 'err');
+    }
+  },
+  openExportModal() {
+    if (!this.studioOutput || !this.studioOutput.trim()) {
+      this.toast(this.t('error'), 'لا يوجد محتوى لتصديره', 'err');
+      return;
+    }
+    this.exportDate = this.selectedDate || new Date(Date.now() + 86400000).toISOString().split('T')[0];
+    this.exportStation = this.active ? this.active.short_name : (this.stations[0] ? this.stations[0].short_name : '');
+    const validShows = ['morning', 'daily', 'afternoon', 'evening', 'night'];
+    this.exportShow = validShows.includes(this.activeTab) ? this.activeTab : 'morning';
+    this.showExportModal = true;
+  },
+  async submitExport() {
+    if (!this.exportStation || !this.exportDate || !this.exportShow) {
+      this.toast(this.t('error'), 'يرجى ملء جميع الحقول المطلوبة', 'err');
+      return;
+    }
+    this.exportBusy = true;
+    try {
+      const body = {
+        station: this.exportStation,
+        date: this.exportDate,
+        show: this.exportShow,
+        script: this.studioOutput,
+        date_str: this.exportDate
+      };
+      const r = await this.api('/api/v1/scripts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      if (!r.ok) {
+        this.toast(this.t('error'), r.error || 'فشل حفظ النص الإذاعي', 'err');
+        this.exportBusy = false;
+        return;
+      }
+
+      const targetStation = this.stations.find(s => s.short_name === this.exportStation);
+      if (!targetStation) {
+        this.toast(this.t('export_success'), '', 'ok');
+        this.showExportModal = false;
+        this.exportBusy = false;
+        this.fetchHistory();
+        return;
+      }
+
+      const blocksUrl = `/api/v1/stations/${targetStation.id}/day-blocks?date=${this.exportDate}`;
+      const blockRes = await this.api(blocksUrl);
+      let dayBlocks = [];
+      if (blockRes.ok && Array.isArray(blockRes.data)) {
+        dayBlocks = blockRes.data;
+      } else if (Array.isArray(blockRes)) {
+        dayBlocks = blockRes;
+      }
+
+      const exists = dayBlocks.some(b => b.showKey === this.exportShow || (b.type === 'ai-show' && b.data?.showKey === this.exportShow));
+      if (!exists) {
+        let startHour = 8;
+        const stationMeta = this.guideStations[this.exportStation];
+        if (stationMeta && stationMeta.shows && stationMeta.shows[this.exportShow]) {
+          const startTimeStr = stationMeta.shows[this.exportShow].start_time || '';
+          if (startTimeStr.length >= 2) {
+            startHour = parseInt(startTimeStr.slice(0, 2), 10) || 8;
+          }
+        }
+        
+        const plRes = await this.api(`/api/v1/stations/${targetStation.id}/playlists`);
+        let playlists = [];
+        if (plRes.ok && Array.isArray(plRes.data)) {
+          playlists = plRes.data;
+        }
+        let matchedPlaylist = playlists.find(p => p.name.toLowerCase().includes(this.exportShow.toLowerCase())) || playlists[0];
+        
+        const newBlock = {
+          id: 'b_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+          type: 'ai-show',
+          title: (stationMeta && stationMeta.shows && stationMeta.shows[this.exportShow]?.description) || (this.exportShow + ' Show'),
+          startHour: startHour,
+          durationMins: 60,
+          showKey: this.exportShow,
+          data: matchedPlaylist ? { playlist_id: matchedPlaylist.id } : null
+        };
+        
+        dayBlocks.push(newBlock);
+        
+        await fetch(blocksUrl, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ blocks: dayBlocks })
+        });
+        
+        if (this.active && this.active.id === targetStation.id && this.selectedDate === this.exportDate) {
+          this.dayBlocks = dayBlocks;
+        }
+      }
+
+      this.toast(this.t('export_success'), '', 'ok');
+      this.showExportModal = false;
+      this.fetchHistory();
+    } catch (err) {
+      this.toast(this.t('error'), err.message || 'فشل التصدير والجدولة', 'err');
+    } finally {
+      this.exportBusy = false;
+    }
+  },
+  startRecordingStream() {
+    if (!this.streamPlaying) {
+      this.toast(this.t('error'), 'يجب تشغيل البث المباشر أولاً للتسجيل', 'err');
+      return;
+    }
+    if (this.isRecordingStream) return;
+    try {
+      this._recordedChunks = [];
+      const dest = this._audioCtx.createMediaStreamDestination();
+      
+      if (this._audioSource) {
+        this._audioSource.connect(dest);
+      } else {
+        const audio = document.getElementById('rc-audio');
+        if (audio) {
+          this._audioSource = this._audioCtx.createMediaElementSource(audio);
+          this._audioSource.connect(this._analyser || this._audioCtx.destination);
+          this._audioSource.connect(dest);
+        }
+      }
+      
+      this._mediaRecorder = new MediaRecorder(dest.stream);
+      this._mediaRecorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) {
+          this._recordedChunks.push(e.data);
+        }
+      };
+      
+      this._mediaRecorder.onstop = () => {
+        this.snippetBlob = new Blob(this._recordedChunks, { type: 'audio/webm' });
+        this.snippetFilename = `snippet_${this.active.short_name}_${Date.now()}.webm`;
+        this.showSnippetModal = true;
+      };
+      
+      this._mediaRecorder.start();
+      this.isRecordingStream = true;
+      this.recordStartTime = Date.now();
+      this.recordDuration = 0;
+      
+      this._recordTimer = setInterval(() => {
+        this.recordDuration = Math.floor((Date.now() - this.recordStartTime) / 1000);
+      }, 1000);
+    } catch (e) {
+      this.toast(this.t('error'), 'فشل بدء التسجيل: ' + e.message, 'err');
+    }
+  },
+  stopRecordingStream() {
+    if (!this.isRecordingStream) return;
+    if (this._mediaRecorder && this._mediaRecorder.state !== 'inactive') {
+      this._mediaRecorder.stop();
+    }
+    this.isRecordingStream = false;
+    clearInterval(this._recordTimer);
+    this._recordTimer = null;
+  },
+  downloadSnippet() {
+    if (!this.snippetBlob) return;
+    const url = URL.createObjectURL(this.snippetBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = this.snippetFilename || 'snippet.webm';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    this.showSnippetModal = false;
+    this.toast('تم التحميل', '', 'ok');
+  },
+  async uploadSnippet() {
+    if (!this.snippetBlob || !this.snippetFilename) return;
+    if (!this.active) return;
+    this.snippetUploading = true;
+    try {
+      const file = new File([this.snippetBlob], this.snippetFilename, { type: 'audio/webm' });
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('path', this.snippetFilename);
+      const r = await fetch(`/api/v1/stations/${this.active.id}/upload`, {
+        method: 'POST',
+        body: fd
+      }).then(res => res.json());
+      if (r.ok || r.saved || r.success) {
+        this.toast('تم الرفع', 'تم رفع المقطع لمكتبة الوسائط', 'ok');
+        this.showSnippetModal = false;
+        this.loadStation(this.active.id);
+      } else {
+        this.toast(this.t('error'), r.error || 'فشل الرفع', 'err');
+      }
+    } catch (err) {
+      this.toast(this.t('error'), err.message || 'فشل الرفع', 'err');
+    } finally {
+      this.snippetUploading = false;
+    }
   },
   // ---- EXTERNAL MUSIC LIBRARY (ACE-Step / Suno via guide) ----
   async loadExternalSongs(){
@@ -2031,17 +3199,18 @@ return {
     // load day-builder blocks: try server first, fall back to localStorage on failure
     this.dayBlocks=[];
     try{
-      const r=await this.api(`/api/v1/stations/${id}/day-blocks`);
+      const r=await this.api(`/api/v1/stations/${id}/day-blocks?date=` + this.selectedDate);
       if(r.ok && Array.isArray(r.data) && r.data.length){this.dayBlocks=r.data;}
       else {
-        const cached=localStorage.getItem('rc_blocks_'+id);
+        const cached=localStorage.getItem('rc_blocks_' + id + '_' + this.selectedDate);
         if(cached){this.dayBlocks=JSON.parse(cached); this.saveBlocks();}  // migrate localStorage → server
       }
     }catch(e){
-      const cached=localStorage.getItem('rc_blocks_'+id);
+      const cached=localStorage.getItem('rc_blocks_' + id + '_' + this.selectedDate);
       if(cached)try{this.dayBlocks=JSON.parse(cached);}catch(_){}
     }
     this.loadCopilot();
+    this.fetchHistory();
     // station detail for branding
     const det=await this.api(`/api/v1/stations/${id}`);if(det.ok&&det.data.branding_config)this.branding={...this.branding,...det.data.branding_config};
     // listener chart
@@ -2157,12 +3326,12 @@ return {
   saveBlocks(){
     if(!this.active)return;
     // Mirror to localStorage immediately for instant rebound on next load
-    try{localStorage.setItem('rc_blocks_'+this.active.id,JSON.stringify(this.dayBlocks));}catch(_){}
+    try{localStorage.setItem('rc_blocks_' + this.active.id + '_' + this.selectedDate, JSON.stringify(this.dayBlocks));}catch(_){}
     // Persist to server (debounced — coalesce rapid edits)
     clearTimeout(this._blockSaveT);
     this._blockSaveT=setTimeout(async()=>{
       try{
-        await fetch(`/api/v1/stations/${this.active.id}/day-blocks`,{
+        await fetch(`/api/v1/stations/${this.active.id}/day-blocks?date=` + this.selectedDate,{
           method:'PUT', headers:{'Content-Type':'application/json'},
           body:JSON.stringify({blocks:this.dayBlocks})
         });
@@ -2300,6 +3469,399 @@ return {
       this.identSaving = false;
     }
   },
+  // ── Calendar Methods ──
+  buildCalendarDays() {
+    const days = [];
+    const weekdayNames = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'سبت'];
+    const today = new Date();
+    for (let i = -3; i <= 3; i++) {
+      const date = new Date();
+      date.setDate(today.getDate() + i);
+      const iso = date.toISOString().split('T')[0];
+      days.push({
+        iso: iso,
+        name: this.lang === 'ar' ? weekdayNames[date.getDay()] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.getDay()],
+        num: date.getDate()
+      });
+    }
+    this.calendarDays = days;
+  },
+  buildMonthCalendar() {
+    const year = this.calendarYear;
+    const month = this.calendarMonth;
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    const totalDays = new Date(year, month + 1, 0).getDate();
+    const prevTotalDays = new Date(year, month, 0).getDate();
+    const grid = [];
+    
+    // Prev month offset
+    for (let i = firstDayIndex - 1; i >= 0; i--) {
+      const d = prevTotalDays - i;
+      const pm = month === 0 ? 11 : month - 1;
+      const py = month === 0 ? year - 1 : year;
+      const iso = `${py}-${String(pm + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      grid.push({ iso, num: d, isCurrentMonth: false });
+    }
+    
+    // Current month days
+    for (let d = 1; d <= totalDays; d++) {
+      const iso = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      grid.push({ iso, num: d, isCurrentMonth: true });
+    }
+    
+    // Next month offset padding
+    const remaining = (7 - (grid.length % 7)) % 7;
+    for (let d = 1; d <= remaining; d++) {
+      const nm = month === 11 ? 0 : month + 1;
+      const ny = month === 11 ? year + 1 : year;
+      const iso = `${ny}-${String(nm + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      grid.push({ iso, num: d, isCurrentMonth: false });
+    }
+    
+    this.monthDays = grid;
+  },
+  prevMonth() {
+    if (this.calendarMonth === 0) {
+      this.calendarMonth = 11;
+      this.calendarYear--;
+    } else {
+      this.calendarMonth--;
+    }
+    this.buildMonthCalendar();
+  },
+  nextMonth() {
+    if (this.calendarMonth === 11) {
+      this.calendarMonth = 0;
+      this.calendarYear++;
+    } else {
+      this.calendarMonth++;
+    }
+    this.buildMonthCalendar();
+  },
+  getCurrentMonthName() {
+    const monthsAr = [
+      'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+    ];
+    const monthsEn = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    return this.lang === 'ar' ? `${monthsAr[this.calendarMonth]} ${this.calendarYear}` : `${monthsEn[this.calendarMonth]} ${this.calendarYear}`;
+  },
+  selectPresetDate(preset) {
+    const d = new Date();
+    if (preset === 'yesterday') {
+      d.setDate(d.getDate() - 1);
+    } else if (preset === 'tomorrow') {
+      d.setDate(d.getDate() + 1);
+    } else if (preset === 'dayafter') {
+      d.setDate(d.getDate() + 2);
+    }
+    this.selectedDate = d.toISOString().split('T')[0];
+    this.loadStation(this.active ? this.active.id : 0);
+  },
+  hasScriptsFor(isoDate) {
+    if(!this.active) return false;
+    const shortcode = this.active.short_name;
+    return this.allScripts[shortcode] && this.allScripts[shortcode][isoDate] && Object.keys(this.allScripts[shortcode][isoDate]).length > 0;
+  },
+  getShowIndicatorColor(showKey) {
+    const mapping = {
+      morning: 'background-color: var(--mint); box-shadow: 0 0 3px var(--mint);',
+      afternoon: 'background-color: var(--amber); box-shadow: 0 0 3px var(--amber);',
+      evening: 'background-color: var(--blue); box-shadow: 0 0 3px var(--blue);',
+      night: 'background-color: var(--violet); box-shadow: 0 0 3px var(--violet);',
+      daily: 'background-color: var(--rose); box-shadow: 0 0 3px var(--rose);'
+    };
+    return mapping[showKey] || 'background-color: var(--muted);';
+  },
+
+  // ── AI Scripts Editor Methods ──
+  async fetchHistory() {
+    const r = await this.api('/api/v1/scripts');
+    if (r.ok) {
+      this.allScripts = r.data || r;
+    }
+  },
+  getActiveScript() {
+    if(!this.active) return null;
+    const shortcode = this.active.short_name;
+    return this.allScripts[shortcode]?.[this.selectedDate]?.[this.activeTab];
+  },
+  startEditingScript() {
+    this.isEditingScript = true;
+    this.editedScriptText = this.getActiveScript() ? this.getActiveScript().script : '';
+  },
+  async saveEditedScript() {
+    if (!this.active) return;
+    if (!this.editedScriptText.trim()) {
+      this.toast(this.t('error'), 'لا يمكن حفظ نص فارغ', 'err');
+      return;
+    }
+    const body = {
+      station: this.active.short_name,
+      date: this.selectedDate,
+      show: this.activeTab,
+      script: this.editedScriptText,
+      date_str: this.getActiveScript() ? this.getActiveScript().date_str : this.selectedDate
+    };
+    const r = await this.api('/api/v1/scripts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (r.ok) {
+      this.toast(this.t('saved'), '', 'ok');
+      this.isEditingScript = false;
+      this.fetchHistory();
+    } else {
+      this.toast(this.t('error'), r.error || 'save failed', 'err');
+    }
+  },
+  async deleteScript() {
+    if (!this.active) return;
+    if (!confirm("هل أنت متأكد تماماً من حذف هذا النص؟")) return;
+    const r = await this.api(`/api/v1/scripts?station=${this.active.short_name}&date=${this.selectedDate}&show=${this.activeTab}`, {
+      method: 'DELETE'
+    });
+    if (r.ok) {
+      this.toast(this.t('deleted'), '', 'ok');
+      this.isEditingScript = false;
+      this.fetchHistory();
+    } else {
+      this.toast(this.t('error'), r.error || 'delete failed', 'err');
+    }
+  },
+  async triggerPipeline(showKey = 'all', mode = 'full') {
+    if (!this.active) return;
+    if (this.isGenerating) return;
+    
+    this.isGenerating = true;
+    let desc = mode === 'text' ? 'توليد النص فقط' : (mode === 'audio' ? 'توليد الصوت والضخ للبث' : 'توليد النص والصوت بالكامل');
+    let showName = showKey === 'all' ? 'جميع البرامج' : showKey;
+    
+    this.logOutput = `[SYSTEM] تشغيل بايبلاين [${desc}] للقناة: [${this.active.short_name}]، برنامج: [${showName}]، لتاريخ: [${this.selectedDate}]...\n`;
+    this.scrollToBottom();
+    
+    const args = ["--station", this.active.short_name, "--date", this.selectedDate, "--show", showKey];
+    if (mode === 'text') args.push("--text-only");
+    else if (mode === 'audio') args.push("--audio-only");
+    
+    const r = await this.api('/api/v1/run/run-radio-pipeline', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ args: args })
+    });
+    if (r.ok && r.run_id) {
+      this.runId = r.run_id;
+      this.logOutput += `[SYSTEM] المهمة بدأت في الخلفية بنجاح. معرف العملية: ${this.runId}\n`;
+      this.startPolling();
+    } else {
+      this.logOutput += `[ERROR] ${r.error || 'failed to start'}\n`;
+      this.isGenerating = false;
+      this.scrollToBottom();
+    }
+  },
+  startPolling() {
+    if (this.pollInterval) clearInterval(this.pollInterval);
+    
+    this.pollInterval = setInterval(async () => {
+      const r = await this.api(`/api/v1/runs/${this.runId}`);
+      if (r.ok) {
+        if (r.output) {
+          this.logOutput = r.output;
+          this.scrollToBottom();
+        }
+        if (r.status === 'done') {
+          this.logOutput += `\n[SYSTEM] اكتملت العملية بنجاح! تم تحديث البث والملفات.\n`;
+          this.stopPolling();
+          this.fetchHistory();
+          this.loadStation(this.active.id);
+        } else if (r.status === 'error') {
+          this.logOutput += `\n[ERROR] فشل تشغيل كود البايبلاين. تحقق من المعطيات والأصوات.\n`;
+          this.stopPolling();
+        }
+      } else {
+        this.stopPolling();
+      }
+    }, 2500);
+  },
+  stopPolling() {
+    if (this.pollInterval) {
+      clearInterval(this.pollInterval);
+      this.pollInterval = null;
+    }
+    this.isGenerating = false;
+    this.scrollToBottom();
+  },
+  scrollToBottom() {
+    this.$nextTick(() => {
+      const consoleEl = document.getElementById('log-console');
+      if (consoleEl) consoleEl.scrollTop = consoleEl.scrollHeight;
+    });
+  },
+
+  // ── Scheduled Tasks & Archive Methods ──
+  toggleWeatherTask() {
+    this.weatherTaskEnabled = !this.weatherTaskEnabled;
+    this.weatherTaskStatus = this.weatherTaskEnabled ? 'مجدول' : 'معطل';
+    this.logOutput += `[SYSTEM] تم ${this.weatherTaskEnabled ? 'تفعيل' : 'تعطيل'} مهمة تحديث حالة الطقس التلقائية.\n`;
+    this.scrollToBottom();
+  },
+  async runWeatherTaskNow() {
+    if (!this.active) return;
+    this.isGeneratingWeather = true;
+    this.weatherTaskStatus = 'جاري التوليد...';
+    this.logOutput += `[SYSTEM] [Automation Scheduled Trigger] بدء تشغيل مهمة توليد الطقس للراديو...\n`;
+    this.scrollToBottom();
+    
+    const r = await this.api('/api/v1/run/run-radio-pipeline', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ args: ["--station", this.active.short_name, "--date", this.selectedDate, "--weather-only"] })
+    });
+    
+    if (r.ok && r.run_id) {
+      const runId = r.run_id;
+      const t = setInterval(async () => {
+        const status = await this.api(`/api/v1/runs/${runId}`);
+        if (status.ok) {
+          if (status.status === 'done') {
+            clearInterval(t);
+            this.isGeneratingWeather = false;
+            this.weatherTaskStatus = 'مكتمل بنجاح';
+            this.logOutput += `[AI PIPELINE] تم توليد نشرة الطقس الصوتية بنجاح وحفظها بالأرشيف.\n`;
+            this.loadStation(this.active.id);
+          } else if (status.status === 'error') {
+            clearInterval(t);
+            this.isGeneratingWeather = false;
+            this.weatherTaskStatus = 'فشل';
+            this.logOutput += `[ERROR] فشل توليد نشرة الطقس.\n`;
+          }
+        }
+      }, 2000);
+    } else {
+      this.isGeneratingWeather = false;
+      this.weatherTaskStatus = 'فشل البدء';
+      this.logOutput += `[ERROR] تعذر تشغيل المهمة.\n`;
+    }
+  },
+  togglePreview(song) {
+    const previewAudio = document.getElementById('preview-audio') || document.getElementById('rc-audio');
+    if (!previewAudio) return;
+
+    if (this.streamPlaying) {
+      this.toggleStream();
+    }
+
+    const songSrc = song.audio_url || ('/static/' + song.path);
+
+    if (this.previewSongId === song.id) {
+      if (this.isPreviewPlaying) {
+        previewAudio.pause();
+        this.isPreviewPlaying = false;
+      } else {
+        previewAudio.play().then(() => {
+          this.isPreviewPlaying = true;
+        }).catch(err => console.error("Preview play failed", err));
+      }
+    } else {
+      previewAudio.src = songSrc;
+      previewAudio.load();
+      previewAudio.play().then(() => {
+        this.previewSongId = song.id;
+        this.isPreviewPlaying = true;
+      }).catch(err => {
+        console.error("Preview load/play failed", err);
+        this.toast(this.t('error'), "تعذر تشغيل معاينة هذه الأغنية", "err");
+      });
+    }
+  },
+  stopAllPreviews() {
+    const previewAudio = document.getElementById('preview-audio') || document.getElementById('rc-audio');
+    if (previewAudio) {
+      previewAudio.pause();
+    }
+    this.previewSongId = null;
+    this.isPreviewPlaying = false;
+  },
+  quickAddBlock(item, event) {
+    const val = event.target.value;
+    if (val === '') return;
+    const hour = parseInt(val);
+    this.addDayBlock(item, hour);
+    event.target.value = ''; // reset choice
+  },
+  get hoursList() {
+    const list = [];
+    for(let i=0; i<24; i++) {
+      list.push({value: i, label: this.pad(i) + ':00'});
+    }
+    return list;
+  },
+  getShowClass(key) {
+    const mapping = { morning: 'morning', afternoon: 'afternoon', evening: 'evening', night: 'night', daily: 'daily' };
+    return mapping[key] || 'daily';
+  },
+  getShowLabel(key) {
+    const mapping = {
+      morning: '🌅 البرنامج الصباحي',
+      afternoon: '☀️ برنامج الظهيرة',
+      evening: '🌌 برنامج المساء',
+      night: '🌙 حكايات الليل',
+      daily: '🎙️ فقرة عامة يومية'
+    };
+    return mapping[key] || key;
+  },
+  
+  // ── Canvas Visualizer Methods ──
+  animateVisualizer() {
+    const canvas = document.getElementById('visualizer-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let step = 0;
+    
+    const draw = () => {
+      if (!document.getElementById('visualizer-canvas')) return;
+      if (this.streamPlaying) {
+        requestAnimationFrame(draw);
+      } else {
+        setTimeout(() => requestAnimationFrame(draw), 200);
+      }
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'rgba(3, 7, 18, 0.4)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      const numBars = 32;
+      const barWidth = canvas.width / numBars;
+      step += 0.15;
+      
+      for (let i = 0; i < numBars; i++) {
+        let barHeight = 2;
+        
+        if (this.streamPlaying) {
+          const sinVal = Math.sin(i * 0.35 + step);
+          const cosVal = Math.cos(i * 0.15 - step * 0.6);
+          barHeight = Math.abs(sinVal * cosVal) * 32 + 2;
+        } else {
+          barHeight = Math.sin(i * 0.2 + step * 0.2) * 2 + 3;
+        }
+        
+        const percent = i / numBars;
+        const r = Math.round(113 - (percent * 30));
+        const g = Math.round(237 - (percent * 80));
+        const b = Math.round(189 + (percent * 40));
+        
+        ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+        ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 1, barHeight);
+      }
+    };
+    
+    draw();
+  },
+
   openAI(){this.showAI=true;this.$nextTick(()=>this.tick());},
   async sendAI(presetText){
     const text = (presetText && typeof presetText==='string') ? presetText : this.aiInput.trim();
@@ -2336,5 +3898,6 @@ return {
 };
 }
 </script>
+<audio id="preview-audio" preload="none" style="display:none;"></audio>
 </body>
 </html>
