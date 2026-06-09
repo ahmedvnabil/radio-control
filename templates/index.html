@@ -86,7 +86,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--mint);}
   .blueprint-arrow { transform: rotate(90deg) !important; padding: 8px 0 !important; }
 }
 [dir="rtl"] .content{padding-right:0;padding-left:4px;}
-.sec-wrap{margin-bottom:48px;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:36px;scroll-margin-top:14px;}
+.sec-wrap{margin-bottom:48px;border-bottom:1px solid rgba(255,255,255,0.03);padding-bottom:36px;scroll-margin-top:14px;transition: border-top 0.15s ease, padding-top 0.15s ease;}
+.sec-wrap.drag-over { border-top: 2px dashed var(--mint) !important; padding-top: 18px; box-shadow: 0 -8px 16px rgba(113,237,189,0.04); }
 .sec-wrap:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0;}
 
 .pane{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:16px;}
@@ -760,7 +761,15 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
     <div class="content">
 
       <!-- ╔═══ LIVE ═══╗ -->
-      <section id="sec-live" class="sec-wrap">
+      <section id="sec-live" class="sec-wrap" draggable="true" @dragstart="onSectionDragStart($event, 'live')" @dragover.prevent="onSectionDragOver($event, 'live')" @dragleave="onSectionDragLeave($event, 'live')" @drop="onSectionDrop($event, 'live')">
+        <!-- Drag Handle for Section -->
+        <div class="sec-handle" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.01); border:1px dashed var(--line-2); border-radius:6px; padding:6px 12px; margin-bottom:12px; cursor:grab; user-select:none; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--mint)'; this.style.background='rgba(113,237,189,0.01)';" onmouseout="this.style.borderColor='var(--line-2)'; this.style.background='rgba(255,255,255,0.01)';">
+          <div style="display:flex; align-items:center; gap:8px; font-weight:700; font-size:11px; color:var(--ink-2); text-transform:uppercase;">
+            <i data-lucide="grip-vertical" style="width:13px; height:13px; opacity:0.6; color:var(--mint);"></i>
+            <span x-text="lang === 'ar' ? 'قسم: ' + t('live') : 'Section: ' + t('live')"></span>
+          </div>
+          <div style="font-size:9.5px; color:var(--muted);" x-text="lang === 'ar' ? 'اسحب المقبض لإعادة الترتيب' : 'Drag handle to reorder'"></div>
+        </div>
         <!-- INTERACTIVE LIFE-CYCLE BLUEPRINT MAP -->
         <div class="pane" style="margin-bottom:14px; border-color: rgba(113,237,189,0.25); background: rgba(113,237,189,0.01);">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
@@ -1396,7 +1405,15 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
       </section>
 
       <!-- ╔═══ MEDIA ═══╗ -->
-      <section id="sec-media" class="sec-wrap">
+      <section id="sec-media" class="sec-wrap" draggable="true" @dragstart="onSectionDragStart($event, 'media')" @dragover.prevent="onSectionDragOver($event, 'media')" @dragleave="onSectionDragLeave($event, 'media')" @drop="onSectionDrop($event, 'media')">
+        <!-- Drag Handle for Section -->
+        <div class="sec-handle" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.01); border:1px dashed var(--line-2); border-radius:6px; padding:6px 12px; margin-bottom:12px; cursor:grab; user-select:none; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--mint)'; this.style.background='rgba(113,237,189,0.01)';" onmouseout="this.style.borderColor='var(--line-2)'; this.style.background='rgba(255,255,255,0.01)';">
+          <div style="display:flex; align-items:center; gap:8px; font-weight:700; font-size:11px; color:var(--ink-2); text-transform:uppercase;">
+            <i data-lucide="grip-vertical" style="width:13px; height:13px; opacity:0.6; color:var(--mint);"></i>
+            <span x-text="lang === 'ar' ? 'قسم: ' + t('media') : 'Section: ' + t('media')"></span>
+          </div>
+          <div style="font-size:9.5px; color:var(--muted);" x-text="lang === 'ar' ? 'اسحب المقبض لإعادة الترتيب' : 'Drag handle to reorder'"></div>
+        </div>
         <div class="pane">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
             <div>
@@ -1479,7 +1496,15 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
       </section>
 
       <!-- ╔═══ PLAYLISTS ═══╗ -->
-      <section id="sec-playlists" class="sec-wrap">
+      <section id="sec-playlists" class="sec-wrap" draggable="true" @dragstart="onSectionDragStart($event, 'playlists')" @dragover.prevent="onSectionDragOver($event, 'playlists')" @dragleave="onSectionDragLeave($event, 'playlists')" @drop="onSectionDrop($event, 'playlists')">
+        <!-- Drag Handle for Section -->
+        <div class="sec-handle" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.01); border:1px dashed var(--line-2); border-radius:6px; padding:6px 12px; margin-bottom:12px; cursor:grab; user-select:none; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--mint)'; this.style.background='rgba(113,237,189,0.01)';" onmouseout="this.style.borderColor='var(--line-2)'; this.style.background='rgba(255,255,255,0.01)';">
+          <div style="display:flex; align-items:center; gap:8px; font-weight:700; font-size:11px; color:var(--ink-2); text-transform:uppercase;">
+            <i data-lucide="grip-vertical" style="width:13px; height:13px; opacity:0.6; color:var(--mint);"></i>
+            <span x-text="lang === 'ar' ? 'قسم: ' + t('playlists') : 'Section: ' + t('playlists')"></span>
+          </div>
+          <div style="font-size:9.5px; color:var(--muted);" x-text="lang === 'ar' ? 'اسحب المقبض لإعادة الترتيب' : 'Drag handle to reorder'"></div>
+        </div>
         <div class="pane">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
             <div><h2 x-text="t('playlists')"></h2><p class="sub" x-text="t('playlists_sub')"></p></div>
@@ -1506,7 +1531,15 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
       </section>
 
       <!-- ╔═══ SCHEDULE ═══╗ -->
-      <section id="sec-schedule" class="sec-wrap">
+      <section id="sec-schedule" class="sec-wrap" draggable="true" @dragstart="onSectionDragStart($event, 'schedule')" @dragover.prevent="onSectionDragOver($event, 'schedule')" @dragleave="onSectionDragLeave($event, 'schedule')" @drop="onSectionDrop($event, 'schedule')">
+        <!-- Drag Handle for Section -->
+        <div class="sec-handle" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.01); border:1px dashed var(--line-2); border-radius:6px; padding:6px 12px; margin-bottom:12px; cursor:grab; user-select:none; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--mint)'; this.style.background='rgba(113,237,189,0.01)';" onmouseout="this.style.borderColor='var(--line-2)'; this.style.background='rgba(255,255,255,0.01)';">
+          <div style="display:flex; align-items:center; gap:8px; font-weight:700; font-size:11px; color:var(--ink-2); text-transform:uppercase;">
+            <i data-lucide="grip-vertical" style="width:13px; height:13px; opacity:0.6; color:var(--mint);"></i>
+            <span x-text="lang === 'ar' ? 'قسم: ' + t('schedule') : 'Section: ' + t('schedule')"></span>
+          </div>
+          <div style="font-size:9.5px; color:var(--muted);" x-text="lang === 'ar' ? 'اسحب المقبض لإعادة الترتيب' : 'Drag handle to reorder'"></div>
+        </div>
         <div class="pane">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
             <div><h2 x-text="t('weekly_schedule')"></h2><p class="sub" x-text="t('schedule_sub')"></p></div>
@@ -1652,7 +1685,15 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
       </section>
 
       <!-- ╔═══ AUDIENCE ═══╗ -->
-      <section id="sec-audience" class="sec-wrap">
+      <section id="sec-audience" class="sec-wrap" draggable="true" @dragstart="onSectionDragStart($event, 'audience')" @dragover.prevent="onSectionDragOver($event, 'audience')" @dragleave="onSectionDragLeave($event, 'audience')" @drop="onSectionDrop($event, 'audience')">
+        <!-- Drag Handle for Section -->
+        <div class="sec-handle" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.01); border:1px dashed var(--line-2); border-radius:6px; padding:6px 12px; margin-bottom:12px; cursor:grab; user-select:none; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--mint)'; this.style.background='rgba(113,237,189,0.01)';" onmouseout="this.style.borderColor='var(--line-2)'; this.style.background='rgba(255,255,255,0.01)';">
+          <div style="display:flex; align-items:center; gap:8px; font-weight:700; font-size:11px; color:var(--ink-2); text-transform:uppercase;">
+            <i data-lucide="grip-vertical" style="width:13px; height:13px; opacity:0.6; color:var(--mint);"></i>
+            <span x-text="lang === 'ar' ? 'قسم: ' + t('audience') : 'Section: ' + t('audience')"></span>
+          </div>
+          <div style="font-size:9.5px; color:var(--muted);" x-text="lang === 'ar' ? 'اسحب المقبض لإعادة الترتيب' : 'Drag handle to reorder'"></div>
+        </div>
         <div class="row" style="margin-bottom:14px">
           <div class="pane" style="grid-column:span 2">
             <h2 x-text="t('listeners_chart')"></h2>
@@ -1706,7 +1747,15 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
       </section>
 
       <!-- ╔═══ BROADCAST ═══╗ -->
-      <section id="sec-broadcast" class="sec-wrap">
+      <section id="sec-broadcast" class="sec-wrap" draggable="true" @dragstart="onSectionDragStart($event, 'broadcast')" @dragover.prevent="onSectionDragOver($event, 'broadcast')" @dragleave="onSectionDragLeave($event, 'broadcast')" @drop="onSectionDrop($event, 'broadcast')">
+        <!-- Drag Handle for Section -->
+        <div class="sec-handle" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.01); border:1px dashed var(--line-2); border-radius:6px; padding:6px 12px; margin-bottom:12px; cursor:grab; user-select:none; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--mint)'; this.style.background='rgba(113,237,189,0.01)';" onmouseout="this.style.borderColor='var(--line-2)'; this.style.background='rgba(255,255,255,0.01)';">
+          <div style="display:flex; align-items:center; gap:8px; font-weight:700; font-size:11px; color:var(--ink-2); text-transform:uppercase;">
+            <i data-lucide="grip-vertical" style="width:13px; height:13px; opacity:0.6; color:var(--mint);"></i>
+            <span x-text="lang === 'ar' ? 'قسم: ' + t('broadcast') : 'Section: ' + t('broadcast')"></span>
+          </div>
+          <div style="font-size:9.5px; color:var(--muted);" x-text="lang === 'ar' ? 'اسحب المقبض لإعادة الترتيب' : 'Drag handle to reorder'"></div>
+        </div>
         <div class="row" style="margin-bottom:14px">
           <div class="pane">
             <div style="display:flex;justify-content:space-between;align-items:center"><h2 x-text="t('streamers')"></h2>
@@ -1814,7 +1863,15 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
       </section>
 
       <!-- ╔═══ TELEGRAM ═══╗ -->
-      <section id="sec-telegram" class="sec-wrap">
+      <section id="sec-telegram" class="sec-wrap" draggable="true" @dragstart="onSectionDragStart($event, 'telegram')" @dragover.prevent="onSectionDragOver($event, 'telegram')" @dragleave="onSectionDragLeave($event, 'telegram')" @drop="onSectionDrop($event, 'telegram')">
+        <!-- Drag Handle for Section -->
+        <div class="sec-handle" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.01); border:1px dashed var(--line-2); border-radius:6px; padding:6px 12px; margin-bottom:12px; cursor:grab; user-select:none; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--mint)'; this.style.background='rgba(113,237,189,0.01)';" onmouseout="this.style.borderColor='var(--line-2)'; this.style.background='rgba(255,255,255,0.01)';">
+          <div style="display:flex; align-items:center; gap:8px; font-weight:700; font-size:11px; color:var(--ink-2); text-transform:uppercase;">
+            <i data-lucide="grip-vertical" style="width:13px; height:13px; opacity:0.6; color:var(--mint);"></i>
+            <span x-text="lang === 'ar' ? 'قسم: ' + t('telegram') : 'Section: ' + t('telegram')"></span>
+          </div>
+          <div style="font-size:9.5px; color:var(--muted);" x-text="lang === 'ar' ? 'اسحب المقبض لإعادة الترتيب' : 'Drag handle to reorder'"></div>
+        </div>
         <div class="pane" style="margin-bottom:14px">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <h2><i data-lucide="send" style="width:15px;height:15px"></i> <span x-text="t('telegram')"></span></h2>
@@ -1873,7 +1930,15 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
       </section>
 
       <!-- ╔═══ SETUP ═══╗ -->
-      <section id="sec-setup" class="sec-wrap">
+      <section id="sec-setup" class="sec-wrap" draggable="true" @dragstart="onSectionDragStart($event, 'setup')" @dragover.prevent="onSectionDragOver($event, 'setup')" @dragleave="onSectionDragLeave($event, 'setup')" @drop="onSectionDrop($event, 'setup')">
+        <!-- Drag Handle for Section -->
+        <div class="sec-handle" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.01); border:1px dashed var(--line-2); border-radius:6px; padding:6px 12px; margin-bottom:12px; cursor:grab; user-select:none; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--mint)'; this.style.background='rgba(113,237,189,0.01)';" onmouseout="this.style.borderColor='var(--line-2)'; this.style.background='rgba(255,255,255,0.01)';">
+          <div style="display:flex; align-items:center; gap:8px; font-weight:700; font-size:11px; color:var(--ink-2); text-transform:uppercase;">
+            <i data-lucide="grip-vertical" style="width:13px; height:13px; opacity:0.6; color:var(--mint);"></i>
+            <span x-text="lang === 'ar' ? 'قسم: ' + t('setup') : 'Section: ' + t('setup')"></span>
+          </div>
+          <div style="font-size:9.5px; color:var(--muted);" x-text="lang === 'ar' ? 'اسحب المقبض لإعادة الترتيب' : 'Drag handle to reorder'"></div>
+        </div>
         <div class="row" style="margin-bottom:14px">
           <div class="pane">
             <h2 x-text="t('branding')"></h2>
@@ -1995,7 +2060,15 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
       </section>
 
       <!-- ╔═══ STUDIO (agent-studio merged) ═══╗ -->
-      <section id="sec-studio" class="sec-wrap">
+      <section id="sec-studio" class="sec-wrap" draggable="true" @dragstart="onSectionDragStart($event, 'studio')" @dragover.prevent="onSectionDragOver($event, 'studio')" @dragleave="onSectionDragLeave($event, 'studio')" @drop="onSectionDrop($event, 'studio')">
+        <!-- Drag Handle for Section -->
+        <div class="sec-handle" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.01); border:1px dashed var(--line-2); border-radius:6px; padding:6px 12px; margin-bottom:12px; cursor:grab; user-select:none; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--mint)'; this.style.background='rgba(113,237,189,0.01)';" onmouseout="this.style.borderColor='var(--line-2)'; this.style.background='rgba(255,255,255,0.01)';">
+          <div style="display:flex; align-items:center; gap:8px; font-weight:700; font-size:11px; color:var(--ink-2); text-transform:uppercase;">
+            <i data-lucide="grip-vertical" style="width:13px; height:13px; opacity:0.6; color:var(--mint);"></i>
+            <span x-text="lang === 'ar' ? 'قسم: ' + t('studio') : 'Section: ' + t('studio')"></span>
+          </div>
+          <div style="font-size:9.5px; color:var(--muted);" x-text="lang === 'ar' ? 'اسحب المقبض لإعادة الترتيب' : 'Drag handle to reorder'"></div>
+        </div>
         <div class="row" style="margin-bottom:14px">
           <!-- LEFT: agent list -->
           <div class="pane" style="grid-column:span 1">
@@ -2064,7 +2137,15 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
       </section>
 
       <!-- ╔═══ DEV ═══╗ -->
-      <section id="sec-dev" class="sec-wrap">
+      <section id="sec-dev" class="sec-wrap" draggable="true" @dragstart="onSectionDragStart($event, 'dev')" @dragover.prevent="onSectionDragOver($event, 'dev')" @dragleave="onSectionDragLeave($event, 'dev')" @drop="onSectionDrop($event, 'dev')">
+        <!-- Drag Handle for Section -->
+        <div class="sec-handle" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.01); border:1px dashed var(--line-2); border-radius:6px; padding:6px 12px; margin-bottom:12px; cursor:grab; user-select:none; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--mint)'; this.style.background='rgba(113,237,189,0.01)';" onmouseout="this.style.borderColor='var(--line-2)'; this.style.background='rgba(255,255,255,0.01)';">
+          <div style="display:flex; align-items:center; gap:8px; font-weight:700; font-size:11px; color:var(--ink-2); text-transform:uppercase;">
+            <i data-lucide="grip-vertical" style="width:13px; height:13px; opacity:0.6; color:var(--mint);"></i>
+            <span x-text="lang === 'ar' ? 'قسم: ' + t('dev') : 'Section: ' + t('dev')"></span>
+          </div>
+          <div style="font-size:9.5px; color:var(--muted);" x-text="lang === 'ar' ? 'اسحب المقبض لإعادة الترتيب' : 'Drag handle to reorder'"></div>
+        </div>
         <div class="pane">
           <h2>Developer Console</h2>
           <div class="console">
@@ -2451,6 +2532,8 @@ return {
   templates:[], voices:[],
   copilot:{score:null, status_text:'', suggestions:[], totals:null},
   showBlueprint: localStorage.getItem('rc_show_blueprint') !== 'false',
+  sections: [],
+  isDraggingSection: false,
   azBase:'',  // AzuraCast base URL — populated by refresh() from /api/v1/config; used to build stream/embed URLs in the broadcast tab
   builderView:'week', dayBlocks:[], isDragging:false, selectedDayBlockId:null,
   theme: localStorage.getItem('rc_theme') || 'flat',
@@ -2855,6 +2938,10 @@ return {
       if((e.ctrlKey||e.metaKey)&&e.key==='\\'){this.scrollToSection('dev');e.preventDefault();}
       if((e.ctrlKey||e.metaKey)&&e.key==='k'){document.querySelector('.search input')?.focus();e.preventDefault();}
     });
+    document.addEventListener('dragend', () => {
+      this.isDraggingSection = false;
+      document.querySelectorAll('.sec-wrap').forEach(el => el.classList.remove('drag-over'));
+    });
     
     // Initialize target date as tomorrow YYYY-MM-DD
     const tomorrow = new Date();
@@ -2876,10 +2963,93 @@ return {
     this.animateVisualizer();
     this.initScrollspy();
     
+    // Initialize section order from localStorage or default
+    const savedOrder = localStorage.getItem('rc_section_order');
+    const validSections = ['live', 'media', 'playlists', 'schedule', 'audience', 'broadcast', 'telegram', 'studio', 'setup', 'dev'];
+    if (savedOrder) {
+      try {
+        const parsed = JSON.parse(savedOrder);
+        this.sections = parsed.filter(id => validSections.includes(id));
+        validSections.forEach(id => {
+          if (!this.sections.includes(id)) this.sections.push(id);
+        });
+      } catch (e) {
+        this.sections = [...validSections];
+      }
+    } else {
+      this.sections = [...validSections];
+    }
+    this.reorderDomSections();
+    this.syncSidebarWithSections();
+    
     setInterval(()=>this.tickLive(),12000);
     setInterval(()=>this.loadQueueHistory(),20000);
     setInterval(()=>this.loadCopilot(),60000);
     this.$nextTick(()=>this.tick());
+  },
+  reorderDomSections() {
+    const container = document.querySelector('.content');
+    if (!container) return;
+    const nodes = {};
+    this.sections.forEach(id => {
+      const el = document.getElementById('sec-' + id);
+      if (el) nodes[id] = el;
+    });
+    this.sections.forEach(id => {
+      if (nodes[id]) container.appendChild(nodes[id]);
+    });
+  },
+  syncSidebarWithSections() {
+    const newViews = [];
+    this.sections.forEach(id => {
+      const viewObj = this.views.find(v => v.id === id);
+      if (viewObj) newViews.push(viewObj);
+    });
+    this.views.forEach(v => {
+      if (!newViews.find(nv => nv.id === v.id)) newViews.push(v);
+    });
+    this.views = newViews;
+    this.$nextTick(() => {
+      if (window.lucide && window.lucide.createIcons) {
+        window.lucide.createIcons();
+      }
+    });
+  },
+  onSectionDragStart(ev, id) {
+    if (!ev.target.closest('.sec-handle')) {
+      ev.preventDefault();
+      return;
+    }
+    this.isDraggingSection = true;
+    ev.dataTransfer.setData('text/plain', id);
+    ev.dataTransfer.effectAllowed = 'move';
+  },
+  onSectionDragOver(ev, targetId) {
+    ev.preventDefault();
+    const el = document.getElementById('sec-' + targetId);
+    if (el) el.classList.add('drag-over');
+  },
+  onSectionDragLeave(ev, targetId) {
+    const el = document.getElementById('sec-' + targetId);
+    if (el) el.classList.remove('drag-over');
+  },
+  onSectionDrop(ev, targetId) {
+    ev.preventDefault();
+    const el = document.getElementById('sec-' + targetId);
+    if (el) el.classList.remove('drag-over');
+    const draggedId = ev.dataTransfer.getData('text/plain');
+    if (draggedId && draggedId !== targetId) {
+      const fromIdx = this.sections.indexOf(draggedId);
+      const toIdx = this.sections.indexOf(targetId);
+      if (fromIdx !== -1 && toIdx !== -1) {
+        this.sections.splice(fromIdx, 1);
+        this.sections.splice(toIdx, 0, draggedId);
+        localStorage.setItem('rc_section_order', JSON.stringify(this.sections));
+        this.reorderDomSections();
+        this.syncSidebarWithSections();
+      }
+    }
+    this.isDraggingSection = false;
   },
   toggleTheme(){this.theme=this.theme==='flat'?'glow':'flat';localStorage.setItem('rc_theme',this.theme);document.body.setAttribute('data-theme',this.theme);},
   tick(){if(window.lucide&&window.lucide.createIcons)window.lucide.createIcons();},
