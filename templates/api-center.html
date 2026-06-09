@@ -1,246 +1,464 @@
 <!DOCTYPE html>
-<html lang="en" dir="rtl">
+<html lang="ar" dir="rtl" class="h-full">
 <head>
   <meta charset="utf-8">
-  <title>API Center - Radio Control</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مركز الـ API - Radio Control Studio</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    :root {
-      --bg: #0f1115;
-      --panel: #1a1d24;
-      --border: #2d3139;
-      --text: #e2e8f0;
-      --muted: #94a3b8;
-      --accent: #3b82f6;
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Tajawal', 'sans-serif'],
+            mono: ['JetBrains+Mono', 'monospace'],
+          },
+          animation: {
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          }
+        }
+      }
     }
+  </script>
+  
+  <style>
     body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: 'IBM Plex Sans Arabic', sans-serif;
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
+      font-family: 'Tajawal', sans-serif;
+      background: radial-gradient(circle at top, #0f172a 0%, #020617 100%);
     }
     
-    .brutalist-input {
-      background: #000;
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 0.5rem;
-      outline: none;
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
-    .brutalist-input:focus {
-      border-color: var(--accent);
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.3);
     }
-    .brutalist-btn {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.1s;
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.2);
+      border-radius: 4px;
     }
-    .brutalist-btn:hover {
-      background: var(--border);
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.4);
     }
-    .brutalist-btn.primary {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
+    
+    /* Smooth tab switching animation */
+    .tab-content {
+      animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-    .brutalist-btn.primary:hover {
-      background: #2563eb;
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Glowing Effects */
+    .glow-cyan {
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.15);
+    }
+    .glow-blue {
+      box-shadow: 0 0 25px rgba(59, 130, 246, 0.15);
+    }
+    .glow-indigo {
+      box-shadow: 0 0 25px rgba(99, 102, 241, 0.15);
     }
   </style>
 </head>
-<body x-data="securityState()">
+<body x-data="securityState()" class="h-full text-slate-100 flex flex-col overflow-hidden antialiased">
 
-  <!-- Header & Tabs -->
-  <div class="bg-[var(--panel)] border-b border-[var(--border)] flex flex-col">
-    <div class="p-4 border-b border-[var(--border)] flex items-center justify-between">
-      <h1 class="text-xl font-bold">مركز تحكم الـ API</h1>
-      <div class="text-sm text-[var(--muted)]">Radio Control Backend</div>
+  <!-- Header Dashboard Top-Bar -->
+  <header class="bg-slate-950/80 backdrop-blur-md border-b border-slate-800/60 px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4 z-40 relative">
+    
+    <!-- Title / Brand -->
+    <div class="flex items-center gap-3">
+      <div class="p-2.5 bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-600 rounded-2xl shadow-lg shadow-blue-500/20">
+        <i data-lucide="radio" class="w-6 h-6 text-white animate-pulse-slow"></i>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+            مركز تحكم الـ API
+          </h1>
+          <div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span>نشط</span>
+          </div>
+        </div>
+        <p class="text-xs text-slate-400 font-medium font-mono tracking-wider">Radio Control Engine</p>
+      </div>
     </div>
-    <div class="flex px-4 gap-4">
-      <button @click="setTab('explorer')" 
-              :class="tab === 'explorer' ? 'border-b-2 border-[var(--accent)] text-white font-bold' : 'text-[var(--muted)] border-b-2 border-transparent hover:text-white'" 
-              class="py-3 px-2 transition-colors">
-        تجربة وإرسال الطلبات (Explorer)
+    
+    <!-- Navigation Tabs -->
+    <nav class="flex bg-slate-900/60 p-1.5 rounded-2xl border border-slate-800/80 gap-1.5">
+      <button @click="setTab('explorer')"
+              :class="tab === 'explorer' ? 'bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/30 text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.1)] font-semibold' : 'text-slate-400 border-transparent hover:text-slate-200 hover:bg-slate-800/30'"
+              class="flex items-center gap-2 py-2 px-4 rounded-xl text-sm transition-all duration-200 border">
+        <i data-lucide="terminal" class="w-4 h-4"></i>
+        <span>مستكشف الطلبات (Explorer)</span>
       </button>
-      <button @click="setTab('list')" 
-              :class="tab === 'list' ? 'border-b-2 border-[var(--accent)] text-white font-bold' : 'text-[var(--muted)] border-b-2 border-transparent hover:text-white'" 
-              class="py-3 px-2 transition-colors">
-        قائمة الـ Endpoints مفصلة
+      
+      <button @click="setTab('list')"
+              :class="tab === 'list' ? 'bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-500/30 text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.1)] font-semibold' : 'text-slate-400 border-transparent hover:text-slate-200 hover:bg-slate-800/30'"
+              class="flex items-center gap-2 py-2 px-4 rounded-xl text-sm transition-all duration-200 border">
+        <i data-lucide="list-tree" class="w-4 h-4"></i>
+        <span>قائمة الـ Endpoints</span>
       </button>
-      <button @click="setTab('security')" 
-              :class="tab === 'security' ? 'border-b-2 border-red-500 text-white font-bold' : 'text-[var(--muted)] border-b-2 border-transparent hover:text-white'" 
-              class="py-3 px-2 transition-colors flex items-center gap-2">
+      
+      <button @click="setTab('security')"
+              :class="tab === 'security' ? 'bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/30 text-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.1)] font-semibold' : 'text-slate-400 border-transparent hover:text-slate-200 hover:bg-slate-800/30'"
+              class="flex items-center gap-2 py-2 px-4 rounded-xl text-sm transition-all duration-200 border">
+        <i data-lucide="shield-check" class="w-4 h-4"></i>
         <span>الأمان والصلاحيات</span>
-        <span x-show="hasToken" class="w-2 h-2 rounded-full bg-green-500"></span>
-        <span x-show="!hasToken" class="w-2 h-2 rounded-full bg-red-500"></span>
+        <span x-show="hasToken" class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span>
+        <span x-show="!hasToken" class="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_#f43f5e]"></span>
       </button>
-      <button @click="setTab('logs')" 
-              :class="tab === 'logs' ? 'border-b-2 border-[var(--accent)] text-white font-bold' : 'text-[var(--muted)] border-b-2 border-transparent hover:text-white'" 
-              class="py-3 px-2 transition-colors flex items-center gap-2" x-show="hasToken">
+      
+      <button @click="setTab('logs')"
+              :class="tab === 'logs' ? 'bg-gradient-to-r from-pink-500/10 to-purple-500/10 border border-pink-500/30 text-pink-400 shadow-[0_0_15px_rgba(236,72,153,0.1)] font-semibold' : 'text-slate-400 border-transparent hover:text-slate-200 hover:bg-slate-800/30'"
+              class="flex items-center gap-2 py-2 px-4 rounded-xl text-sm transition-all duration-200 border"
+              x-show="hasToken"
+              style="display: none;">
         <i data-lucide="activity" class="w-4 h-4"></i>
         <span>سجل الوصول (Logs)</span>
       </button>
-    </div>
-  </div>
+    </nav>
+  </header>
 
-  <!-- Content -->
-  <div class="flex-1 overflow-hidden relative">
-    <iframe x-show="tab === 'explorer'" src="/docs/raw" class="absolute inset-0 w-full h-full border-0"></iframe>
-    <iframe x-show="tab === 'list'" src="/apiendpoints/raw" class="absolute inset-0 w-full h-full border-0"></iframe>
+  <!-- Content Container -->
+  <main class="flex-1 overflow-hidden relative">
     
-    <div x-show="tab === 'security'" class="absolute inset-0 w-full h-full overflow-y-auto p-8" style="display: none;">
-      <div class="max-w-4xl mx-auto space-y-8">
+    <!-- IFRAME Explorer Tab -->
+    <div x-show="tab === 'explorer'" class="absolute inset-0 w-full h-full">
+      <iframe src="/docs/raw" class="w-full h-full border-0 bg-slate-950"></iframe>
+    </div>
+    
+    <!-- IFRAME Endpoint List Tab -->
+    <div x-show="tab === 'list'" class="absolute inset-0 w-full h-full">
+      <iframe src="/apiendpoints/raw" class="w-full h-full border-0 bg-slate-950"></iframe>
+    </div>
+    
+    <!-- Security / Tokens Tab -->
+    <div x-show="tab === 'security'" class="absolute inset-0 w-full h-full overflow-y-auto p-4 md:p-8 tab-content" style="display: none;">
+      <div class="max-w-5xl mx-auto space-y-8 pb-16">
         
-        <div>
-          <h2 class="text-2xl font-bold mb-2">إدارة الحماية والتصاريح (Tokens)</h2>
-          <p class="text-[var(--muted)]">لوحة التحكم والـ API محميان بالكامل ولا يسمحان بأي طلبات خارجية إلا بوجود توكن صحيح.</p>
+        <!-- Header Info -->
+        <div class="text-center md:text-right">
+          <h2 class="text-2xl font-extrabold bg-gradient-to-l from-white to-slate-400 bg-clip-text text-transparent">
+            إدارة الحماية وتصاريح التطبيقات (Tokens)
+          </h2>
+          <p class="text-slate-400 mt-2 text-sm max-w-2xl">
+            لوحة تحكم Radio Control وواجهات الـ API محمية بالكامل لمنع الوصول غير المصرح به. يمكنك إدارة تصاريح الدخول للمتصفحات الحالية والأنظمة الخارجية من هنا.
+          </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <!-- Cookie Login Form -->
-          <div class="bg-[var(--panel)] border border-[var(--border)] rounded p-6 h-fit">
-            <h3 class="text-lg font-bold mb-4">تسجيل الدخول للمتصفح الحالي</h3>
-            <p class="text-sm text-[var(--muted)] mb-4">
-              قم بإدخال الـ Token هنا لفتح الصلاحيات لك في هذا المتصفح.
+        <!-- Two Column Actions -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+          
+          <!-- Column 1: Current Browser Access -->
+          <div class="bg-slate-900/40 backdrop-blur-md border border-slate-800/80 rounded-2xl p-6 glow-blue transition-all duration-300">
+            <div class="flex items-center gap-3 mb-4 text-blue-400">
+              <div class="p-2 bg-blue-500/10 rounded-xl border border-blue-500/20">
+                <i data-lucide="laptop" class="w-5 h-5"></i>
+              </div>
+              <h3 class="text-lg font-bold text-slate-100">تسجيل الدخول للمتصفح الحالي</h3>
+            </div>
+            <p class="text-sm text-slate-400 mb-6 leading-relaxed">
+              أدخل توكن المسؤول (Guide Token) لتفعيل الصلاحيات الكاملة واستعراض البيانات الحية وسجلات النظام في هذا المتصفح.
             </p>
             
-            <div class="flex gap-2">
-              <input type="password" x-model="tokenInput" placeholder="أدخل التوكن هنا..." class="brutalist-input flex-1 font-mono text-sm" dir="ltr">
-              <button @click="saveToken" class="brutalist-btn primary">حفظ وتفعيل</button>
-              <button @click="clearToken" class="brutalist-btn text-red-400 border-red-900 hover:bg-red-900/30">تسجيل خروج</button>
+            <div class="space-y-4">
+              <div class="relative">
+                <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-slate-500">
+                  <i data-lucide="key" class="w-5 h-5"></i>
+                </div>
+                <input type="password" 
+                       x-model="tokenInput" 
+                       placeholder="أدخل التوكن الخاص بالجايد (sk_...)" 
+                       class="w-full bg-slate-950/80 border border-slate-800/80 rounded-xl pr-11 pl-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500/80 focus:ring-1 focus:ring-blue-500/50 transition-all font-mono text-sm text-left" 
+                       dir="ltr">
+              </div>
+              
+              <div class="flex flex-col sm:flex-row gap-3">
+                <button @click="saveToken" 
+                        class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-blue-500/10 hover:shadow-blue-500/20 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                  <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                  <span>تفعيل وحفظ التوكن</span>
+                </button>
+                <button @click="clearToken" 
+                        class="bg-slate-950 hover:bg-rose-950/20 border border-slate-800 hover:border-rose-900/40 text-slate-400 hover:text-rose-400 py-3 px-4 rounded-xl hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2"
+                        x-show="hasToken">
+                  <i data-lucide="log-out" class="w-4 h-4"></i>
+                  <span>تسجيل خروج</span>
+                </button>
+              </div>
             </div>
 
-            <div x-show="msg" class="mt-4 p-3 text-sm rounded bg-green-900/30 text-green-400 border border-green-900" x-text="msg"></div>
+            <!-- Notification Messages -->
+            <div x-show="msg" 
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 class="mt-4 p-3.5 text-sm rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-2.5" 
+                 style="display: none;">
+              <i data-lucide="info" class="w-4 h-4 shrink-0"></i>
+              <span x-text="msg"></span>
+            </div>
           </div>
 
-          <!-- Examples for External Calls -->
-          <div class="bg-[var(--panel)] border border-[var(--border)] rounded p-6 h-fit">
-            <h3 class="text-lg font-bold mb-4">كيفية الاستخدام في التطبيقات الخارجية</h3>
-            <p class="text-sm text-[var(--muted)] mb-4">قم بتمرير التوكن بإحدى طريقتين:</p>
-            <div class="space-y-4 text-sm font-mono" dir="ltr">
-              <div>
-                <div class="text-[var(--muted)] mb-1 uppercase text-xs">1. Via HTTP Header (Recommended)</div>
-                <div class="bg-[#000] border border-[var(--border)] p-3 text-green-400 rounded">curl -H "X-Guide-Token: sk_..." https://studio.naromx.org/api/v1/config</div>
+          <!-- Column 2: External App Usage Guidelines -->
+          <div class="bg-slate-900/40 backdrop-blur-md border border-slate-800/80 rounded-2xl p-6 glow-indigo transition-all duration-300">
+            <div class="flex items-center gap-3 mb-4 text-indigo-400">
+              <div class="p-2 bg-indigo-500/10 rounded-xl border border-indigo-500/20">
+                <i data-lucide="code-2" class="w-5 h-5"></i>
               </div>
+              <h3 class="text-lg font-bold text-slate-100">كيفية الاستخدام في الأنظمة والإضافات الخارجية</h3>
+            </div>
+            <p class="text-sm text-slate-400 mb-4 leading-relaxed">
+              عند إرسال طلبات من سكريبت أو تطبيق خارجي، قم بتمرير التوكن بإحدى طريقتين:
+            </p>
+            
+            <div class="space-y-4">
+              <!-- Example 1 -->
               <div>
-                <div class="text-[var(--muted)] mb-1 uppercase text-xs">2. Via URL Query Parameter</div>
-                <div class="bg-[#000] border border-[var(--border)] p-3 text-blue-400 rounded">curl "https://studio.naromx.org/api/v1/config?token=sk_..."</div>
+                <div class="text-slate-400 text-xs mb-1.5 flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 inline-block"></span>
+                  <span>1. ترويسة الطلب HTTP Header (موصى به)</span>
+                </div>
+                <div class="bg-slate-950 rounded-xl border border-slate-800/80 overflow-hidden font-mono text-xs relative group">
+                  <div class="bg-slate-900/60 px-4 py-2 border-b border-slate-800/40 flex items-center justify-between">
+                    <span class="text-slate-500">cURL Header</span>
+                    <button @click="navigator.clipboard.writeText('curl -H &quot;X-Guide-Token: sk_your_token_here&quot; https://studio.naromx.org/api/v1/config'); alert('تم نسخ الأمر!')" 
+                            class="text-slate-400 hover:text-slate-200 transition-colors">
+                      <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                    </button>
+                  </div>
+                  <div class="p-3.5 overflow-x-auto text-slate-300 text-left dir-ltr" dir="ltr">
+                    <span class="text-sky-400">curl</span> -H <span class="text-emerald-400">"X-Guide-Token: sk_..."</span> https://studio.naromx.org/api/v1/config
+                  </div>
+                </div>
+              </div>
+
+              <!-- Example 2 -->
+              <div>
+                <div class="text-slate-400 text-xs mb-1.5 flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-purple-400 inline-block"></span>
+                  <span>2. معلمة عنوان الرابط Query Parameter</span>
+                </div>
+                <div class="bg-slate-950 rounded-xl border border-slate-800/80 overflow-hidden font-mono text-xs relative group">
+                  <div class="bg-slate-900/60 px-4 py-2 border-b border-slate-800/40 flex items-center justify-between">
+                    <span class="text-slate-500">cURL Query</span>
+                    <button @click="navigator.clipboard.writeText('curl &quot;https://studio.naromx.org/api/v1/config?token=sk_your_token_here&quot;'); alert('تم نسخ الأمر!')" 
+                            class="text-slate-400 hover:text-slate-200 transition-colors">
+                      <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                    </button>
+                  </div>
+                  <div class="p-3.5 overflow-x-auto text-slate-300 text-left dir-ltr" dir="ltr">
+                    <span class="text-sky-400">curl</span> <span class="text-emerald-400">"https://studio.naromx.org/api/v1/config?token=sk_..."</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+
         </div>
 
-        <!-- Token Management -->
-        <div class="bg-[var(--panel)] border border-[var(--border)] rounded p-6" x-show="hasToken">
-          <div class="flex justify-between items-center mb-6">
+        <!-- Token Management Area -->
+        <div class="bg-slate-900/40 backdrop-blur-md border border-slate-800/80 rounded-2xl p-6 glow-cyan transition-all duration-300" 
+             x-show="hasToken" 
+             style="display: none;">
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <div>
-              <h3 class="text-lg font-bold mb-1">صلاحيات التطبيقات الخارجية (API Tokens)</h3>
-              <p class="text-sm text-[var(--muted)]">يمكنك هنا توليد توكنز مخصصة لكل إضافة أو سكريبت لتتمكن من إيقافها متى شئت.</p>
+              <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                <i data-lucide="key-round" class="w-5 h-5 text-cyan-400"></i>
+                <span>مفاتيح الوصول الخارجية (API Tokens)</span>
+              </h3>
+              <p class="text-sm text-slate-400 mt-1">
+                قم بتوليد مفاتيح وصول فريدة للإضافات والأنظمة الخارجية لتتحكم بصلاحية كل منها بشكل منفصل.
+              </p>
             </div>
-            <button @click="createToken()" class="brutalist-btn primary flex items-center gap-2">
-              <i data-lucide="plus" class="w-4 h-4"></i> توليد توكن جديد
+            
+            <button @click="createToken()" 
+                    class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold py-2.5 px-5 rounded-xl shadow-lg shadow-cyan-500/10 hover:shadow-cyan-500/20 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span>إنشاء مفتاح جديد</span>
             </button>
           </div>
 
-          <div x-show="newTokenObj" class="mb-6 p-4 border border-green-500 bg-green-900/20 rounded">
-            <h4 class="font-bold text-green-400 mb-2">تم إنشاء التوكن بنجاح! انسخه الآن فلن يظهر مجدداً:</h4>
-            <div class="flex items-center gap-2">
-              <input type="text" readonly :value="newTokenObj?.token" class="brutalist-input flex-1 font-mono text-green-400" dir="ltr">
-              <button @click="navigator.clipboard.writeText(newTokenObj.token); alert('Copied!')" class="brutalist-btn">نسخ</button>
+          <!-- New Token Created Success Modal/Box -->
+          <div x-show="newTokenObj" 
+               x-transition:enter="transition ease-out duration-300"
+               x-transition:enter-start="opacity-0 translate-y-2"
+               x-transition:enter-end="opacity-100 translate-y-0"
+               class="mb-6 p-4 border border-emerald-500/30 bg-emerald-500/5 rounded-2xl" 
+               style="display: none;">
+            <div class="flex items-center gap-2 text-emerald-400 font-bold mb-2">
+              <i data-lucide="party-popper" class="w-5 h-5 animate-bounce"></i>
+              <span>تم توليد التوكن بنجاح!</span>
+            </div>
+            <p class="text-xs text-slate-400 mb-3">
+              احفظ هذا التوكن في مكان آمن الآن، فلن تتمكن من رؤيته مجدداً لحماية أمان سيرفرك:
+            </p>
+            <div class="flex items-center gap-2.5">
+              <input type="text" 
+                     readonly 
+                     :value="newTokenObj?.token" 
+                     class="flex-1 bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-2.5 font-mono text-emerald-400 text-sm text-left dir-ltr" 
+                     dir="ltr">
+              <button @click="navigator.clipboard.writeText(newTokenObj.token); alert('تم نسخ التوكن!')" 
+                      class="bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white px-5 py-2.5 rounded-xl font-bold transition-all border border-slate-700 text-sm">
+                نسخ التوكن
+              </button>
             </div>
           </div>
 
-          <table class="w-full text-left text-sm brutalist-border" dir="ltr">
-            <thead class="bg-[var(--bg)] border-b border-[var(--border)]">
-              <tr>
-                <th class="p-3">Name</th>
-                <th class="p-3">Prefix</th>
-                <th class="p-3">Created</th>
-                <th class="p-3">Last Used</th>
-                <th class="p-3">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <template x-for="t in tokens" :key="t.id">
-                <tr class="border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg)]">
-                  <td class="p-3 font-bold" x-text="t.name"></td>
-                  <td class="p-3 font-mono text-[var(--muted)]" x-text="t.prefix"></td>
-                  <td class="p-3 text-[var(--muted)]" x-text="new Date(t.created_at).toLocaleString()"></td>
-                  <td class="p-3 text-[var(--muted)]" x-text="t.last_used ? new Date(t.last_used).toLocaleString() : 'Never'"></td>
-                  <td class="p-3">
-                    <button @click="revokeToken(t.id)" class="text-red-400 hover:text-red-300 font-bold px-2 py-1 bg-red-900/20 rounded">Revoke</button>
+          <!-- Tokens Table -->
+          <div class="overflow-x-auto rounded-xl border border-slate-800/80 bg-slate-950/60">
+            <table class="w-full text-right text-sm" dir="rtl">
+              <thead>
+                <tr class="bg-slate-900/60 text-slate-300 border-b border-slate-800/80 text-xs uppercase font-semibold">
+                  <th class="p-4 text-right">الاسم / الوصف</th>
+                  <th class="p-4 text-left">البادئة (Prefix)</th>
+                  <th class="p-4 text-left">تاريخ الإنشاء</th>
+                  <th class="p-4 text-left">آخر استخدام</th>
+                  <th class="p-4 text-center">الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template x-for="t in tokens" :key="t.id">
+                  <tr class="border-b border-slate-800/40 last:border-0 hover:bg-slate-900/40 transition-colors text-slate-200">
+                    <td class="p-4 font-bold text-slate-100" x-text="t.name"></td>
+                    <td class="p-4 font-mono text-slate-400 text-left dir-ltr" dir="ltr" x-text="t.prefix"></td>
+                    <td class="p-4 text-slate-400 font-mono text-left dir-ltr text-xs" dir="ltr" x-text="new Date(t.created_at).toLocaleString('ar-EG')"></td>
+                    <td class="p-4 text-slate-400 font-mono text-left dir-ltr text-xs" dir="ltr" x-text="t.last_used ? new Date(t.last_used).toLocaleString('ar-EG') : 'لم يستخدم بعد'"></td>
+                    <td class="p-4 text-center">
+                      <button @click="revokeToken(t.id)" 
+                              class="text-rose-400 hover:text-white px-3.5 py-1.5 bg-rose-500/10 hover:bg-rose-600 rounded-lg border border-rose-500/20 hover:border-rose-600 transition-all text-xs font-semibold">
+                        سحب الصلاحية
+                      </button>
+                    </td>
+                  </tr>
+                </template>
+                <tr x-show="tokens.length === 0">
+                  <td colspan="5" class="p-8 text-center text-slate-500">
+                    <div class="flex flex-col items-center justify-center gap-3">
+                      <i data-lucide="key" class="w-8 h-8 text-slate-600"></i>
+                      <span>لا توجد أي توكنز نشطة حالياً. قم بإنشاء توكن للبدء.</span>
+                    </div>
                   </td>
                 </tr>
-              </template>
-              <tr x-show="tokens.length === 0">
-                <td colspan="5" class="p-4 text-center text-[var(--muted)]">No tokens generated yet.</td>
-              </tr>
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
+
         </div>
 
       </div>
     </div>
 
     <!-- Logs Tab Content -->
-    <div x-show="tab === 'logs'" class="absolute inset-0 w-full h-full overflow-y-auto p-8" style="display: none;">
-      <div class="max-w-4xl mx-auto space-y-8">
-        <!-- Live Access Logs -->
-        <div class="bg-[var(--panel)] border border-[var(--border)] rounded p-6" x-show="hasToken">
-          <div class="flex justify-between items-center mb-6">
+    <div x-show="tab === 'logs'" class="absolute inset-0 w-full h-full overflow-y-auto p-4 md:p-8 tab-content" style="display: none;">
+      <div class="max-w-5xl mx-auto space-y-6 pb-16">
+        
+        <!-- Live Access Logs Panel -->
+        <div class="bg-slate-900/40 backdrop-blur-md border border-slate-800/80 rounded-2xl p-6 glow-indigo transition-all duration-300" 
+             x-show="hasToken"
+             style="display: none;">
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <div>
-              <h3 class="text-lg font-bold mb-1">سجل الوصول الحي (Access Logs)</h3>
-              <p class="text-sm text-[var(--muted)]">سجل بآخر 200 طلب لـ API السيرفر، يوضح من دخل وأي توكن استخدم.</p>
+              <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                <i data-lucide="history" class="w-5 h-5 text-pink-400"></i>
+                <span>سجل الوصول الحي (Access Logs)</span>
+              </h3>
+              <p class="text-sm text-slate-400 mt-1">
+                سجل متزامن يعرض آخر 200 طلب مرسل إلى واجهات برمجة التطبيقات (API) ومصدرها والمفاتيح المستخدمة.
+              </p>
             </div>
-            <button @click="fetchLogs()" class="brutalist-btn flex items-center gap-2">
-              <i data-lucide="refresh-cw" class="w-4 h-4"></i> تحديث السجل
+            
+            <button @click="fetchLogs()" 
+                    class="bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-semibold py-2.5 px-5 rounded-xl border border-slate-700 hover:border-slate-600 transition-all flex items-center justify-center gap-2 text-sm">
+              <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+              <span>تحديث السجل</span>
             </button>
           </div>
 
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm brutalist-border" dir="ltr">
-              <thead class="bg-[var(--bg)] border-b border-[var(--border)]">
-                <tr>
-                  <th class="p-3">Time (UTC)</th>
-                  <th class="p-3">Method</th>
-                  <th class="p-3">Path</th>
-                  <th class="p-3">Token Used</th>
-                  <th class="p-3">IP</th>
+          <!-- Logs Table -->
+          <div class="overflow-x-auto rounded-xl border border-slate-800/80 bg-slate-950/60">
+            <table class="w-full text-left text-sm" dir="ltr">
+              <thead>
+                <tr class="bg-slate-900/60 text-slate-300 border-b border-slate-800/80 text-xs uppercase font-semibold">
+                  <th class="p-4 text-left">Time (UTC)</th>
+                  <th class="p-4 text-left">Method</th>
+                  <th class="p-4 text-left">Path</th>
+                  <th class="p-4 text-left">Token Used</th>
+                  <th class="p-4 text-left">IP Address</th>
                 </tr>
               </thead>
               <tbody>
                 <template x-for="log in logs">
-                  <tr class="border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg)] font-mono text-xs">
-                    <td class="p-2 text-[var(--muted)]" x-text="log.time"></td>
-                    <td class="p-2 font-bold" :class="log.method === 'GET' ? 'text-blue-400' : 'text-green-400'" x-text="log.method"></td>
-                    <td class="p-2 truncate max-w-[200px]" x-text="log.path"></td>
-                    <td class="p-2" :class="log.token === 'Invalid/None' ? 'text-red-400 font-bold' : 'text-purple-400'" x-text="log.token"></td>
-                    <td class="p-2 text-[var(--muted)]" x-text="log.ip"></td>
+                  <tr class="border-b border-slate-800/40 last:border-0 hover:bg-slate-900/40 transition-colors font-mono text-xs text-slate-300">
+                    <td class="p-3.5 text-slate-400" x-text="log.time"></td>
+                    <td class="p-3.5">
+                      <span class="px-2.5 py-1 rounded-md text-[10px] font-bold tracking-wider" 
+                            :class="{
+                              'bg-blue-500/10 text-blue-400 border border-blue-500/20': log.method === 'GET',
+                              'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20': log.method === 'POST',
+                              'bg-rose-500/10 text-rose-400 border border-rose-500/20': log.method === 'DELETE',
+                              'bg-amber-500/10 text-amber-400 border border-amber-500/20': ['PUT', 'PATCH'].includes(log.method),
+                              'bg-slate-500/10 text-slate-400 border border-slate-500/20': !['GET', 'POST', 'DELETE', 'PUT', 'PATCH'].includes(log.method)
+                            }" 
+                            x-text="log.method">
+                      </span>
+                    </td>
+                    <td class="p-3.5 truncate max-w-[280px] font-medium text-slate-100" :title="log.path" x-text="log.path"></td>
+                    <td class="p-3.5">
+                      <span class="px-2 py-0.5 rounded text-[10px] font-semibold font-mono"
+                            :class="log.token === 'Invalid/None' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'"
+                            x-text="log.token">
+                      </span>
+                    </td>
+                    <td class="p-3.5 text-slate-400" x-text="log.ip"></td>
                   </tr>
                 </template>
                 <tr x-show="logs.length === 0">
-                  <td colspan="5" class="p-4 text-center text-[var(--muted)]">No logs available yet.</td>
+                  <td colspan="5" class="p-8 text-center text-slate-500">
+                    <div class="flex flex-col items-center justify-center gap-3">
+                      <i data-lucide="activity" class="w-8 h-8 text-slate-600"></i>
+                      <span>لا توجد سجلات وصول متاحة حالياً.</span>
+                    </div>
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
+
         </div>
+
       </div>
     </div>
 
-  </div>
+  </main>
 
+  <!-- Script Logic -->
   <script>
     function getCookie(name) {
       const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
@@ -266,7 +484,16 @@
             this.fetchTokens();
             this.fetchLogs();
           }
-          if (window.lucide) lucide.createIcons();
+          this.$nextTick(() => {
+            if (window.lucide) lucide.createIcons();
+          });
+          
+          // Watch tab change to re-trigger Lucide icons
+          this.$watch('tab', () => {
+            this.$nextTick(() => {
+              if (window.lucide) lucide.createIcons();
+            });
+          });
         },
         
         setTab(t) {
@@ -302,6 +529,9 @@
             if (res.ok) {
               const data = await res.json();
               this.tokens = data.data;
+              this.$nextTick(() => {
+                if (window.lucide) lucide.createIcons();
+              });
             }
           } catch (e) {}
         },
@@ -312,6 +542,9 @@
             if (res.ok) {
               const data = await res.json();
               this.logs = data.data;
+              this.$nextTick(() => {
+                if (window.lucide) lucide.createIcons();
+              });
             }
           } catch (e) {}
         },
