@@ -223,6 +223,8 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
 .tl24-blocks{position:relative;height:130px;padding:8px 0;background-image:linear-gradient(to right, rgba(255,255,255,0.025) 1px, transparent 1px);background-size:100px 100%;}
 .tl24-block{position:absolute;top:10px;height:calc(100% - 20px);border-radius:8px;padding:8px 12px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;gap:2px;font-size:11.5px;font-weight:600;overflow:hidden;transition:transform 0.15s, box-shadow 0.15s;border:1px solid rgba(255,255,255,0.08);min-width:48px;box-shadow:0 3px 10px rgba(0,0,0,0.3);}
 .tl24-block:hover{transform:translateY(-2px);}
+.tl24-block.selected-block{border-color:var(--mint);box-shadow:0 0 12px rgba(113,237,189,0.3);transform:scale(1.02);z-index:4;}
+
 .tl24-block.type-ai-show{background:linear-gradient(135deg,rgba(124,199,242,0.18),rgba(187,163,255,0.12));border-color:rgba(124,199,242,0.3);color:var(--ink);}
 .tl24-block.type-music{background:linear-gradient(135deg,rgba(113,237,189,0.18),rgba(124,199,242,0.1));border-color:rgba(113,237,189,0.3);color:var(--ink);}
 .tl24-block.type-weather{background:linear-gradient(135deg,rgba(241,189,100,0.18),rgba(243,168,179,0.1));border-color:rgba(241,189,100,0.3);color:var(--ink);}
@@ -303,17 +305,21 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
       </div>
     </div>
 
-    <div>
-      <div class="section-title" x-text="t('views')"></div>
-      <nav class="nav">
-        <template x-for="v in views" :key="v.id">
-          <button :class="tab===v.id && 'active'" @click="tab=v.id; tick()">
-            <i :data-lucide="v.icon" style="width:15px;height:15px;flex-shrink:0"></i>
-            <span x-text="t(v.id)"></span>
-          </button>
-        </template>
-      </nav>
-    </div>
+    <!-- Dynamic Labeled Group Navigation -->
+    <template x-for="g in ['onair', 'content', 'scheduling', 'channels', 'system']" :key="g">
+      <div style="margin-top:6px">
+        <div class="section-title" x-text="t('group_' + g)" style="font-size:9px; opacity:0.8; margin-bottom:4px; padding-top:4px; border-top:1px solid rgba(255,255,255,0.03);"></div>
+        <nav class="nav">
+          <template x-for="v in views.filter(x => x.group === g)" :key="v.id">
+            <button :class="tab===v.id && 'active'" @click="tab=v.id; tick()">
+              <i :data-lucide="v.icon" style="width:15px;height:15px;flex-shrink:0"></i>
+              <span x-text="t(v.id)"></span>
+            </button>
+          </template>
+        </nav>
+      </div>
+    </template>
+
 
     <div>
       <div class="section-title" x-text="t('stations')"></div>
@@ -349,6 +355,11 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
         <i :data-lucide="configured?'check-circle-2':'alert-circle'" style="width:14px;height:14px"></i>
         <span x-text="configured ? t('connected') : t('offline')"></span>
       </div>
+      <div class="pill" :class="streamStatus.type==='offline' ? 'warn' : 'ok'" x-show="active" x-cloak>
+        <span class="dot" :class="streamStatus.type!=='offline' && 'live'" style="margin-inline-end: 2px;"></span>
+        <span x-text="streamStatus.label"></span>
+      </div>
+
       <div class="pill warn" x-show="weatherData && weatherData.current && weatherData.current.temp_c" x-cloak>
         <i data-lucide="cloud-sun" style="width:14px;height:14px"></i>
         <span x-text="(weatherData?.current?.description_ar || '')+' · '+(weatherData?.current?.temp_c || '--')+'°'"></span>
@@ -648,7 +659,7 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
                   <div class="tl24-blocks" id="tl24-blocks">
                     <div class="tl24-now" :style="`left:${nowOffsetPercent()}%`"></div>
                     <template x-for="b in dayBlocks" :key="b.id">
-                      <div class="tl24-block" :class="'type-'+b.type" :style="blockStyle(b)" @click.stop="selectDayBlock(b)">
+                      <div class="tl24-block" :class="['type-'+b.type, selectedDayBlockId===b.id && 'selected-block']" :style="blockStyle(b)" @click.stop="selectDayBlock(b)">
                         <div class="block-title" x-text="getBlockIcon(b.type)+' '+b.title"></div>
                         <div class="block-time" x-text="formatBlockTime(b)"></div>
                         <button class="block-x" @click.stop="removeDayBlock(b.id)">×</button>
@@ -662,8 +673,38 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
                 </div>
               </div>
             </div>
+            <!-- BLOCK EDITOR PANEL -->
+            <template x-if="selectedDayBlockId && dayBlocks.find(b => b.id === selectedDayBlockId)">
+              <div class="pane" style="margin-top:12px; border-color:rgba(113,237,189,0.3); background:rgba(113,237,189,0.02); max-width: 600px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                  <h3 style="margin:0; font-size:13px; font-weight:700; color:var(--mint);">
+                    <span x-text="t('edit_block')"></span>: <span x-text="dayBlocks.find(b => b.id === selectedDayBlockId).title"></span>
+                  </h3>
+                  <button class="btn sm danger" @click="removeDayBlock(selectedDayBlockId)" x-text="t('delete_block')"></button>
+                </div>
+                <div class="row" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:10px;">
+                  <label style="display:grid; gap:4px; font-size:11px; color:var(--muted);">
+                    <span x-text="t('start_time')"></span>
+                    <select :value="dayBlocks.find(b => b.id === selectedDayBlockId).startHour"
+                            @change="dayBlocks.find(b => b.id === selectedDayBlockId).startHour = parseInt($event.target.value); saveBlocks();">
+                      <template x-for="h in Array.from({length: 24}, (_, i) => i)">
+                        <option :value="h" x-text="pad(h) + ':00'"></option>
+                      </template>
+                    </select>
+                  </label>
+                  <label style="display:grid; gap:4px; font-size:11px; color:var(--muted);">
+                    <span x-text="t('duration_mins')"></span>
+                    <input type="number" min="5" max="1440"
+                           :value="dayBlocks.find(b => b.id === selectedDayBlockId).durationMins"
+                           @input="dayBlocks.find(b => b.id === selectedDayBlockId).durationMins = parseInt($event.target.value) || 60; saveBlocks();"
+                           style="width: 100%;" />
+                  </label>
+                </div>
+              </div>
+            </template>
             <p class="sub" style="margin-top:8px;font-size:10.5px" x-text="t('day_builder_note')"></p>
           </div>
+
 
           <!-- WEEK GRID (existing) -->
           <div x-show="builderView==='week'" x-cloak>
@@ -1473,7 +1514,11 @@ return {
       listen_live:'استمع للبث',volume:'الصوت',delete_station:'حذف المحطة',confirm_delete_station:'تأكيد حذف المحطة؟',
       music_library_ext:'مكتبة الموسيقى الخارجية',music_library_ext_sub:'الأغاني المولّدة بـ ACE-Step / Suno — اضغط للضخ في AzuraCast',no_external_songs:'لا توجد أغانٍ خارجية — تأكد من تشغيل ACE-Step / Guide API',inject_to_az:'ضخ',injected:'تم الضخ',
       voicebox_tts:'تحويل النص لصوت',voicebox_tts_sub:'استخدم VoiceBox لتوليد فقرة صوتية وارفعها مباشرة لـ AzuraCast',voice:'الصوت',default_voice:'الصوت الافتراضي',tts_text:'النص',tts_placeholder:'اكتب الفقرة بالعربية الفصحى — مثلاً: \"مساء النور، مع برنامج موجة\"',generate_upload:'توليد ورفع',voice_uploaded:'تم رفع الفقرة الصوتية',
+      group_onair:'البث والمستمعين',group_content:'المحتوى والإنتاج',group_scheduling:'الجدولة والتحكم',group_channels:'التوزيع والتواصل',group_system:'الإعدادات والصيانة',
+      edit_block:'تعديل الفقرة',duration_mins:'المدة (بالدقائق)',delete_block:'حذف الفقرة',
+      live_dj:'بث مباشر',autodj:'بث تلقائي (AutoDJ)',
     },
+
     en:{
       views:'Views',stations:'Stations',live:'Live',media:'Media',playlists:'Playlists',schedule:'Schedule',audience:'Audience',broadcast:'Broadcast',telegram:'Telegram',studio:'Studio',setup:'Setup',dev:'Developer',add:'Add',
       studio_agents:'Agents',studio_agents_sub:'Lyric writer / QC / Suno prompts (Claude + tools)',studio_no_agents:'No agents',studio_select:'Pick an agent to edit or run',studio_input:'Input',studio_input_ph:'Song idea, verse, or line to check...',studio_run:'Run',studio_running:'Running…',studio_trace:'Tool trace',studio_new:'New',studio_name_ph:'agent name (lowercase, dashes)',saved:'Saved',deleted:'Deleted',confirm_delete:'Delete',
@@ -1519,7 +1564,11 @@ return {
       listen_live:'Listen live',volume:'Volume',delete_station:'Delete station',confirm_delete_station:'Confirm delete station?',
       music_library_ext:'External Music Library',music_library_ext_sub:'Tracks generated via ACE-Step / Suno — inject into AzuraCast',no_external_songs:'No external songs — make sure ACE-Step / Guide API is reachable',inject_to_az:'Inject',injected:'Injected',
       voicebox_tts:'Text to Speech',voicebox_tts_sub:'Use VoiceBox to generate a voice clip and upload it to AzuraCast',voice:'Voice',default_voice:'Default voice',tts_text:'Text',tts_placeholder:'Write the text in formal Arabic — e.g. \"Good evening, you\'re on Wave\"',generate_upload:'Generate & upload',voice_uploaded:'Voice clip uploaded',
+      group_onair:'On-Air & Audience',group_content:'Content & Studio',group_scheduling:'Scheduling & Control',group_channels:'Broadcasting & Social',group_system:'Settings & Dev',
+      edit_block:'Edit Block',duration_mins:'Duration (Minutes)',delete_block:'Delete Block',
+      live_dj:'Live DJ',autodj:'AutoDJ',
     },
+
   },
   t(k){return (this.i18n[this.lang]&&this.i18n[this.lang][k])||k;},
   toast(title,body,kind){
@@ -1615,7 +1664,12 @@ return {
   tick(){if(window.lucide&&window.lucide.createIcons)window.lucide.createIcons();},
   setActive(s){this.active=s;localStorage.setItem('rc_active_station',String(s.id));this.loadStation(s.id);this.streamPlaying=false;},
   get activeListenUrl(){if(!this.active||!this.mounts.length)return '';const def=this.mounts.find(m=>m.is_default)||this.mounts[0];return def && def.links && def.links.listen ? def.links.listen : `${this.baseUrl}/listen/${this.active.short_name}/radio.mp3`;},
-  get currentArt(){const n=this.nowPlayingList.find(x=>x.now_playing&&x.now_playing.song);return n && n.now_playing.song.art || null;},
+  get currentArt(){
+    if(!this.active) return null;
+    const n=this.nowPlayingList.find(x=>x.station&&x.station.id===this.active.id);
+    return (n && n.now_playing && n.now_playing.song && n.now_playing.song.art) || null;
+  },
+
   // ---- LIVE STREAM player + analyser ----
   toggleStream(){
     const a=document.getElementById('rc-audio');if(!a)return;
@@ -1818,9 +1872,31 @@ return {
   get filteredHistory(){return this._q(this.history);},
   get filteredStations(){return this._q(this.stations);},
   get totalListeners(){return this.nowPlayingList.reduce((a,n)=>a+((n.listeners&&n.listeners.current)||0),0);},
-  get currentTrack(){const n=this.nowPlayingList.find(x=>x.now_playing&&x.now_playing.song);return n&&n.now_playing.song.text;},
-  get nextTrack(){const n=this.nowPlayingList.find(x=>x.playing_next&&x.playing_next.song);return n&&n.playing_next.song.text;},
-  get currentStation(){const n=this.nowPlayingList.find(x=>x.now_playing&&x.now_playing.song);return n&&n.station&&n.station.name;},
+  get currentTrack(){
+    if(!this.active) return '';
+    const n=this.nowPlayingList.find(x=>x.station&&x.station.id===this.active.id);
+    return n&&n.now_playing&&n.now_playing.song&&n.now_playing.song.text;
+  },
+  get nextTrack(){
+    if(!this.active) return '';
+    const n=this.nowPlayingList.find(x=>x.station&&x.station.id===this.active.id);
+    return n&&n.playing_next&&n.playing_next.song&&n.playing_next.song.text;
+  },
+  get currentStation(){
+    if(!this.active) return '';
+    const n=this.nowPlayingList.find(x=>x.station&&x.station.id===this.active.id);
+    return n&&n.station&&n.station.name;
+  },
+  get streamStatus(){
+    if(!this.active) return {type:'offline', label:this.t('offline')};
+    const n=this.nowPlayingList.find(x=>x.station&&x.station.id===this.active.id);
+    if(!n || !n.is_online) return {type:'offline', label:this.t('offline')};
+    if(n.live && n.live.is_active){
+      return {type:'live', label:`${this.t('live_dj')}: ${n.live.streamer_name || 'DJ'}`};
+    }
+    return {type:'autodj', label:this.t('autodj')};
+  },
+
   toggleSelect(id){const i=this.selected.indexOf(id);if(i>=0)this.selected.splice(i,1);else this.selected.push(id);},
   toggleBulkPl(id){const i=this.bulkPlIds.indexOf(id);if(i>=0)this.bulkPlIds.splice(i,1);else this.bulkPlIds.push(id);},
   toggleScheduleDay(d){const i=this.newSchedule.days.indexOf(d);if(i>=0)this.newSchedule.days.splice(i,1);else this.newSchedule.days.push(d);},

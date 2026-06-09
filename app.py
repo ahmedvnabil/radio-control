@@ -543,7 +543,7 @@ def api_day_blocks_get(sid: int):
         return _ok([])
 
 
-@app.put("/api/v1/stations/<int:sid>/day-blocks")
+@app.route("/api/v1/stations/<int:sid>/day-blocks", methods=["POST", "PUT"])
 def api_day_blocks_put(sid: int):
     body = request.get_json(silent=True) or {}
     blocks = body.get("blocks")
