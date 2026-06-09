@@ -298,6 +298,67 @@ def api_delete_token(token_id: str):
 def api_auth_logs():
     return _ok(list(_access_logs))
 
+
+# ---------- API v1: MCP (Model Context Protocol) ------------------------------
+
+import queue
+import uuid
+
+mcp_queues = {}  # sessionId -> queue.Queue
+
+@app.get("/api/mcp/sse")
+def mcp_sse():
+    session_id = str(uuid.uuid4())
+    q = queue.Queue()
+    mcp_queues[session_id] = q
+    
+    def event_stream():
+        try:
+            # Send the endpoint URL to the client
+            yield f"event: endpoint\ndata: /api/mcp/message?sessionId={session_id}\n\n"
+            
+            while True:
+                msg = q.get()
+                if msg is None:  # Shutdown sentinel
+                    break
+                yield f"event: message\ndata: {json.dumps(msg)}\n\n"
+        except GeneratorExit:
+            pass
+        finally:
+            mcp_queues.pop(session_id, None)
+            
+    return Response(event_stream(), content_type="text/event-stream")
+
+@app.post("/api/mcp/message")
+def mcp_message():
+    session_id = request.args.get("sessionId")
+    if not session_id or session_id not in mcp_queues:
+        return jsonify({"error": "invalid session"}), 400
+        
+    req = request.get_json(silent=True) or {}
+    
+    try:
+        from mcp_server import handle_mcp_message
+        res = handle_mcp_message(req)
+        if res:
+            mcp_queues[session_id].put(res)
+    except Exception as e:
+        # Send error JSON-RPC response back
+        msg_id = req.get("id")
+        err_res = {
+            "jsonrpc": "2.0",
+            "id": msg_id,
+            "error": {
+                "code": -32603,
+                "message": f"Internal error: {str(e)}"
+            }
+        }
+        if session_id in mcp_queues:
+            mcp_queues[session_id].put(err_res)
+            
+    return "", 200
+
+
 # ---------- API v1: meta ----------------------------------------------------
 
 @app.get("/api/v1/config")
