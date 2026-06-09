@@ -323,7 +323,7 @@
         selected: null,
         lang: 'en',
         dir: 'ltr',
-        authToken: '',
+        authToken: localStorage.getItem('guide_token') || (document.cookie.match(new RegExp('(^| )guide_token=([^;]+)'))?.[2] || ''),
         
         // Try It State
         requestData: { params: {}, body: '' },

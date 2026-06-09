@@ -131,6 +131,29 @@ def _guide(method: str, path: str, **kwargs):
         return None
 
 
+# ---------- security --------------------------------------------------------
+
+@app.before_request
+def require_global_token():
+    if not GUIDE_TOKEN:
+        return  # No token configured = no auth required
+    
+    path = request.path
+    # Public paths
+    if (path.startswith("/p/") or 
+        path.startswith("/static/") or 
+        path in ("/healthz", "/docs", "/docs/raw", "/apiendpoints", "/apiendpoints/raw")):
+        return
+
+    given = request.headers.get("X-Guide-Token") or request.cookies.get("guide_token") or request.args.get("token")
+    if given != GUIDE_TOKEN:
+        if path.startswith("/api/"):
+            return jsonify({"ok": False, "error": "unauthorized", "hint": "send X-Guide-Token header or set ?token=..."}), 401
+        else:
+            return "Unauthorized. Please login via the Security tab in <a href='/docs'>/docs</a>", 401
+
+
+
 # ---------- views -----------------------------------------------------------
 
 @app.get("/")

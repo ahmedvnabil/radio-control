@@ -25,9 +25,40 @@
       display: flex;
       flex-direction: column;
     }
+    
+    .brutalist-input {
+      background: #000;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem;
+      outline: none;
+    }
+    .brutalist-input:focus {
+      border-color: var(--accent);
+    }
+    .brutalist-btn {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.1s;
+    }
+    .brutalist-btn:hover {
+      background: var(--border);
+    }
+    .brutalist-btn.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .brutalist-btn.primary:hover {
+      background: #2563eb;
+    }
   </style>
 </head>
-<body x-data="{ tab: window.location.hash.includes('list') ? 'list' : 'explorer' }">
+<body x-data="securityState()">
 
   <!-- Header & Tabs -->
   <div class="bg-[var(--panel)] border-b border-[var(--border)] flex flex-col">
@@ -36,15 +67,22 @@
       <div class="text-sm text-[var(--muted)]">Radio Control Backend</div>
     </div>
     <div class="flex px-4 gap-4">
-      <button @click="tab = 'explorer'; window.location.hash = 'explorer'" 
+      <button @click="setTab('explorer')" 
               :class="tab === 'explorer' ? 'border-b-2 border-[var(--accent)] text-white font-bold' : 'text-[var(--muted)] border-b-2 border-transparent hover:text-white'" 
               class="py-3 px-2 transition-colors">
         تجربة وإرسال الطلبات (Explorer)
       </button>
-      <button @click="tab = 'list'; window.location.hash = 'list'" 
+      <button @click="setTab('list')" 
               :class="tab === 'list' ? 'border-b-2 border-[var(--accent)] text-white font-bold' : 'text-[var(--muted)] border-b-2 border-transparent hover:text-white'" 
               class="py-3 px-2 transition-colors">
         قائمة الـ Endpoints مفصلة
+      </button>
+      <button @click="setTab('security')" 
+              :class="tab === 'security' ? 'border-b-2 border-red-500 text-white font-bold' : 'text-[var(--muted)] border-b-2 border-transparent hover:text-white'" 
+              class="py-3 px-2 transition-colors flex items-center gap-2">
+        <span>الأمان والصلاحيات</span>
+        <span x-show="hasToken" class="w-2 h-2 rounded-full bg-green-500"></span>
+        <span x-show="!hasToken" class="w-2 h-2 rounded-full bg-red-500"></span>
       </button>
     </div>
   </div>
@@ -53,7 +91,102 @@
   <div class="flex-1 overflow-hidden relative">
     <iframe x-show="tab === 'explorer'" src="/docs/raw" class="absolute inset-0 w-full h-full border-0"></iframe>
     <iframe x-show="tab === 'list'" src="/apiendpoints/raw" class="absolute inset-0 w-full h-full border-0"></iframe>
+    
+    <div x-show="tab === 'security'" class="absolute inset-0 w-full h-full overflow-y-auto p-8" style="display: none;">
+      <div class="max-w-2xl mx-auto space-y-8">
+        
+        <div>
+          <h2 class="text-2xl font-bold mb-2">إدارة الحماية والتصاريح (Tokens)</h2>
+          <p class="text-[var(--muted)]">لوحة التحكم والـ API محميان بالكامل ولا يسمحان بأي طلبات خارجية إلا بوجود توكن صحيح.</p>
+        </div>
+
+        <!-- Cookie Login Form -->
+        <div class="bg-[var(--panel)] border border-[var(--border)] rounded p-6">
+          <h3 class="text-lg font-bold mb-4">تسجيل الدخول للمتصفح الحالي</h3>
+          <p class="text-sm text-[var(--muted)] mb-4">
+            قم بإدخال التوكن (GUIDE_TOKEN) هنا. سيتم حفظه كـ Cookie في متصفحك لكي تستطيع استخدام لوحة التحكم الرئيسية وتجربة الطلبات بدون الحاجة لكتابته كل مرة.
+          </p>
+          
+          <div class="flex gap-2">
+            <input type="password" x-model="tokenInput" placeholder="أدخل التوكن هنا..." class="brutalist-input flex-1 font-mono text-sm" dir="ltr">
+            <button @click="saveToken" class="brutalist-btn primary">حفظ وتفعيل</button>
+            <button @click="clearToken" class="brutalist-btn text-red-400 border-red-900 hover:bg-red-900/30">تسجيل خروج</button>
+          </div>
+
+          <div x-show="msg" class="mt-4 p-3 text-sm rounded bg-green-900/30 text-green-400 border border-green-900" x-text="msg"></div>
+        </div>
+
+        <!-- Examples for External Calls -->
+        <div class="bg-[var(--panel)] border border-[var(--border)] rounded p-6">
+          <h3 class="text-lg font-bold mb-4">كيفية مناداة الـ API من الخارج (External Apps)</h3>
+          <p class="text-sm text-[var(--muted)] mb-4">
+            للتطبيقات الخارجية، يمكنك تمرير التوكن بإحدى طريقتين:
+          </p>
+          
+          <div class="space-y-4 text-sm font-mono" dir="ltr">
+            <div>
+              <div class="text-[var(--muted)] mb-1 uppercase text-xs">1. Via HTTP Header (Recommended)</div>
+              <div class="bg-[#000] border border-[var(--border)] p-3 text-green-400 rounded">
+                curl -H "X-Guide-Token: YOUR_TOKEN" https://studio.naromx.org/api/v1/config
+              </div>
+            </div>
+            
+            <div>
+              <div class="text-[var(--muted)] mb-1 uppercase text-xs">2. Via URL Query Parameter</div>
+              <div class="bg-[#000] border border-[var(--border)] p-3 text-blue-400 rounded">
+                curl "https://studio.naromx.org/api/v1/config?token=YOUR_TOKEN"
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </div>
 
+  <script>
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      if (match) return match[2];
+      return null;
+    }
+
+    function securityState() {
+      const hash = window.location.hash.replace('#', '') || 'explorer';
+      
+      return {
+        tab: ['explorer', 'list', 'security'].includes(hash) ? hash : 'explorer',
+        tokenInput: getCookie('guide_token') || '',
+        hasToken: !!getCookie('guide_token'),
+        msg: '',
+        
+        setTab(t) {
+          this.tab = t;
+          window.location.hash = t;
+        },
+
+        saveToken() {
+          if (!this.tokenInput) return;
+          // Set cookie for 30 days, root path
+          document.cookie = `guide_token=${this.tokenInput}; path=/; max-age=${30 * 24 * 60 * 60}; samesite=Lax`;
+          this.hasToken = true;
+          this.msg = 'تم حفظ التوكن في المتصفح بنجاح! يمكنك الآن استخدام التطبيق بحرية.';
+          setTimeout(() => this.msg = '', 4000);
+          
+          // Also set it in localStorage for the api-explorer iframe to pick up if it wants
+          localStorage.setItem('guide_token', this.tokenInput);
+        },
+        
+        clearToken() {
+          document.cookie = 'guide_token=; path=/; max-age=0';
+          this.tokenInput = '';
+          this.hasToken = false;
+          localStorage.removeItem('guide_token');
+          this.msg = 'تم حذف التوكن وتسجيل الخروج.';
+          setTimeout(() => this.msg = '', 4000);
+        }
+      }
+    }
+  </script>
 </body>
 </html>
