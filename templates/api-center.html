@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>API Center - Radio Control</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #1a1d24;
+      --border: #2d3139;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #3b82f6;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans Arabic', sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</head>
+<body x-data="{ tab: window.location.hash.includes('list') ? 'list' : 'explorer' }">
+
+  <!-- Header & Tabs -->
+  <div class="bg-[var(--panel)] border-b border-[var(--border)] flex flex-col">
+    <div class="p-4 border-b border-[var(--border)] flex items-center justify-between">
+      <h1 class="text-xl font-bold">مركز تحكم الـ API</h1>
+      <div class="text-sm text-[var(--muted)]">Radio Control Backend</div>
+    </div>
+    <div class="flex px-4 gap-4">
+      <button @click="tab = 'explorer'; window.location.hash = 'explorer'" 
+              :class="tab === 'explorer' ? 'border-b-2 border-[var(--accent)] text-white font-bold' : 'text-[var(--muted)] border-b-2 border-transparent hover:text-white'" 
+              class="py-3 px-2 transition-colors">
+        تجربة وإرسال الطلبات (Explorer)
+      </button>
+      <button @click="tab = 'list'; window.location.hash = 'list'" 
+              :class="tab === 'list' ? 'border-b-2 border-[var(--accent)] text-white font-bold' : 'text-[var(--muted)] border-b-2 border-transparent hover:text-white'" 
+              class="py-3 px-2 transition-colors">
+        قائمة الـ Endpoints مفصلة
+      </button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="flex-1 overflow-hidden relative">
+    <iframe x-show="tab === 'explorer'" src="/docs/raw" class="absolute inset-0 w-full h-full border-0"></iframe>
+    <iframe x-show="tab === 'list'" src="/apiendpoints/raw" class="absolute inset-0 w-full h-full border-0"></iframe>
+  </div>
+
+</body>
+</html>

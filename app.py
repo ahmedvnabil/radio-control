@@ -150,12 +150,25 @@ def public_player(station_short: str) -> str:
 
 @app.get("/docs")
 def api_docs() -> str:
+    # Serves the combined tabbed view
+    return render_template("api-center.html")
+
+@app.get("/docs/raw")
+def api_docs_raw() -> str:
+    # Serves the interactive explorer
     return render_template("api-explorer.html")
 
 
-@app.get("/apiendpoints")
-def api_endpoints_list() -> str:
+@app.get("/apiendpoints/raw")
+def api_endpoints_list_raw() -> str:
+    # Serves the generated list
     return render_template("apiendpoints.html")
+
+@app.get("/apiendpoints")
+def api_endpoints_redirect():
+    # Redirect legacy URL to the new combined view
+    from flask import redirect
+    return redirect("/docs#list")
 
 
 @app.get("/healthz")
