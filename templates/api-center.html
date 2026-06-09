@@ -5,6 +5,7 @@
   <title>API Center - Radio Control</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
       --bg: #0f1115;
@@ -93,50 +94,134 @@
     <iframe x-show="tab === 'list'" src="/apiendpoints/raw" class="absolute inset-0 w-full h-full border-0"></iframe>
     
     <div x-show="tab === 'security'" class="absolute inset-0 w-full h-full overflow-y-auto p-8" style="display: none;">
-      <div class="max-w-2xl mx-auto space-y-8">
+      <div class="max-w-4xl mx-auto space-y-8">
         
         <div>
           <h2 class="text-2xl font-bold mb-2">إدارة الحماية والتصاريح (Tokens)</h2>
           <p class="text-[var(--muted)]">لوحة التحكم والـ API محميان بالكامل ولا يسمحان بأي طلبات خارجية إلا بوجود توكن صحيح.</p>
         </div>
 
-        <!-- Cookie Login Form -->
-        <div class="bg-[var(--panel)] border border-[var(--border)] rounded p-6">
-          <h3 class="text-lg font-bold mb-4">تسجيل الدخول للمتصفح الحالي</h3>
-          <p class="text-sm text-[var(--muted)] mb-4">
-            قم بإدخال التوكن (GUIDE_TOKEN) هنا. سيتم حفظه كـ Cookie في متصفحك لكي تستطيع استخدام لوحة التحكم الرئيسية وتجربة الطلبات بدون الحاجة لكتابته كل مرة.
-          </p>
-          
-          <div class="flex gap-2">
-            <input type="password" x-model="tokenInput" placeholder="أدخل التوكن هنا..." class="brutalist-input flex-1 font-mono text-sm" dir="ltr">
-            <button @click="saveToken" class="brutalist-btn primary">حفظ وتفعيل</button>
-            <button @click="clearToken" class="brutalist-btn text-red-400 border-red-900 hover:bg-red-900/30">تسجيل خروج</button>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Cookie Login Form -->
+          <div class="bg-[var(--panel)] border border-[var(--border)] rounded p-6 h-fit">
+            <h3 class="text-lg font-bold mb-4">تسجيل الدخول للمتصفح الحالي</h3>
+            <p class="text-sm text-[var(--muted)] mb-4">
+              قم بإدخال الـ Token هنا لفتح الصلاحيات لك في هذا المتصفح.
+            </p>
+            
+            <div class="flex gap-2">
+              <input type="password" x-model="tokenInput" placeholder="أدخل التوكن هنا..." class="brutalist-input flex-1 font-mono text-sm" dir="ltr">
+              <button @click="saveToken" class="brutalist-btn primary">حفظ وتفعيل</button>
+              <button @click="clearToken" class="brutalist-btn text-red-400 border-red-900 hover:bg-red-900/30">تسجيل خروج</button>
+            </div>
+
+            <div x-show="msg" class="mt-4 p-3 text-sm rounded bg-green-900/30 text-green-400 border border-green-900" x-text="msg"></div>
           </div>
 
-          <div x-show="msg" class="mt-4 p-3 text-sm rounded bg-green-900/30 text-green-400 border border-green-900" x-text="msg"></div>
+          <!-- Examples for External Calls -->
+          <div class="bg-[var(--panel)] border border-[var(--border)] rounded p-6 h-fit">
+            <h3 class="text-lg font-bold mb-4">كيفية الاستخدام في التطبيقات الخارجية</h3>
+            <p class="text-sm text-[var(--muted)] mb-4">قم بتمرير التوكن بإحدى طريقتين:</p>
+            <div class="space-y-4 text-sm font-mono" dir="ltr">
+              <div>
+                <div class="text-[var(--muted)] mb-1 uppercase text-xs">1. Via HTTP Header (Recommended)</div>
+                <div class="bg-[#000] border border-[var(--border)] p-3 text-green-400 rounded">curl -H "X-Guide-Token: sk_..." https://studio.naromx.org/api/v1/config</div>
+              </div>
+              <div>
+                <div class="text-[var(--muted)] mb-1 uppercase text-xs">2. Via URL Query Parameter</div>
+                <div class="bg-[#000] border border-[var(--border)] p-3 text-blue-400 rounded">curl "https://studio.naromx.org/api/v1/config?token=sk_..."</div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- Examples for External Calls -->
-        <div class="bg-[var(--panel)] border border-[var(--border)] rounded p-6">
-          <h3 class="text-lg font-bold mb-4">كيفية مناداة الـ API من الخارج (External Apps)</h3>
-          <p class="text-sm text-[var(--muted)] mb-4">
-            للتطبيقات الخارجية، يمكنك تمرير التوكن بإحدى طريقتين:
-          </p>
-          
-          <div class="space-y-4 text-sm font-mono" dir="ltr">
+        <!-- Token Management -->
+        <div class="bg-[var(--panel)] border border-[var(--border)] rounded p-6" x-show="hasToken">
+          <div class="flex justify-between items-center mb-6">
             <div>
-              <div class="text-[var(--muted)] mb-1 uppercase text-xs">1. Via HTTP Header (Recommended)</div>
-              <div class="bg-[#000] border border-[var(--border)] p-3 text-green-400 rounded">
-                curl -H "X-Guide-Token: YOUR_TOKEN" https://studio.naromx.org/api/v1/config
-              </div>
+              <h3 class="text-lg font-bold mb-1">صلاحيات التطبيقات الخارجية (API Tokens)</h3>
+              <p class="text-sm text-[var(--muted)]">يمكنك هنا توليد توكنز مخصصة لكل إضافة أو سكريبت لتتمكن من إيقافها متى شئت.</p>
             </div>
-            
+            <button @click="createToken()" class="brutalist-btn primary flex items-center gap-2">
+              <i data-lucide="plus" class="w-4 h-4"></i> توليد توكن جديد
+            </button>
+          </div>
+
+          <div x-show="newTokenObj" class="mb-6 p-4 border border-green-500 bg-green-900/20 rounded">
+            <h4 class="font-bold text-green-400 mb-2">تم إنشاء التوكن بنجاح! انسخه الآن فلن يظهر مجدداً:</h4>
+            <div class="flex items-center gap-2">
+              <input type="text" readonly :value="newTokenObj?.token" class="brutalist-input flex-1 font-mono text-green-400" dir="ltr">
+              <button @click="navigator.clipboard.writeText(newTokenObj.token); alert('Copied!')" class="brutalist-btn">نسخ</button>
+            </div>
+          </div>
+
+          <table class="w-full text-left text-sm brutalist-border" dir="ltr">
+            <thead class="bg-[var(--bg)] border-b border-[var(--border)]">
+              <tr>
+                <th class="p-3">Name</th>
+                <th class="p-3">Prefix</th>
+                <th class="p-3">Created</th>
+                <th class="p-3">Last Used</th>
+                <th class="p-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="t in tokens" :key="t.id">
+                <tr class="border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg)]">
+                  <td class="p-3 font-bold" x-text="t.name"></td>
+                  <td class="p-3 font-mono text-[var(--muted)]" x-text="t.prefix"></td>
+                  <td class="p-3 text-[var(--muted)]" x-text="new Date(t.created_at).toLocaleString()"></td>
+                  <td class="p-3 text-[var(--muted)]" x-text="t.last_used ? new Date(t.last_used).toLocaleString() : 'Never'"></td>
+                  <td class="p-3">
+                    <button @click="revokeToken(t.id)" class="text-red-400 hover:text-red-300 font-bold px-2 py-1 bg-red-900/20 rounded">Revoke</button>
+                  </td>
+                </tr>
+              </template>
+              <tr x-show="tokens.length === 0">
+                <td colspan="5" class="p-4 text-center text-[var(--muted)]">No tokens generated yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Live Access Logs -->
+        <div class="bg-[var(--panel)] border border-[var(--border)] rounded p-6" x-show="hasToken">
+          <div class="flex justify-between items-center mb-6">
             <div>
-              <div class="text-[var(--muted)] mb-1 uppercase text-xs">2. Via URL Query Parameter</div>
-              <div class="bg-[#000] border border-[var(--border)] p-3 text-blue-400 rounded">
-                curl "https://studio.naromx.org/api/v1/config?token=YOUR_TOKEN"
-              </div>
+              <h3 class="text-lg font-bold mb-1">سجل الوصول الحي (Access Logs)</h3>
+              <p class="text-sm text-[var(--muted)]">سجل بآخر 200 طلب لـ API السيرفر، يوضح من دخل وأي توكن استخدم.</p>
             </div>
+            <button @click="fetchLogs()" class="brutalist-btn flex items-center gap-2">
+              <i data-lucide="refresh-cw" class="w-4 h-4"></i> تحديث السجل
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm brutalist-border" dir="ltr">
+              <thead class="bg-[var(--bg)] border-b border-[var(--border)]">
+                <tr>
+                  <th class="p-3">Time (UTC)</th>
+                  <th class="p-3">Method</th>
+                  <th class="p-3">Path</th>
+                  <th class="p-3">Token Used</th>
+                  <th class="p-3">IP</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template x-for="log in logs">
+                  <tr class="border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg)] font-mono text-xs">
+                    <td class="p-2 text-[var(--muted)]" x-text="log.time"></td>
+                    <td class="p-2 font-bold" :class="log.method === 'GET' ? 'text-blue-400' : 'text-green-400'" x-text="log.method"></td>
+                    <td class="p-2 truncate max-w-[200px]" x-text="log.path"></td>
+                    <td class="p-2" :class="log.token === 'Invalid/None' ? 'text-red-400 font-bold' : 'text-purple-400'" x-text="log.token"></td>
+                    <td class="p-2 text-[var(--muted)]" x-text="log.ip"></td>
+                  </tr>
+                </template>
+                <tr x-show="logs.length === 0">
+                  <td colspan="5" class="p-4 text-center text-[var(--muted)]">No logs available yet.</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
@@ -156,9 +241,21 @@
       
       return {
         tab: ['explorer', 'list', 'security'].includes(hash) ? hash : 'explorer',
-        tokenInput: getCookie('guide_token') || '',
-        hasToken: !!getCookie('guide_token'),
+        tokenInput: getCookie('guide_token') || localStorage.getItem('guide_token') || '',
+        hasToken: !!(getCookie('guide_token') || localStorage.getItem('guide_token')),
         msg: '',
+        
+        tokens: [],
+        logs: [],
+        newTokenObj: null,
+
+        init() {
+          if (this.hasToken) {
+            this.fetchTokens();
+            this.fetchLogs();
+          }
+          if (window.lucide) lucide.createIcons();
+        },
         
         setTab(t) {
           this.tab = t;
@@ -167,14 +264,13 @@
 
         saveToken() {
           if (!this.tokenInput) return;
-          // Set cookie for 30 days, root path
           document.cookie = `guide_token=${this.tokenInput}; path=/; max-age=${30 * 24 * 60 * 60}; samesite=Lax`;
+          localStorage.setItem('guide_token', this.tokenInput);
           this.hasToken = true;
           this.msg = 'تم حفظ التوكن في المتصفح بنجاح! يمكنك الآن استخدام التطبيق بحرية.';
           setTimeout(() => this.msg = '', 4000);
-          
-          // Also set it in localStorage for the api-explorer iframe to pick up if it wants
-          localStorage.setItem('guide_token', this.tokenInput);
+          this.fetchTokens();
+          this.fetchLogs();
         },
         
         clearToken() {
@@ -183,7 +279,59 @@
           this.hasToken = false;
           localStorage.removeItem('guide_token');
           this.msg = 'تم حذف التوكن وتسجيل الخروج.';
+          this.tokens = [];
+          this.logs = [];
           setTimeout(() => this.msg = '', 4000);
+        },
+
+        async fetchTokens() {
+          try {
+            const res = await fetch('/api/v1/auth/tokens', { headers: { 'X-Guide-Token': this.tokenInput } });
+            if (res.ok) {
+              const data = await res.json();
+              this.tokens = data.data;
+            }
+          } catch (e) {}
+        },
+
+        async fetchLogs() {
+          try {
+            const res = await fetch('/api/v1/auth/logs', { headers: { 'X-Guide-Token': this.tokenInput } });
+            if (res.ok) {
+              const data = await res.json();
+              this.logs = data.data;
+            }
+          } catch (e) {}
+        },
+
+        async createToken() {
+          const name = prompt("What is the name of the plugin/app this token is for?");
+          if (!name) return;
+          try {
+            const res = await fetch('/api/v1/auth/tokens', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-Guide-Token': this.tokenInput },
+              body: JSON.stringify({ name })
+            });
+            if (res.ok) {
+              const data = await res.json();
+              this.newTokenObj = data.data;
+              this.fetchTokens();
+            }
+          } catch (e) {}
+        },
+
+        async revokeToken(id) {
+          if (!confirm("Are you sure you want to revoke this token? Any plugins using it will instantly fail.")) return;
+          try {
+            const res = await fetch(`/api/v1/auth/tokens/${id}`, {
+              method: 'DELETE',
+              headers: { 'X-Guide-Token': this.tokenInput }
+            });
+            if (res.ok) {
+              this.fetchTokens();
+            }
+          } catch (e) {}
         }
       }
     }

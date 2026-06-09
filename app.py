@@ -7,11 +7,15 @@ Keeps the AzuraCast API key on the server. Frontend talks only to this app's
 from __future__ import annotations
 
 import base64
+import collections
 import json
 import logging
 import os
+import secrets
 import threading
 import time
+import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from urllib.parse import urljoin
@@ -133,25 +137,74 @@ def _guide(method: str, path: str, **kwargs):
 
 # ---------- security --------------------------------------------------------
 
+TOKENS_FILE = Path("agents/api-tokens.json")
+_access_logs = collections.deque(maxlen=200)
+
+def _load_tokens() -> list[dict]:
+    if not TOKENS_FILE.exists():
+        return []
+    try:
+        return json.loads(TOKENS_FILE.read_text(encoding="utf-8"))
+    except Exception:
+        return []
+
+def _save_tokens(tokens: list[dict]) -> None:
+    TOKENS_FILE.write_text(json.dumps(tokens, indent=2, ensure_ascii=False), encoding="utf-8")
+
+def _validate_token(given: str) -> tuple[bool, str]:
+    if not given:
+        return False, ""
+    if GUIDE_TOKEN and given == GUIDE_TOKEN:
+        return True, "Master Token"
+    tokens = _load_tokens()
+    for t in tokens:
+        if t.get("token") == given:
+            t["last_used"] = datetime.now(timezone.utc).isoformat()
+            _save_tokens(tokens)
+            return True, t.get("name", "Unknown Plugin")
+    return False, ""
+
 @app.before_request
 def require_global_token():
-    if not GUIDE_TOKEN:
-        return  # No token configured = no auth required
-    
     path = request.path
-    # Public paths
-    if (path.startswith("/p/") or 
-        path.startswith("/static/") or 
-        path in ("/healthz", "/docs", "/docs/raw", "/apiendpoints", "/apiendpoints/raw")):
+    
+    # Allow CORS preflight and public paths
+    if request.method == "OPTIONS":
+        return
+        
+    public_paths = ("/p/", "/static/", "/healthz", "/docs", "/apiendpoints")
+    if any(path.startswith(p) for p in public_paths) or path == "/docs/raw" or path == "/apiendpoints/raw":
+        return
+
+    # If NO token is configured globally (for local dev) and no tokens exist, allow all
+    if not GUIDE_TOKEN and not _load_tokens():
         return
 
     given = request.headers.get("X-Guide-Token") or request.cookies.get("guide_token") or request.args.get("token")
-    if given != GUIDE_TOKEN:
+    is_valid, token_name = _validate_token(given)
+
+    if not is_valid:
+        _access_logs.appendleft({
+            "time": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC"),
+            "method": request.method,
+            "path": path,
+            "token": "Invalid/None",
+            "ip": request.remote_addr or ""
+        })
         if path.startswith("/api/"):
             return jsonify({"ok": False, "error": "unauthorized", "hint": "send X-Guide-Token header or set ?token=..."}), 401
         else:
             return "Unauthorized. Please login via the Security tab in <a href='/docs'>/docs</a>", 401
 
+    # Log successful API request
+    if path.startswith("/api/"):
+        _access_logs.appendleft({
+            "time": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC"),
+            "method": request.method,
+            "path": path,
+            "token": token_name,
+            "ip": request.remote_addr or ""
+        })
 
 
 # ---------- views -----------------------------------------------------------
@@ -198,6 +251,52 @@ def api_endpoints_redirect():
 def healthz() -> tuple[Response, int]:
     return jsonify({"ok": True}), 200
 
+
+# ---------- API v1: Auth & Tokens -------------------------------------------
+
+@app.get("/api/v1/auth/tokens")
+def api_list_tokens():
+    tokens = _load_tokens()
+    # Mask the actual tokens except the first few characters for security
+    safe_tokens = [
+        {
+            "id": t["id"],
+            "name": t.get("name", "Unnamed"),
+            "prefix": t["token"][:5] + "...",
+            "created_at": t.get("created_at"),
+            "last_used": t.get("last_used")
+        } for t in tokens
+    ]
+    return _ok(safe_tokens)
+
+@app.post("/api/v1/auth/tokens")
+def api_create_token():
+    body = request.get_json(silent=True) or {}
+    name = body.get("name", "Unnamed Plugin").strip()
+    tokens = _load_tokens()
+    new_token = {
+        "id": "tkn_" + secrets.token_hex(6),
+        "name": name,
+        "token": "sk_" + secrets.token_urlsafe(32),
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "last_used": None
+    }
+    tokens.append(new_token)
+    _save_tokens(tokens)
+    return _ok(new_token)  # Send the full token ONLY once on creation
+
+@app.delete("/api/v1/auth/tokens/<token_id>")
+def api_delete_token(token_id: str):
+    tokens = _load_tokens()
+    new_tokens = [t for t in tokens if t["id"] != token_id]
+    if len(tokens) == len(new_tokens):
+        return _err("Token not found", "NOT_FOUND", 404)
+    _save_tokens(new_tokens)
+    return _ok({"deleted": True})
+
+@app.get("/api/v1/auth/logs")
+def api_auth_logs():
+    return _ok(list(_access_logs))
 
 # ---------- API v1: meta ----------------------------------------------------
 
