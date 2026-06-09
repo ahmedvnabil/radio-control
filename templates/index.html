@@ -7,8 +7,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap">
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
 <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+<link rel="stylesheet" href="https://unpkg.com/tippy.js@6/animations/scale.css" />
+<script src="https://bernardo-castilho.github.io/DragDropTouch/DragDropTouch.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="{{ url_for('static', filename='zzfx.js') }}"></script>
 <script src="{{ url_for('static', filename='ident-studio.js') }}"></script>
@@ -1235,7 +1241,7 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
           </div>
 
           <!-- Monthly Grid Calendar (Conditional) -->
-          <div x-show="showFullCalendar" style="background: rgba(0, 0, 0, 0.25); border-radius: 12px; padding: 18px; border: 1px solid var(--line-2); margin-bottom: 25px; display: none;">
+          <div x-show="showFullCalendar" x-collapse style="background: rgba(0, 0, 0, 0.25); border-radius: 12px; padding: 18px; border: 1px solid var(--line-2); margin-bottom: 25px; display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
               <button class="btn" style="padding: 4px 10px; font-size: 12px;" @click="prevMonth()">◀ السابق</button>
               <span style="font-weight: 700; font-size: 15px; color: var(--mint);" x-text="getCurrentMonthName()"></span>
@@ -1387,7 +1393,7 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
           </div>
           
           <!-- HOME ADD BLOCK PANEL -->
-          <template x-if="showAddBlockHome">
+          <div x-show="showAddBlockHome" x-collapse>
             <div class="pane" style="margin-top:12px; border: 2px dashed rgba(113,237,189,0.3); background:rgba(113,237,189,0.02); max-width: 600px;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <h3 style="margin:0; font-size:14px; font-weight:700; color:var(--mint); display:flex; align-items:center; gap:8px;"><i data-lucide="plus-square" style="width:16px;height:16px;"></i> <span x-text="t('add_block')"></span></h3>
@@ -1680,10 +1686,10 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
               </div>
 
             </div>
-          </template>
+          </div>
           
           <!-- BLOCK EDITOR PANEL (shared editor) -->
-          <template x-if="selectedBlock">
+          <div x-show="selectedBlock" x-collapse>
             <div class="pane" style="margin-top:12px; border-color:rgba(113,237,189,0.3); background:rgba(113,237,189,0.02); max-width: 600px;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <h3 style="margin:0; font-size:13px; font-weight:700; color:var(--mint);">
@@ -1710,7 +1716,7 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
                 </label>
               </div>
             </div>
-          </template>
+          </div>
         </div>
 
         <!-- ===== STUDIO SPLIT WORKSPACE ===== -->
@@ -3582,6 +3588,30 @@ return {
       document.querySelectorAll('.sec-wrap').forEach(el => el.classList.remove('drag-over'));
     });
     
+    // Initialize Tippy tooltips globally via delegation
+    if (typeof tippy !== 'undefined') {
+      tippy.delegate('body', {
+        target: '[title]',
+        animation: 'scale',
+        theme: 'translucent',
+        delay: [200, 0],
+        onShow(instance) {
+          const title = instance.reference.getAttribute('title');
+          if (title) {
+            instance.setContent(title);
+            instance.reference.removeAttribute('title');
+            instance.reference.setAttribute('data-tippy-title', title);
+          }
+        },
+        onHidden(instance) {
+          const title = instance.reference.getAttribute('data-tippy-title');
+          if (title) {
+            instance.reference.setAttribute('title', title);
+            instance.reference.removeAttribute('data-tippy-title');
+          }
+        }
+      });
+    }
     // Initialize target date as tomorrow YYYY-MM-DD
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
