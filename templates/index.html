@@ -675,6 +675,149 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
   color: var(--ink-2);
   cursor: pointer;
 }
+
+/* Progress Wizard */
+.wizard-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  gap: 4px;
+}
+.wizard-step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  transition: all 0.25s ease;
+}
+.wizard-step.active {
+  color: var(--mint);
+  text-shadow: 0 0 8px rgba(113, 237, 189, 0.3);
+}
+.wizard-step.completed {
+  color: var(--ink-2);
+}
+.wizard-step-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  transition: all 0.25s ease;
+}
+.wizard-step.active .wizard-step-dot {
+  border-color: var(--mint);
+  background: rgba(113, 237, 189, 0.1);
+  color: var(--mint);
+}
+.wizard-step.completed .wizard-step-dot {
+  border-color: var(--mint);
+  background: var(--mint);
+  color: #11231d;
+}
+.wizard-arrow {
+  color: var(--line-2);
+  display: flex;
+  align-items: center;
+}
+
+/* EQ Music Visualizer */
+.eq-visualizer {
+  display: flex;
+  align-items: flex-end;
+  gap: 2.5px;
+  width: 20px;
+  height: 14px;
+  flex-shrink: 0;
+}
+.eq-bar {
+  width: 2.5px;
+  background: var(--mint);
+  border-radius: 1px;
+  animation: bounce-eq 0.8s ease-in-out infinite alternate;
+}
+.eq-bar:nth-child(1) { animation-duration: 0.6s; }
+.eq-bar:nth-child(2) { animation-duration: 0.9s; animation-delay: 0.15s; }
+.eq-bar:nth-child(3) { animation-duration: 0.7s; animation-delay: 0.3s; }
+.eq-bar:nth-child(4) { animation-duration: 0.5s; animation-delay: 0.05s; }
+@keyframes bounce-eq {
+  0% { height: 2px; }
+  100% { height: 12px; }
+}
+
+/* Weather Visualizer */
+.weather-visualizer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  position: relative;
+  flex-shrink: 0;
+}
+.weather-sun {
+  color: var(--amber);
+  animation: rotate-sun 8s linear infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@keyframes rotate-sun {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Voice Visualizer */
+.voice-visualizer {
+  display: flex;
+  align-items: center;
+  gap: 2.5px;
+  height: 14px;
+  flex-shrink: 0;
+}
+.voice-wave {
+  width: 2px;
+  background: var(--rose);
+  border-radius: 1px;
+  animation: voice-pulse 1.2s ease-in-out infinite alternate;
+}
+.voice-wave:nth-child(1) { height: 6px; animation-delay: 0.1s; }
+.voice-wave:nth-child(2) { height: 12px; animation-delay: 0.3s; }
+.voice-wave:nth-child(3) { height: 8px; animation-delay: 0.5s; }
+.voice-wave:nth-child(4) { height: 4px; animation-delay: 0.2s; }
+@keyframes voice-pulse {
+  0% { transform: scaleY(0.6); }
+  100% { transform: scaleY(1.4); }
+}
+
+/* AI Show Visualizer */
+.ai-visualizer {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(187,163,255,0.4) 0%, rgba(187,163,255,0) 75%);
+  border: 1.5px solid var(--violet);
+  box-shadow: 0 0 6px var(--violet);
+  animation: ai-pulse 2s infinite ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+@keyframes ai-pulse {
+  0%, 100% { transform: scale(0.9); box-shadow: 0 0 4px var(--violet); }
+  50% { transform: scale(1.15); box-shadow: 0 0 10px var(--violet); }
+}
 </style>
 </head>
 <body>
@@ -1066,17 +1209,79 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
                 <h3 style="margin:0; font-size:13px; font-weight:700; color:var(--mint);" x-text="t('add_block')"></h3>
                 <button class="btn sm" @click="showAddBlockHome=false" x-text="t('cancel')"></button>
               </div>
-              <div class="row" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:10px;">
-                <label style="display:grid; gap:4px; font-size:11px; color:var(--muted);">
-                  <span x-text="t('type')"></span>
-                  <select x-model="newHomeBlock.type" @change="newHomeBlock.title = newHomeBlock.type === 'weather' ? t('weather_block') : ''">
-                    <option value="music" x-text="t('media')"></option>
-                    <option value="weather" x-text="t('weather')"></option>
-                    <option value="voice" x-text="t('voices')"></option>
-                    <option value="ai-show" x-text="t('playlists')"></option>
-                  </select>
-                </label>
+
+              <!-- Step-by-Step Interactive Wizard Progress Path -->
+              <div class="wizard-container" x-data="{
+                get step2Done() {
+                  return (newHomeBlock.type === 'weather' || 
+                         ((newHomeBlock.type === 'music' || newHomeBlock.type === 'ai-show') && newHomeBlock.playlist_id !== '') || 
+                         (newHomeBlock.type === 'voice' && newHomeBlock.voice_id !== ''));
+                }
+              }">
+                <!-- Step 1: Type -->
+                <div class="wizard-step completed">
+                  <span class="wizard-step-dot">✓</span>
+                  <span x-text="t('step_type')"></span>
+                </div>
+                <div class="wizard-arrow">→</div>
                 
+                <!-- Step 2: Source -->
+                <div class="wizard-step" :class="step2Done ? 'completed' : 'active'">
+                  <span class="wizard-step-dot" x-text="step2Done ? '✓' : '2'"></span>
+                  <span x-text="t('step_source')"></span>
+                </div>
+                <div class="wizard-arrow">→</div>
+                
+                <!-- Step 3: Time -->
+                <div class="wizard-step" :class="step2Done ? 'active' : ''">
+                  <span class="wizard-step-dot">3</span>
+                  <span x-text="t('step_time')"></span>
+                </div>
+                <div class="wizard-arrow">→</div>
+                
+                <!-- Step 4: Save -->
+                <div class="wizard-step" :class="step2Done ? 'active' : ''">
+                  <span class="wizard-step-dot">4</span>
+                  <span x-text="t('step_confirm')"></span>
+                </div>
+              </div>
+              
+              <!-- Visual Card Type Selection -->
+              <div style="margin-bottom:12px;">
+                <span style="font-size:11px; color:var(--muted); display:block; margin-bottom:4px;" x-text="t('type')"></span>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 6px;">
+                  <!-- Music Card -->
+                  <button type="button" @click="newHomeBlock.type = 'music'; newHomeBlock.title = ''; newHomeBlock.playlist_id = '';" 
+                          :style="newHomeBlock.type === 'music' ? 'border-color:var(--mint); background:rgba(113,237,189,0.08); box-shadow: 0 0 10px rgba(113,237,189,0.1);' : 'border-color:var(--line-2); background:rgba(255,255,255,0.01);'" 
+                          style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px; border:1px solid; border-radius:8px; gap:6px; cursor:pointer; transition:all 0.2s;">
+                    <i data-lucide="music" :style="newHomeBlock.type === 'music' ? 'color:var(--mint)' : 'color:var(--muted)'" style="width:16px; height:16px;"></i>
+                    <span style="font-size:10px; font-weight:700;" :style="newHomeBlock.type === 'music' ? 'color:var(--ink)' : 'color:var(--muted)'" x-text="t('media')"></span>
+                  </button>
+                  <!-- Weather Card -->
+                  <button type="button" @click="newHomeBlock.type = 'weather'; newHomeBlock.title = t('weather_block'); newHomeBlock.durationMins = 5;" 
+                          :style="newHomeBlock.type === 'weather' ? 'border-color:var(--amber); background:rgba(241,189,100,0.08); box-shadow: 0 0 10px rgba(241,189,100,0.1);' : 'border-color:var(--line-2); background:rgba(255,255,255,0.01);'" 
+                          style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px; border:1px solid; border-radius:8px; gap:6px; cursor:pointer; transition:all 0.2s;">
+                    <i data-lucide="cloud-sun" :style="newHomeBlock.type === 'weather' ? 'color:var(--amber)' : 'color:var(--muted)'" style="width:16px; height:16px;"></i>
+                    <span style="font-size:10px; font-weight:700;" :style="newHomeBlock.type === 'weather' ? 'color:var(--ink)' : 'color:var(--muted)'" x-text="t('weather')"></span>
+                  </button>
+                  <!-- Voice Card -->
+                  <button type="button" @click="newHomeBlock.type = 'voice'; newHomeBlock.title = ''; newHomeBlock.playlist_id = '';" 
+                          :style="newHomeBlock.type === 'voice' ? 'border-color:var(--rose); background:rgba(243,168,179,0.08); box-shadow: 0 0 10px rgba(243,168,179,0.1);' : 'border-color:var(--line-2); background:rgba(255,255,255,0.01);'" 
+                          style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px; border:1px solid; border-radius:8px; gap:6px; cursor:pointer; transition:all 0.2s;">
+                    <i data-lucide="mic" :style="newHomeBlock.type === 'voice' ? 'color:var(--rose)' : 'color:var(--muted)'" style="width:16px; height:16px;"></i>
+                    <span style="font-size:10px; font-weight:700;" :style="newHomeBlock.type === 'voice' ? 'color:var(--ink)' : 'color:var(--muted)'" x-text="t('voices')"></span>
+                  </button>
+                  <!-- AI Show Card -->
+                  <button type="button" @click="newHomeBlock.type = 'ai-show'; newHomeBlock.title = ''; newHomeBlock.playlist_id = '';" 
+                          :style="newHomeBlock.type === 'ai-show' ? 'border-color:var(--violet); background:rgba(187,163,255,0.08); box-shadow: 0 0 10px rgba(187,163,255,0.1);' : 'border-color:var(--line-2); background:rgba(255,255,255,0.01);'" 
+                          style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px; border:1px solid; border-radius:8px; gap:6px; cursor:pointer; transition:all 0.2s;">
+                    <i data-lucide="wand-2" :style="newHomeBlock.type === 'ai-show' ? 'color:var(--violet)' : 'color:var(--muted)'" style="width:16px; height:16px;"></i>
+                    <span style="font-size:10px; font-weight:700;" :style="newHomeBlock.type === 'ai-show' ? 'color:var(--ink)' : 'color:var(--muted)'" x-text="t('playlists')"></span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="row" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:10px;">
                 <template x-if="newHomeBlock.type === 'music'">
                   <label style="display:grid; gap:4px; font-size:11px; color:var(--muted);">
                     <span x-text="t('playlist')"></span>
@@ -1113,7 +1318,8 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
                   </label>
                 </template>
               </div>
-              <div class="row" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:10px;">
+              
+              <div class="row" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:12px;">
                 <label style="display:grid; gap:4px; font-size:11px; color:var(--muted);">
                   <span x-text="t('start_time')"></span>
                   <select x-model.number="newHomeBlock.startHour">
@@ -1130,6 +1336,165 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
                   <button class="btn primary" style="width:100%;" @click="submitAddHomeBlock()" x-text="t('save')"></button>
                 </div>
               </div>
+
+              <!-- Timeline Slot Analyzer -->
+              <div x-data="{ insight: null }" x-init="$watch('newHomeBlock.startHour, newHomeBlock.durationMins, dayBlocks.length', () => insight = getTimelineInsight()); insight = getTimelineInsight();" style="margin-top: 10px; margin-bottom: 10px; padding: 10px; border-radius: 8px; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--line-2);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="font-size: 11px; font-weight: 700; color: var(--ink-2); display: flex; align-items: center; gap: 4px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; color: var(--mint);">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="16" x2="12" y2="12"></line>
+                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <span x-text="t('slot_analyzer')"></span>
+                  </span>
+                  
+                  <!-- Status Badge -->
+                  <span class="chip sm" :class="insight?.isOverlap ? 'amber' : 'mint'" style="padding: 2px 8px; font-size: 9.5px; border-radius: 4px;">
+                    <span x-text="insight?.isOverlap ? t('slot_overlap') : t('slot_available')"></span>
+                  </span>
+                </div>
+                
+                <!-- Conflict Info -->
+                <template x-if="insight?.isOverlap && insight?.overlappingBlock">
+                  <div style="font-size: 10px; color: var(--amber); margin-bottom: 6px; display: flex; align-items: center; gap: 4px; background: rgba(241,189,100,0.06); padding: 4px 6px; border-radius: 4px;">
+                    <span>⚠️</span>
+                    <span>يتداخل هذا التوقيت مع: </span>
+                    <strong x-text="getBlockIcon(insight.overlappingBlock.type) + ' ' + insight.overlappingBlock.title"></strong>
+                    <span style="opacity:0.8;" x-text="'(' + formatBlockTime(insight.overlappingBlock) + ')'"></span>
+                  </div>
+                </template>
+                
+                <!-- Adjacent Blocks Grid -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 10px; color: var(--muted); border-top: 1px solid rgba(255, 255, 255, 0.03); padding-top: 6px;">
+                  <div>
+                    <span x-text="t('slot_prev')"></span>
+                    <span style="font-weight: 600; color: var(--ink-2);" x-text="insight?.prevBlock ? (getBlockIcon(insight.prevBlock.type) + ' ' + insight.prevBlock.title + ' (' + formatBlockTime(insight.prevBlock) + ')') : t('slot_empty')"></span>
+                  </div>
+                  <div>
+                    <span x-text="t('slot_next')"></span>
+                    <span style="font-weight: 600; color: var(--ink-2);" x-text="insight?.nextBlock ? (getBlockIcon(insight.nextBlock.type) + ' ' + insight.nextBlock.title + ' (' + formatBlockTime(insight.nextBlock) + ')') : t('slot_empty')"></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Live Visual Preview Bar -->
+              <div style="margin-top:10px; padding:10px; border-radius:8px; background:rgba(0,0,0,0.12); border:1px dashed var(--line-2); display:flex; align-items:center; justify-content:space-between; gap:10px; transition: all 0.2s;"
+                   :style="newHomeBlock.type === 'music' ? 'border-color:rgba(113,237,189,0.3); background:rgba(113,237,189,0.02);' : 
+                           newHomeBlock.type === 'weather' ? 'border-color:rgba(241,189,100,0.3); background:rgba(241,189,100,0.02);' : 
+                           newHomeBlock.type === 'voice' ? 'border-color:rgba(243,168,179,0.3); background:rgba(243,168,179,0.02);' : 
+                           newHomeBlock.type === 'ai-show' ? 'border-color:rgba(187,163,255,0.3); background:rgba(187,163,255,0.02);'">
+                <div style="display:flex; align-items:center; gap:8px; min-width:0;">
+                  <!-- Live visualizer component inside the preview bar -->
+                  <div style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <!-- Music Visualizer -->
+                    <template x-if="newHomeBlock.type === 'music'">
+                      <div class="eq-visualizer">
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                        <div class="eq-bar"></div>
+                      </div>
+                    </template>
+                    <!-- Weather Visualizer -->
+                    <template x-if="newHomeBlock.type === 'weather'">
+                      <div class="weather-visualizer">
+                        <div class="weather-sun">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; color: var(--amber);">
+                            <circle cx="12" cy="12" r="4"></circle>
+                            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+                          </svg>
+                        </div>
+                      </div>
+                    </template>
+                    <!-- Voice Visualizer -->
+                    <template x-if="newHomeBlock.type === 'voice'">
+                      <div class="voice-visualizer">
+                        <div class="voice-wave"></div>
+                        <div class="voice-wave"></div>
+                        <div class="voice-wave"></div>
+                        <div class="voice-wave"></div>
+                      </div>
+                    </template>
+                    <!-- AI Show Visualizer -->
+                    <template x-if="newHomeBlock.type === 'ai-show'">
+                      <div class="ai-visualizer">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 9px; height: 9px; color: var(--violet);">
+                          <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+                        </svg>
+                      </div>
+                    </template>
+                  </div>
+                  
+                  <span style="font-size:11px; color:var(--muted);" x-text="lang === 'ar' ? 'معاينة البلوك:' : 'Block Preview:'"></span>
+                  <strong style="font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" x-text="(getBlockIcon(newHomeBlock.type) + ' ' + (newHomeBlock.title || t('select') + '...'))"></strong>
+                </div>
+                <div style="font-size:11px; font-weight:700; color:var(--ink-2); flex-shrink:0;">
+                  <span x-text="pad(newHomeBlock.startHour) + ':00'"></span>
+                  <span> · </span>
+                  <span x-text="newHomeBlock.durationMins + ' ' + (lang === 'ar' ? 'دقيقة' : 'mins')"></span>
+                </div>
+              </div>
+
+              <!-- Quick Presets -->
+              <div style="margin-top:14px; border-top: 1px solid rgba(255,255,255,0.04); padding-top:12px;">
+                <span style="font-size:11px; color:var(--muted); font-weight:600;" x-text="lang === 'ar' ? '💡 قوالب وتوجيهات سريعة لتخطيط كتل البث:' : '💡 Quick Presets & Production Templates:'"></span>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:6px; margin-top:6px;">
+                  <!-- Preset 1 -->
+                  <button type="button" @click="newHomeBlock.type='weather'; newHomeBlock.title=t('weather_block'); newHomeBlock.durationMins=5; newHomeBlock.startHour=7;" style="background:rgba(241,189,100,0.03); border:1px solid rgba(241,189,100,0.15); border-radius:6px; padding:6px; font-size:11px; text-align:start; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(241,189,100,0.4)';" onmouseout="this.style.borderColor='rgba(241,189,100,0.15)';">
+                    <div style="font-weight:700; color:var(--amber);">🌤 النشرة الصباحية</div>
+                    <div style="font-size:9.5px; color:var(--muted); margin-top:2px;" x-text="lang === 'ar' ? 'طقس آلي · 5 د · 07:00' : 'Weather · 5m · 07:00'"></div>
+                  </button>
+                  <!-- Preset 2 -->
+                  <button type="button" @click="newHomeBlock.type='music'; newHomeBlock.durationMins=120; newHomeBlock.startHour=12; const pl = playlists[0]; if(pl) { newHomeBlock.playlist_id = pl.id; newHomeBlock.title = pl.name; } else { newHomeBlock.playlist_id = ''; newHomeBlock.title = 'Music'; }" style="background:rgba(113,237,189,0.03); border:1px solid rgba(113,237,189,0.15); border-radius:6px; padding:6px; font-size:11px; text-align:start; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--mint)';" onmouseout="this.style.borderColor='rgba(113,237,189,0.15)';">
+                    <div style="font-weight:700; color:var(--mint);">🎵 تدوير غنائي كبير</div>
+                    <div style="font-size:9.5px; color:var(--muted); margin-top:2px;" x-text="lang === 'ar' ? 'موسيقى · 120 د · 12:00' : 'Music · 120m · 12:00'"></div>
+                  </button>
+                  <!-- Preset 3 -->
+                  <button type="button" @click="newHomeBlock.type='ai-show'; newHomeBlock.durationMins=60; newHomeBlock.startHour=17; const pl = playlists.find(p => p.name.includes('AI') || p.name.includes('ذك') || p.id); if(pl) { newHomeBlock.playlist_id = pl.id; newHomeBlock.title = pl.name; } else { newHomeBlock.playlist_id = ''; newHomeBlock.title = 'AI Show'; }" style="background:rgba(124,199,242,0.03); border:1px solid rgba(124,199,242,0.15); border-radius:6px; padding:6px; font-size:11px; text-align:start; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--blue)';" onmouseout="this.style.borderColor='rgba(124,199,242,0.15)';">
+                    <div style="font-weight:700; color:var(--blue);">🪄 برنامج حواري ذكي</div>
+                    <div style="font-size:9.5px; color:var(--muted); margin-top:2px;" x-text="lang === 'ar' ? 'بودكاست · 60 د · 17:00' : 'AI Show · 60m · 17:00'"></div>
+                  </button>
+                  <!-- Preset 4 -->
+                  <button type="button" @click="newHomeBlock.type='voice'; newHomeBlock.durationMins=2; newHomeBlock.startHour=10; const v = voices[0]; if(v) { newHomeBlock.voice_id = v.id; newHomeBlock.title = v.name; } else { newHomeBlock.voice_id = ''; newHomeBlock.title = 'Jingle'; }" style="background:rgba(243,168,179,0.03); border:1px solid rgba(243,168,179,0.15); border-radius:6px; padding:6px; font-size:11px; text-align:start; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.borderColor='var(--rose)';" onmouseout="this.style.borderColor='rgba(243,168,179,0.15)';">
+                    <div style="font-weight:700; color:var(--rose);">🎙️ جينجل / فاصل تعريفي</div>
+                    <div style="font-size:9.5px; color:var(--muted); margin-top:2px;" x-text="lang === 'ar' ? 'صوت · 2 د · 10:00' : 'Voice · 2m · 10:00'"></div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Daily Broadcast Planning Guide -->
+              <div x-data="{ open: false }" style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 8px;">
+                <button type="button" @click="open = !open" style="width: 100%; display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--muted); cursor: pointer; padding: 4px 0;">
+                  <span style="font-weight: 600; display: flex; align-items: center; gap: 4px;">
+                    <span x-text="t('tips_title')"></span>
+                  </span>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 10px; height: 10px; transition: transform 0.2s;" :style="open ? 'transform: rotate(180deg);' : ''">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+                
+                <div x-show="open" x-transition style="margin-top: 6px; padding: 8px; background: rgba(0,0,0,0.1); border-radius: 6px; border: 1px solid rgba(255,255,255,0.02); display: flex; flex-direction: column; gap: 4px; font-size: 10px; line-height: 1.4; color: var(--muted);">
+                  <div style="font-weight: 700; color: var(--ink-2); margin-bottom: 2px;" x-text="t('tips_desc')"></div>
+                  <div style="display: flex; gap: 4px; align-items: center;">
+                    <span>🎵</span>
+                    <span x-text="t('tip_music')"></span>
+                  </div>
+                  <div style="display: flex; gap: 4px; align-items: center;">
+                    <span>🌤</span>
+                    <span x-text="t('tip_weather')"></span>
+                  </div>
+                  <div style="display: flex; gap: 4px; align-items: center;">
+                    <span>🎙️</span>
+                    <span x-text="t('tip_voice')"></span>
+                  </div>
+                  <div style="display: flex; gap: 4px; align-items: center;">
+                    <span>🪄</span>
+                    <span x-text="t('tip_ai')"></span>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </template>
           
@@ -2690,6 +3055,9 @@ return {
       live_dj:'بث مباشر',autodj:'بث تلقائي (AutoDJ)',
       add_block:'إضافة فقرة للجدول',playlist:'قائمة التشغيل',select:'اختر...',save:'حفظ',weather_block:'النشرة الجوية',
       export_to_radio:'📥 تصدير كحلقة بث',export_station:'المحطة المستهدفة',export_date:'تاريخ البث',export_show:'البرنامج المستهدف',export_confirm:'تصدير وجدولة',export_success:'تم تصدير النص وجدولته كحلقة بث بنجاح!',
+      step_type:'1. النوع',step_source:'2. المصدر',step_time:'3. التوقيت',step_confirm:'4. الحفظ',
+      slot_analyzer:'محلل الخط الزمني للفقرة',slot_available:'فترة متاحة للبث ✅',slot_overlap:'⚠️ تعارض مع فقرة أخرى!',slot_prev:'الفقرة السابقة:',slot_next:'الفقرة التالية:',slot_empty:'فارغ',
+      tips_title:'💡 دليل تخطيط البث اليومي',tips_desc:'توجيهات لاستغلال كتل الجدول:',tip_music:'الموسيقى: ممتازة لتعبئة المساحات الكبرى كحبل إذاعي خلفي.',tip_weather:'الطقس: يُفضّل وضعه صباحاً بين 7:00 و 9:00 لتحديث المستمعين.',tip_voice:'النص الصوتي: مفيد للجينجلز القصيرة، الفواصل، أو الإعلانات.',tip_ai:'البث الذكي: برامج حوارية تفاعلية مدعومة بالكامل بالذكاء الاصطناعي.',
     },
 
     en:{
@@ -2743,6 +3111,9 @@ return {
       live_dj:'Live DJ',autodj:'AutoDJ',
       add_block:'Add Block to Schedule',playlist:'Playlist',select:'Select...',save:'Save',weather_block:'Weather Block',
       export_to_radio:'📥 Export to Show Script',export_station:'Target Station',export_date:'Broadcast Date',export_show:'Target Show',export_confirm:'Export & Schedule',export_success:'Script successfully exported and scheduled!',
+      step_type:'1. Type',step_source:'2. Source',step_time:'3. Time',step_confirm:'4. Save',
+      slot_analyzer:'Timeline Slot Analyzer',slot_available:'Available Broadcast Slot ✅',slot_overlap:'⚠️ Potential Time Conflict!',slot_prev:'Previous Block:',slot_next:'Next Block:',slot_empty:'None',
+      tips_title:'💡 Daily Broadcast Planning Guide',tips_desc:'Guidelines for structuring timeline blocks:',tip_music:'Music: Great for wrapping major broadcast gaps.',tip_weather:'Weather: Recommended mornings 7:00 to 9:00 for daily updates.',tip_voice:'Voice: Perfect for short jingles, station IDs, or spot ads.',tip_ai:'AI Show: Automated interactive podcast segments.',
     },
 
   },
@@ -3710,6 +4081,38 @@ return {
     wraps.forEach(wrap=>{
       wrap.scrollLeft=Math.max(0,wrap.scrollWidth*pct - wrap.clientWidth/2);
     });
+  getTimelineInsight(){
+    if(!this.newHomeBlock)return null;
+    const start = this.newHomeBlock.startHour;
+    const duration = this.newHomeBlock.durationMins || 60;
+    const startMin = start * 60;
+    const endMin = startMin + duration;
+    let prevBlock = null;
+    let nextBlock = null;
+    let overlappingBlock = null;
+    this.dayBlocks.forEach(b => {
+      const bStartMin = b.startHour * 60;
+      const bEndMin = bStartMin + (b.durationMins || 60);
+      if (startMin < bEndMin && endMin > bStartMin) {
+        overlappingBlock = b;
+      }
+      if (bEndMin <= startMin) {
+        if (!prevBlock || bEndMin > (prevBlock.startHour * 60 + prevBlock.durationMins)) {
+          prevBlock = b;
+        }
+      }
+      if (bStartMin >= endMin) {
+        if (!nextBlock || bStartMin < (nextBlock.startHour * 60)) {
+          nextBlock = b;
+        }
+      }
+    });
+    return {
+      prevBlock,
+      nextBlock,
+      overlappingBlock,
+      isOverlap: !!overlappingBlock
+    };
   },
   submitAddHomeBlock(){
     if(!this.active)return;
