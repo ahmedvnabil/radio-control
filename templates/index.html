@@ -1114,9 +1114,9 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
         </div>
 
         <!-- AI COPILOT -->
-        <div class="pane" style="margin-bottom:14px">
+        <div class="pane" style="margin-bottom:14px; border: 1px solid rgba(187,163,255,0.2); background: linear-gradient(135deg, rgba(187,163,255,0.03) 0%, transparent 100%);">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-            <h2 x-text="t('copilot_title')"></h2>
+            <h2 style="display:flex; align-items:center; gap:8px;"><i data-lucide="bot" style="width:18px;height:18px;color:var(--violet);"></i> <span x-text="t('copilot_title')"></span></h2>
             <button class="btn sm" @click="loadCopilot()"><i data-lucide="refresh-cw" style="width:12px;height:12px"></i></button>
           </div>
           <p class="sub" x-text="t('copilot_sub')"></p>
@@ -1143,8 +1143,8 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
         </div>
 
         <div class="row" style="margin-bottom:14px">
-          <div class="pane" style="grid-column:span 2">
-            <h2 x-text="t('now_playing')"></h2>
+          <div class="pane" style="grid-column:span 2; border-top: 3px solid var(--mint); background: linear-gradient(180deg, rgba(113,237,189,0.03) 0%, transparent 40%);">
+            <h2 style="display:flex; align-items:center; gap:8px;"><i data-lucide="radio" style="width:18px;height:18px;color:var(--mint);"></i> <span x-text="t('now_playing')"></span></h2>
             <p class="sub" x-text="active && active.name"></p>
             <div class="vinyl-wrap" style="margin-top:10px">
               <div class="vinyl-container">
@@ -1189,17 +1189,17 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
               </button>
             </div>
           </div>
-          <div class="pane">
-            <h2 x-text="t('listeners')"></h2>
-            <div style="font-size:36px;font-weight:800;color:var(--mint);margin-top:8px" x-text="totalListeners"></div>
+          <div class="pane" style="display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; background: rgba(124,199,242,0.02); border-color: rgba(124,199,242,0.15);">
+            <h2 style="display:flex; align-items:center; justify-content:center; gap:8px; color:var(--muted); font-size:13px; font-weight:600;"><i data-lucide="users" style="width:16px;height:16px;color:var(--blue);"></i> <span x-text="t('listeners')"></span></h2>
+            <div style="font-size:48px;font-weight:800;color:var(--mint);margin-top:8px" x-text="totalListeners"></div>
           </div>
         </div>
 
         <!-- TODAY'S TIMELINE -->
-        <div class="pane" style="margin-bottom:14px">
+        <div class="pane" style="margin-bottom:14px; border-left: 3px solid var(--blue); background: linear-gradient(90deg, rgba(124,199,242,0.03) 0%, transparent 15%);">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
             <div>
-              <h2 x-text="t('weekly_schedule')"></h2>
+              <h2 style="display:flex; align-items:center; gap:8px;"><i data-lucide="calendar-clock" style="width:18px;height:18px;color:var(--blue);"></i> <span x-text="t('weekly_schedule')"></span></h2>
               <p class="sub" x-text="t('day_builder_note')"></p>
             </div>
             <button class="btn sm primary" @click="showAddBlockHome=true; $nextTick(() => tick())"><i data-lucide="plus" style="width:12px;height:12px"></i> <span x-text="t('add')"></span></button>
@@ -1341,9 +1341,9 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
           
           <!-- HOME ADD BLOCK PANEL -->
           <template x-if="showAddBlockHome">
-            <div class="pane" style="margin-top:12px; border-color:rgba(113,237,189,0.3); background:rgba(113,237,189,0.02); max-width: 600px;">
+            <div class="pane" style="margin-top:12px; border: 2px dashed rgba(113,237,189,0.3); background:rgba(113,237,189,0.02); max-width: 600px;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                <h3 style="margin:0; font-size:13px; font-weight:700; color:var(--mint);" x-text="t('add_block')"></h3>
+                <h3 style="margin:0; font-size:14px; font-weight:700; color:var(--mint); display:flex; align-items:center; gap:8px;"><i data-lucide="plus-square" style="width:16px;height:16px;"></i> <span x-text="t('add_block')"></span></h3>
                 <button class="btn sm" @click="showAddBlockHome=false" x-text="t('cancel')"></button>
               </div>
 
