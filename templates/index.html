@@ -2363,6 +2363,8 @@ return {
   showSnippetModal: false,
   snippetBlob: null,
   snippetFilename: '',
+  snippetMimeType: 'audio/webm',
+  snippetExtension: 'webm',
   snippetUploading: false,
   isRecordingStream: false,
   recordStartTime: 0,
@@ -2986,7 +2988,49 @@ return {
         }
       }
       
-      this._mediaRecorder = new MediaRecorder(dest.stream);
+      // Dynamically check supported MIME types for maximum device compatibility (iOS/Android/Chrome/Safari)
+      let options = {};
+      let mimeType = 'audio/webm';
+      let extension = 'webm';
+      
+      if (typeof MediaRecorder.isTypeSupported === 'function') {
+        if (MediaRecorder.isTypeSupported('audio/webm')) {
+          mimeType = 'audio/webm';
+          extension = 'webm';
+          options = { mimeType };
+        } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
+          mimeType = 'audio/mp4';
+          extension = 'mp4';
+          options = { mimeType };
+        } else if (MediaRecorder.isTypeSupported('audio/ogg')) {
+          mimeType = 'audio/ogg';
+          extension = 'ogg';
+          options = { mimeType };
+        } else if (MediaRecorder.isTypeSupported('audio/aac')) {
+          mimeType = 'audio/aac';
+          extension = 'm4a';
+          options = { mimeType };
+        }
+      }
+      
+      this.snippetMimeType = mimeType;
+      this.snippetExtension = extension;
+      
+      try {
+        this._mediaRecorder = new MediaRecorder(dest.stream, options);
+      } catch (e) {
+        console.warn("MediaRecorder with options failed, falling back to default.", e);
+        this._mediaRecorder = new MediaRecorder(dest.stream);
+        if (this._mediaRecorder.mimeType) {
+          this.snippetMimeType = this._mediaRecorder.mimeType;
+          if (this.snippetMimeType.includes('webm')) this.snippetExtension = 'webm';
+          else if (this.snippetMimeType.includes('mp4')) this.snippetExtension = 'mp4';
+          else if (this.snippetMimeType.includes('ogg')) this.snippetExtension = 'ogg';
+          else if (this.snippetMimeType.includes('wav')) this.snippetExtension = 'wav';
+          else if (this.snippetMimeType.includes('aac')) this.snippetExtension = 'm4a';
+        }
+      }
+      
       this._mediaRecorder.ondataavailable = (e) => {
         if (e.data && e.data.size > 0) {
           this._recordedChunks.push(e.data);
@@ -2994,8 +3038,8 @@ return {
       };
       
       this._mediaRecorder.onstop = () => {
-        this.snippetBlob = new Blob(this._recordedChunks, { type: 'audio/webm' });
-        this.snippetFilename = `snippet_${this.active.short_name}_${Date.now()}.webm`;
+        this.snippetBlob = new Blob(this._recordedChunks, { type: this.snippetMimeType || 'audio/webm' });
+        this.snippetFilename = `snippet_${this.active.short_name}_${Date.now()}.${this.snippetExtension || 'webm'}`;
         this.showSnippetModal = true;
       };
       
@@ -3025,7 +3069,7 @@ return {
     const url = URL.createObjectURL(this.snippetBlob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = this.snippetFilename || 'snippet.webm';
+    a.download = this.snippetFilename || `snippet.${this.snippetExtension || 'webm'}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -3037,7 +3081,7 @@ return {
     if (!this.active) return;
     this.snippetUploading = true;
     try {
-      const file = new File([this.snippetBlob], this.snippetFilename, { type: 'audio/webm' });
+      const file = new File([this.snippetBlob], this.snippetFilename, { type: this.snippetMimeType || 'audio/webm' });
       const fd = new FormData();
       fd.append('file', file);
       fd.append('path', this.snippetFilename);

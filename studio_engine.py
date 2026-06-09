@@ -271,12 +271,26 @@ def run_studio_agent(name: str, user_input: str) -> dict:
     trace: list[dict] = []
     usage = {"input_tokens": 0, "output_tokens": 0}
 
+    active_client = client
     for _ in range(MAX_TURNS):
         kwargs = dict(model=model, system=system, messages=messages,
                       max_tokens=max_tokens, temperature=temperature)
         if tools:
             kwargs["tools"] = tools
-        resp = client.messages.create(**kwargs)
+        try:
+            resp = active_client.messages.create(**kwargs)
+        except Exception as e:
+            # If the primary Meridian proxy client fails and direct Anthropic API key is available, retry directly
+            if base and active_client == client and key:
+                log.warning("Meridian proxy failed: %s. Falling back to direct Anthropic API.", e)
+                try:
+                    active_client = anthropic.Anthropic(api_key=key, default_headers=default_headers)
+                    resp = active_client.messages.create(**kwargs)
+                except Exception as fe:
+                    log.error("Direct Anthropic API fallback also failed: %s", fe)
+                    raise fe
+            else:
+                raise e
         usage["input_tokens"] += resp.usage.input_tokens
         usage["output_tokens"] += resp.usage.output_tokens
         messages.append({"role": "assistant", "content": resp.content})

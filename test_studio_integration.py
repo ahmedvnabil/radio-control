@@ -57,7 +57,7 @@ check("GET empty day blocks ok", r_get["ok"] and r_get["data"] == [])
 
 # Test POST/PUT day-blocks
 # api_day_blocks_put expects a list of dictionaries with id, type, title, startHour, durationMins, and data fields
-blocks_data = [{"id": "b1", "type": "music", "title": "Song 1", "startHour": 8, "durationMins": 5, "data": None}]
+blocks_data = [{"id": "b1", "type": "music", "title": "Song 1", "startHour": 8, "durationMins": 5, "data": None, "showKey": None}]
 r_put = c.put("/api/v1/stations/1/day-blocks", json={"blocks": blocks_data}).get_json()
 check("PUT day blocks ok", r_put["ok"])
 
