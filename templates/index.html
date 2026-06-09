@@ -12,6 +12,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="{{ url_for('static', filename='zzfx.js') }}"></script>
 <script src="{{ url_for('static', filename='ident-studio.js') }}"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+<script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
 <style>
 :root{
   color-scheme: dark;
@@ -926,6 +928,7 @@ body[data-theme="glow"] .chip.mint{color:#10b981;border-color:rgba(16,185,129,0.
         <button :class="lang==='ar' && 'active'" @click="setLang('ar')">عربي</button>
         <button :class="lang==='en' && 'active'" @click="setLang('en')">EN</button>
       </div>
+      <button class="icon-btn" @click="startTour()" :title="lang === 'ar' ? 'جولة تعريفية' : 'Quick Tour'"><i data-lucide="help-circle" style="width:14px;height:14px"></i></button>
       <button class="icon-btn" @click="toggleTheme()" :title="t('theme')"><i data-lucide="palette" style="width:14px;height:14px"></i></button>
       <button class="icon-btn" @click="refresh()" :title="t('refresh')"><i data-lucide="refresh-cw" style="width:14px;height:14px"></i></button>
     </div>
@@ -2994,6 +2997,30 @@ return {
   externalSongs:[], injectingId:null,
   ttsText:'', ttsVoice:'', ttsBusy:false,
   weatherData:null,
+  startTour() {
+    this.tab = 'live';
+    this.showBlueprint = true;
+    this.$nextTick(() => {
+      const driverObj = window.driver.js.driver({
+        showProgress: true,
+        animate: true,
+        nextBtnText: this.lang === 'ar' ? 'التالي ➔' : 'Next ➔',
+        prevBtnText: this.lang === 'ar' ? 'السابق' : 'Prev',
+        doneBtnText: this.lang === 'ar' ? 'إنهاء' : 'Done',
+        progressText: '{{current}} / {{total}}',
+        steps: [
+          { popover: { title: this.lang === 'ar' ? 'مرحباً بك في الاستوديو 👋' : 'Welcome to the Studio 👋', description: this.lang === 'ar' ? 'جولة سريعة للتعرف على أجزاء ومحطات الراديو وكيفية عمل النظام.' : 'A quick tour to explore the radio features and how the system works.', align: 'start' } },
+          { element: '.sidebar', popover: { title: this.lang === 'ar' ? 'القائمة الجانبية والمحطات' : 'Sidebar & Stations', description: this.lang === 'ar' ? 'من هنا يمكنك التنقل بين أقسام الإدارة واختيار المحطة الإذاعية التي تريد العمل عليها.' : 'Navigate through management sections and select the active radio station.', align: 'start' } },
+          { element: '.blueprint-flow', popover: { title: this.lang === 'ar' ? 'مسار الإنتاج' : 'Production Flow', description: this.lang === 'ar' ? 'مخطط تفاعلي يوجهك من كتابة الكلمات والألحان وحتى الجدولة والبث المباشر خطوة بخطوة.' : 'Interactive blueprint guiding you from writing lyrics to scheduling and live broadcasting.' } },
+          { element: '.vinyl-wrap', popover: { title: this.lang === 'ar' ? 'البث المباشر' : 'Live Stream', description: this.lang === 'ar' ? 'تابع ما يتم بثه الآن على الهواء مباشرة مع مشغل الصوت والمؤثرات البصرية التفاعلية.' : 'Monitor what is currently broadcasting live with audio player and visualizers.' } },
+          { element: '.tl24-wrap', popover: { title: this.lang === 'ar' ? 'الجدول الزمني 24 ساعة' : '24h Timeline', description: this.lang === 'ar' ? 'خطط يومك الإذاعي بإضافة الكتل البرمجية، الأغاني، النشرة الجوية والمذيع الآلي للعمل بتسلسل تلقائي.' : 'Plan your radio day by adding program blocks, songs, weather, and AI host to run in sequence.' } },
+          { element: '.copilot', popover: { title: this.lang === 'ar' ? 'المساعد الذكي (Copilot)' : 'AI Copilot', description: this.lang === 'ar' ? 'يحلل صحة محطتك ويعطيك اقتراحات جاهزة لتطبيقها بضغطة زر وتطوير الأداء.' : 'Analyzes your station health and gives you one-click suggestions to improve performance.' } },
+          { element: '.ai-fab', popover: { title: this.lang === 'ar' ? 'روبوت المساعدة العائم' : 'AI Assistant', description: this.lang === 'ar' ? 'تحدث معي في أي وقت لإنشاء السكريبتات، ترتيب الجداول، أو الإجابة عن أي سؤال تقني يخص المحطة.' : 'Chat with me anytime to generate scripts, arrange schedules, or answer any technical questions.' } }
+        ]
+      });
+      driverObj.drive();
+    });
+  },
   // ── Date and Calendar state ──
   selectedDate: '',
   showFullCalendar: false,
